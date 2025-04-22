@@ -4,7 +4,7 @@ This script interacts with the Bitwarden CLI to export data from a Bitwarden vau
 Functions:
     bw_exec(cmd: List[str], ret_encoding: str = "UTF-8", env_vars: Optional[Dict[str, str]] = None) -> str:
         Executes a Bitwarden CLI command and returns the output as a string.
-    
+
     main() -> None:
         Main function that handles the export process, including fetching organizations,
           collections, items, and folders from the Bitwarden vault.
