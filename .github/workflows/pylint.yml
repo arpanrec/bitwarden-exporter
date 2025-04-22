@@ -27,15 +27,15 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4.2.2
 
-            - name: Install poetry 1.8.4
-              run: pipx install poetry==1.8.4
+            - name: Install poetry 2.1.2
+              run: pipx install poetry==2.1.2
 
             - name: Set up Python ${{ matrix.python-version }}
               uses: actions/setup-python@v5.3.0
               with:
                   python-version: "${{ matrix.python-version }}"
                   cache: "poetry"
-                  # cache-dependency-path: pyproject.toml
+                  cache-dependency-path: poetry.toml
 
             - name: Install dependencies
               run: poetry install --with dev

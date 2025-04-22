@@ -30,26 +30,26 @@ jobs:
                   node-version: lts/*
                   cache-dependency-path: .github/files/package-lock.json
 
-            - name: Install poetry 1.8.4
-              run: pipx install poetry==1.8.4
+            - name: Install poetry 2.1.2
+              run: pipx install poetry==2.1.2
 
             - name: Set up Python "3.12"
               uses: actions/setup-python@v5.3.0
               with:
                   python-version: "3.12"
                   cache: "poetry"
-                  # cache-dependency-path: pyproject.toml
+                  cache-dependency-path: poetry.toml
 
             - name: Install python dependencies
               run: poetry install
 
             - name: Install node dependencies
               run: |+
-                  npm i semantic-release@24.2.0 \
-                      @semantic-release/commit-analyzer@13.0.0 \
-                      @semantic-release/release-notes-generator@14.0.1 \
+                  npm i semantic-release@24.2.3 \
+                      @semantic-release/commit-analyzer@13.0.1 \
+                      @semantic-release/release-notes-generator@14.0.3 \
                       @semantic-release/changelog@6.0.3 \
-                      @semantic-release/exec@6.0.3 \
+                      @semantic-release/exec@7.0.3 \
                       @semantic-release/git@10.0.1 -D
 
             - name: Release
@@ -58,7 +58,7 @@ jobs:
                   git config --global user.name "${{ steps.import-gpg.outputs.name }}"
                   git config --global user.name "${{ steps.import-gpg.outputs.name }}"
                   poetry config pypi-token.pypi "${{ secrets.PYPI_PROD_API_TOKEN }}"
-                  npx semantic-release@24.2.0 --extends ./.github/files/release.config.cjs
+                  npx semantic-release@24.2.3 --extends ./.github/files/release.config.cjs
               env:
                   GITHUB_TOKEN: "${{ secrets.GH_BOT_API_TOKEN }}"
                   GIT_AUTHOR_NAME: "${{ steps.import-gpg.outputs.name }}"
