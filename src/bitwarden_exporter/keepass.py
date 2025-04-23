@@ -7,7 +7,7 @@ import logging
 import os
 import urllib.parse
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Type, Union
 
 from pykeepass import PyKeePass, create_database  # type: ignore
 from pykeepass.entry import Entry  # type: ignore
@@ -100,7 +100,7 @@ class KeePassStorage:
         """
         Add an entry to Keepass
         """
-        entry: Entry = self.__py_kee_pass.add_entry(
+        entry: Union[Entry | Group] = self.__py_kee_pass.add_entry(
             destination_group=group,
             title=bw_item.name,
             username="" if (not bw_item.login) or (not bw_item.login.username) else bw_item.login.username,
@@ -303,7 +303,7 @@ class KeePassStorage:
         """
         Function to write to Keepass
         """
-        entry: Entry = self.__py_kee_pass.add_entry(
+        entry: Union[Entry | Group] = self.__py_kee_pass.add_entry(
             destination_group=self.__py_kee_pass.root_group,
             title="Bitwarden Export",
             username="",
