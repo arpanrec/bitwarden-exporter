@@ -234,7 +234,7 @@ class KeePassStorage:
         for attachment in item.attachments:
             LOGGER.info("%s:: Adding Attachment to keepass %s", item.name, attachment.fileName)
             with open(attachment.local_file_path, "rb") as file_attach:
-                binary_id = self.__py_kee_pass.add_binary(data=file_attach.read(), protected=False, compressed=False)
+                binary_id = self.__py_kee_pass.add_binary(data=file_attach.read(), protected=True, compressed=False)
                 entry.add_attachment(binary_id, attachment.fileName)
 
     def process_organizations(self, bw_organizations: Dict[str, BwOrganization]) -> None:
@@ -311,6 +311,6 @@ class KeePassStorage:
         )
         for key, value in raw_items.items():
             binary_id = self.__py_kee_pass.add_binary(
-                data=json.dumps(value, indent=4).encode(), protected=False, compressed=False
+                data=json.dumps(value, indent=4).encode(), protected=True, compressed=False
             )
             entry.add_attachment(binary_id, key)
