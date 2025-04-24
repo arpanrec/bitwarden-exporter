@@ -1,5 +1,5 @@
 """
-Writes the given data to a file at the specified path.
+Convert Bitwarden data to KeePass format.
 """
 
 import json
