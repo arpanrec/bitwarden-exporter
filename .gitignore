@@ -167,3 +167,5 @@ dump*
 bitwarden_dump*
 temp.py
 __pycache__
+
+foo.*
