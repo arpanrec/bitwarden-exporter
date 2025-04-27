@@ -67,7 +67,7 @@ class KeePassStorage:
 
     def __add_group_recursive(self, group_path: str, parent_group: Optional[Group] = None) -> Group:
         """
-        Recursively add group to Keepass
+        Recursively add a group to Keepass
         """
         if not parent_group:
             parent_group = self.__py_kee_pass.root_group
