@@ -1,86 +1,133 @@
-annotated-types==0.7.0 ; python_version >= "3.10" and python_version < "4.0"
-argon2-cffi-bindings==21.2.0 ; python_version >= "3.10" and python_version < "4.0"
-argon2-cffi==23.1.0 ; python_version >= "3.10" and python_version < "4.0"
-astroid==3.3.5 ; python_version >= "3.10" and python_version < "4.0"
-bandit==1.7.10 ; python_version >= "3.10" and python_version < "4.0"
-black==24.10.0 ; python_version >= "3.10" and python_version < "4.0"
-build==1.2.2.post1 ; python_version >= "3.10" and python_version < "4.0"
-cachecontrol[filecache]==0.14.1 ; python_version >= "3.10" and python_version < "4.0"
-cachier==3.1.2 ; python_version >= "3.10" and python_version < "4.0"
-certifi==2024.8.30 ; python_version >= "3.10" and python_version < "4.0"
-cffi==1.17.1 ; python_version >= "3.10" and python_version < "4.0"
-charset-normalizer==3.4.0 ; python_version >= "3.10" and python_version < "4.0"
-cleo==2.1.0 ; python_version >= "3.10" and python_version < "4.0"
-click==8.1.7 ; python_version >= "3.10" and python_version < "4.0"
-colorama==0.4.6 ; python_version >= "3.10" and python_version < "4.0" and (platform_system == "Windows" or sys_platform == "win32" or os_name == "nt")
-construct==2.10.70 ; python_version >= "3.10" and python_version < "4.0"
-crashtest==0.4.1 ; python_version >= "3.10" and python_version < "4.0"
-cryptography==43.0.3 ; python_version >= "3.10" and python_version < "4.0" and sys_platform == "linux"
-dill==0.3.9 ; python_version >= "3.10" and python_version < "4.0"
-distlib==0.3.9 ; python_version >= "3.10" and python_version < "4.0"
-dulwich==0.21.7 ; python_version >= "3.10" and python_version < "4.0"
-fastjsonschema==2.20.0 ; python_version >= "3.10" and python_version < "4.0"
-filelock==3.16.1 ; python_version >= "3.10" and python_version < "4.0"
-gnupg==2.3.1 ; python_version >= "3.10" and python_version < "4.0"
-greenlet==3.1.1 ; python_version >= "3.10" and python_version < "4.0" and platform_python_implementation != "PyPy"
-idna==3.10 ; python_version >= "3.10" and python_version < "4.0"
-importlib-metadata==8.5.0 ; python_version >= "3.10" and python_version < "3.12"
-installer==0.7.0 ; python_version >= "3.10" and python_version < "4.0"
-isort==5.13.2 ; python_version >= "3.10" and python_version < "4.0"
-jaraco-classes==3.4.0 ; python_version >= "3.10" and python_version < "4.0"
-jeepney==0.8.0 ; python_version >= "3.10" and python_version < "4.0" and sys_platform == "linux"
-keyring==24.3.1 ; python_version >= "3.10" and python_version < "4.0"
-lxml==5.3.0 ; python_version >= "3.10" and python_version < "4.0"
-markdown-it-py==3.0.0 ; python_version >= "3.10" and python_version < "4.0"
-mccabe==0.7.0 ; python_version >= "3.10" and python_version < "4.0"
-mdurl==0.1.2 ; python_version >= "3.10" and python_version < "4.0"
-more-itertools==10.5.0 ; python_version >= "3.10" and python_version < "4.0"
-msgpack==1.1.0 ; python_version >= "3.10" and python_version < "4.0"
-mypy-extensions==1.0.0 ; python_version >= "3.10" and python_version < "4.0"
-mypy==1.13.0 ; python_version >= "3.10" and python_version < "4.0"
-neovim==0.3.1 ; python_version >= "3.10" and python_version < "4.0"
-nodeenv==1.9.1 ; python_version >= "3.10" and python_version < "4.0"
-packaging==24.2 ; python_version >= "3.10" and python_version < "4.0"
-pathspec==0.12.1 ; python_version >= "3.10" and python_version < "4.0"
-pbr==6.1.0 ; python_version >= "3.10" and python_version < "4.0"
-pexpect==4.9.0 ; python_version >= "3.10" and python_version < "4.0"
-pkginfo==1.11.2 ; python_version >= "3.10" and python_version < "4.0"
-platformdirs==4.3.6 ; python_version >= "3.10" and python_version < "4.0"
-poetry-core==1.9.1 ; python_version >= "3.10" and python_version < "4.0"
-poetry-plugin-export==1.8.0 ; python_version >= "3.10" and python_version < "4.0"
-poetry==1.8.4 ; python_version >= "3.10" and python_version < "4.0"
-portalocker==2.10.1 ; python_version >= "3.10" and python_version < "4.0"
-psutil==6.1.0 ; python_version >= "3.10" and python_version < "4.0"
-ptyprocess==0.7.0 ; python_version >= "3.10" and python_version < "4.0"
-pycparser==2.22 ; python_version >= "3.10" and python_version < "4.0"
-pycryptodomex==3.21.0 ; python_version >= "3.10" and python_version < "4.0"
-pydantic-core==2.23.4 ; python_version >= "3.10" and python_version < "4.0"
-pydantic==2.9.2 ; python_version >= "3.10" and python_version < "4.0"
-pyfiglet==1.0.2 ; python_version >= "3.10" and python_version < "4.0"
-pygments==2.18.0 ; python_version >= "3.10" and python_version < "4.0"
-pykeepass==4.1.0.post1 ; python_version >= "3.10" and python_version < "4.0"
-pylint==3.3.1 ; python_version >= "3.10" and python_version < "4.0"
-pynvim==0.5.2 ; python_version >= "3.10" and python_version < "4.0"
-pyproject-hooks==1.2.0 ; python_version >= "3.10" and python_version < "4.0"
-pyright==1.1.388 ; python_version >= "3.10" and python_version < "4.0"
-pywin32-ctypes==0.2.3 ; python_version >= "3.10" and python_version < "4.0" and sys_platform == "win32"
-pywin32==308 ; python_version >= "3.10" and python_version < "4.0" and platform_system == "Windows"
-pyyaml==6.0.2 ; python_version >= "3.10" and python_version < "4.0"
-rapidfuzz==3.10.1 ; python_version >= "3.10" and python_version < "4.0"
-requests-toolbelt==1.0.0 ; python_version >= "3.10" and python_version < "4.0"
-requests==2.32.3 ; python_version >= "3.10" and python_version < "4.0"
-rich==13.9.4 ; python_version >= "3.10" and python_version < "4.0"
-secretstorage==3.3.3 ; python_version >= "3.10" and python_version < "4.0" and sys_platform == "linux"
-shellingham==1.5.4 ; python_version >= "3.10" and python_version < "4.0"
-stevedore==5.3.0 ; python_version >= "3.10" and python_version < "4.0"
-tomli==2.1.0 ; python_version >= "3.10" and python_version < "3.11"
-tomlkit==0.13.2 ; python_version >= "3.10" and python_version < "4.0"
-trove-classifiers==2024.10.21.16 ; python_version >= "3.10" and python_version < "4.0"
-types-pyyaml==6.0.12.20240917 ; python_version >= "3.10" and python_version < "4.0"
-types-requests==2.32.0.20241016 ; python_version >= "3.10" and python_version < "4.0"
-typing-extensions==4.12.2 ; python_version >= "3.10" and python_version < "4.0"
-urllib3==2.2.3 ; python_version >= "3.10" and python_version < "4.0"
-virtualenv==20.27.1 ; python_version >= "3.10" and python_version < "4.0"
-watchdog==6.0.0 ; python_version >= "3.10" and python_version < "4.0"
-xattr==1.1.0 ; python_version >= "3.10" and python_version < "4.0" and sys_platform == "darwin"
-zipp==3.21.0 ; python_version >= "3.10" and python_version < "3.12"
+# This file was autogenerated by uv via the following command:
+#    uv export --format requirements.txt --no-hashes --extra dev -o requirements-dev.txt
+-e .
+annotated-types==0.7.0
+    # via pydantic
+argon2-cffi==25.1.0
+    # via pykeepass
+argon2-cffi-bindings==21.2.0 ; python_full_version >= '3.14'
+    # via argon2-cffi
+argon2-cffi-bindings==25.1.0 ; python_full_version < '3.14'
+    # via argon2-cffi
+astroid==3.3.11
+    # via pylint
+bandit==1.8.6
+    # via bitwarden-exporter
+black==25.1.0
+    # via bitwarden-exporter
+cachier==4.1.0
+    # via bitwarden-exporter
+cffi==1.17.1
+    # via argon2-cffi-bindings
+click==8.2.1
+    # via black
+colorama==0.4.6 ; sys_platform == 'win32'
+    # via
+    #   bandit
+    #   click
+    #   pylint
+construct==2.10.70
+    # via pykeepass
+dill==0.4.0
+    # via pylint
+gnupg==2.3.1
+    # via bitwarden-exporter
+greenlet==3.2.4 ; platform_python_implementation != 'PyPy'
+    # via pynvim
+isort==6.0.1
+    # via
+    #   bitwarden-exporter
+    #   pylint
+lxml==6.0.1
+    # via pykeepass
+markdown-it-py==4.0.0
+    # via rich
+mccabe==0.7.0
+    # via pylint
+mdurl==0.1.2
+    # via markdown-it-py
+msgpack==1.1.1
+    # via pynvim
+mypy==1.17.1
+    # via bitwarden-exporter
+mypy-extensions==1.1.0
+    # via
+    #   black
+    #   mypy
+neovim==0.3.1
+    # via bitwarden-exporter
+nodeenv==1.9.1
+    # via pyright
+packaging==25.0
+    # via
+    #   bitwarden-exporter
+    #   black
+pathspec==0.12.1
+    # via
+    #   black
+    #   mypy
+platformdirs==4.4.0
+    # via
+    #   black
+    #   pylint
+portalocker==3.2.0
+    # via cachier
+psutil==7.0.0
+    # via gnupg
+pycparser==2.22
+    # via cffi
+pycryptodomex==3.23.0
+    # via pykeepass
+pydantic==2.11.7
+    # via bitwarden-exporter
+pydantic-core==2.33.2
+    # via pydantic
+pyfiglet==1.0.4
+    # via bitwarden-exporter
+pygments==2.19.2
+    # via rich
+pykeepass==4.1.1.post1
+    # via bitwarden-exporter
+pylint==3.3.8
+    # via bitwarden-exporter
+pynvim==0.5.2
+    # via neovim
+pyotp==2.9.0
+    # via pykeepass
+pyright==1.1.404
+    # via bitwarden-exporter
+pywin32==311 ; sys_platform == 'win32'
+    # via portalocker
+pyyaml==6.0.2
+    # via bandit
+rich==14.1.0
+    # via bandit
+stevedore==5.5.0
+    # via bandit
+tomli==2.2.1 ; python_full_version < '3.11'
+    # via
+    #   black
+    #   mypy
+    #   pylint
+tomlkit==0.13.3
+    # via pylint
+types-pyyaml==6.0.12.20250822
+    # via bitwarden-exporter
+types-requests==2.32.4.20250809
+    # via bitwarden-exporter
+typing-extensions==4.15.0
+    # via
+    #   astroid
+    #   black
+    #   mypy
+    #   pydantic
+    #   pydantic-core
+    #   pynvim
+    #   pyright
+    #   typing-inspection
+typing-inspection==0.4.1
+    # via pydantic
+urllib3==2.5.0
+    # via types-requests
+watchdog==6.0.0
+    # via cachier
