@@ -7,7 +7,7 @@ name: Pylint
             - "**.py"
             - ".github/workflows/pylint.yml"
             - ".pylint.*"
-            - "poetry.lock"
+            - "uv.lock"
             - "pyproject.toml"
     workflow_dispatch:
 
@@ -27,18 +27,20 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v4.2.2
 
-            - name: Install poetry 1.8.4
-              run: pipx install poetry==1.8.4
-
-            - name: Set up Python ${{ matrix.python-version }}
-              uses: actions/setup-python@v5.3.0
+            - name: Install uv 0.8.14
+              uses: astral-sh/setup-uv@v6.6.0
               with:
-                  python-version: "${{ matrix.python-version }}"
-                  cache: "poetry"
-                  # cache-dependency-path: pyproject.toml
+                  version: 0.8.14
+                  python-version: ${{ matrix.python-version }}
+                  enable-cache: true
+                  cache-suffix: python-${{ matrix.python-version }}
+                  cache-dependency-glob: |
+                      **/uv.lock
 
             - name: Install dependencies
-              run: poetry install --with dev
+              run: |+
+                  uv run --python ${{ matrix.python-version }} --managed-python python --version
+                  uv sync --python ${{ matrix.python-version }} --managed-python --extra dev
 
-            - name: Analysing the code with pylint
-              run: poetry run pylint $(git ls-files '*.py')
+            - name: Analyzing the code with pylint
+              run: uv run --python ${{ matrix.python-version }} --managed-python pylint $(git ls-files '*.py')

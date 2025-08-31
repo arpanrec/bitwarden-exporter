@@ -27,13 +27,14 @@ module.exports = {
             '@semantic-release/exec',
             {
                 prepareCmd: [
-                    'poetry publish --build --repository pypi --no-interaction --dry-run',
                     'rm -f CHANGELOG.md',
-                    'poetry version ${nextRelease.version}',
-                    'poetry export --without-hashes --format=requirements.txt --without dev -o requirements.txt',
-                    'poetry export --without-hashes --format=requirements.txt --with dev -o requirements-dev.txt',
+                    'uv version ${nextRelease.version}',
+                    'uv export --format requirements.txt --no-hashes -o requirements.txt',
+                    'uv export --format requirements.txt --no-hashes --extra dev -o requirements-dev.txt',
+                    'uv build',
+                    'uv publish --index test-pypi',
                 ].join(' && '),
-                successCmd: 'poetry publish --build --repository pypi --no-interaction',
+                successCmd: 'uv publish --index pypi',
             },
         ],
         [
@@ -45,7 +46,7 @@ module.exports = {
         [
             '@semantic-release/git',
             {
-                assets: ['CHANGELOG.md', 'pyproject.toml', 'requirements.txt', 'requirements-dev.txt'],
+                assets: ['CHANGELOG.md', 'pyproject.toml', 'uv.lock', 'requirements.txt', 'requirements-dev.txt'],
                 message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
             },
         ],
