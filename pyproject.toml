@@ -52,10 +52,10 @@ classifiers = [
 ]
 dependencies = [
     "gnupg==2.3.1",
-    "pydantic==2.9.2",
-    "pykeepass==4.1.0.post1",
-    "cachier==3.1.2",
-    "pyfiglet==1.0.2",
+    "pydantic==2.11.7",
+    "pykeepass==4.1.1.post1",
+    "cachier==4.1.0",
+    "pyfiglet==1.0.4",
 ]
 
 [project.scripts]
