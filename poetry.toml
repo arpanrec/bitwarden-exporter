@@ -1,8 +1,0 @@
-[repositories.test-pypi]
-url = "https://test.pypi.org/legacy/"
-
-[repositories.pypi]
-url = "https://upload.pypi.org/legacy/"
-
-[virtualenvs]
-in-project = false
