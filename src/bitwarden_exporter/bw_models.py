@@ -3,6 +3,7 @@ This module defines Pydantic models for various Bitwarden entities.
 
 Classes:
     BwItemLoginFido2Credentials: Represents Fido2 credentials associated with a Bitwarden login item.
+    SSHKey: Represents an SSH key.
     BwItemLoginUri: Represents a URI associated with a Bitwarden login item.
     BwItemLogin: Represents a Bitwarden login item.
     BwItemPasswordHistory: Represents the password history of a Bitwarden item.
@@ -84,6 +85,16 @@ class BwItemAttachment(BaseModel):
     local_file_path: str = ""
 
 
+class SSHKey(BaseModel):
+    """
+    SSH Key Model
+    """
+
+    privateKey: str
+    publicKey: str
+    keyFingerprint: str
+
+
 class BwField(BaseModel):
     """
     Bitwarden Field Model
@@ -114,6 +125,7 @@ class BwItem(BaseModel):
     notes: Optional[str] = None
     favorite: bool
     login: Optional[BwItemLogin] = None
+    sshKey: Optional[SSHKey] = None
     collectionIds: List[str] = []
     attachments: List[BwItemAttachment] = []
     fields: List[BwField] = []

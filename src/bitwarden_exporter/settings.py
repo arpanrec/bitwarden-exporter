@@ -34,6 +34,7 @@ class BitwardenExportSettings(BaseModel):
     allow_duplicates: bool
     tmp_dir: str
     verbose: bool
+    bw_executable: str = "bw"
 
 
 def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
@@ -82,6 +83,12 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     )
 
     parser.add_argument(
+        "--bw-executable",
+        help="Path to the Bitwarden CLI executable, Default: bw",
+        default="bw",
+    )
+
+    parser.add_argument(
         "--verbose",
         help="Enable Verbose Logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,"
         " Default: --no-verbose",
@@ -107,4 +114,5 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         allow_duplicates=args.allow_duplicates,
         tmp_dir=args.tmp_dir,
         verbose=args.verbose,
+        bw_executable=args.bw_executable,
     )
