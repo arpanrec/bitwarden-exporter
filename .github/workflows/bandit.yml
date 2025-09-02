@@ -14,6 +14,10 @@ concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
 
+env:
+    UV_MANAGED_PYTHON: "true"
+    UV_LOCKED: "true"
+
 jobs:
     bandit:
         runs-on: ubuntu-latest
@@ -21,7 +25,7 @@ jobs:
         strategy:
             fail-fast: false
             matrix:
-                python-version: ["3.10", "3.11", "3.12", "3.13"]
+                python-version: ["3.10.18", "3.11.13", "3.12.11", "3.13.7"]
         steps:
             - name: Checkout
               uses: actions/checkout@v4.2.2
@@ -38,8 +42,12 @@ jobs:
 
             - name: Install dependencies
               run: |+
-                  uv run --python ${{ matrix.python-version }} --managed-python python --version
-                  uv sync --python ${{ matrix.python-version }} --managed-python --extra dev
+                  uv run python --version
+                  uv sync --extra dev
+              env:
+                  UV_PYTHON: ${{ matrix.python-version }}
 
             - name: Analyzing the code with bandit
-              run: uv run --python ${{ matrix.python-version }} --managed-python bandit -r $(git ls-files '*.py')
+              run: uv run bandit -r $(git ls-files '*.py')
+              env:
+                  UV_PYTHON: ${{ matrix.python-version }}

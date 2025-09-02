@@ -3,6 +3,10 @@ name: Release
 "on":
     push:
 
+env:
+    UV_MANAGED_PYTHON: "true"
+    UV_PYTHON: "3.13.7"
+
 jobs:
     release:
         name: release
@@ -34,16 +38,16 @@ jobs:
               uses: astral-sh/setup-uv@v6.6.0
               with:
                   version: "0.8.14"
-                  python-version: "3.10"
+                  python-version: "3.13.7"
                   enable-cache: true
-                  cache-suffix: python-3.10
+                  cache-suffix: python-3.13.7
                   cache-dependency-glob: |
                       **/uv.lock
 
             - name: Install dependencies
               run: |+
-                  uv run --python 3.10 --managed-python python --version
-                  uv sync --python 3.10 --managed-python
+                  uv run python --version
+                  uv sync --locked
 
             - name: Install node dependencies
               run: |+
