@@ -20,7 +20,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List
 
 from . import BITWARDEN_SETTINGS, BitwardenException
-from .bw_models import BwCollection, BwFolder, BwItem, BwOrganization, BwItemAttachment
+from .bw_models import BwCollection, BwFolder, BwItem, BwItemAttachment, BwOrganization
 from .cli import bw_exec, download_file
 from .keepass import KeePassStorage
 
@@ -117,7 +117,7 @@ def main() -> None:  # pylint: disable=too-many-locals
         if bw_item.sshKey:
             LOGGER.debug("Processing SSH Key Item %s", bw_item.name)
 
-            download_location=os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id)
+            download_location = os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id)
             parent_dir = os.path.dirname(download_location)
             if not os.path.exists(parent_dir):
                 os.makedirs(parent_dir)
@@ -129,7 +129,7 @@ def main() -> None:  # pylint: disable=too-many-locals
                 size="",
                 sizeName="",
                 url="",
-                local_file_path=os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id, epoch_id)
+                local_file_path=os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id, epoch_id),
             )
             with open(attachment_priv_key.local_file_path, "w", encoding="utf-8") as ssh_priv_file:
                 ssh_priv_file.write(bw_item.sshKey.privateKey)
@@ -141,7 +141,7 @@ def main() -> None:  # pylint: disable=too-many-locals
                 size="",
                 sizeName="",
                 url="",
-                local_file_path=os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id, epoch_id + "-pub")
+                local_file_path=os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id, epoch_id + "-pub"),
             )
             with open(attachment_pub_key.local_file_path, "w", encoding="utf-8") as ssh_pub_file:
                 ssh_pub_file.write(bw_item.sshKey.publicKey)
