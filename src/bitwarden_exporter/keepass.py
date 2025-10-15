@@ -115,6 +115,11 @@ class KeePassStorage:
             ]
             fido2field = BwField(name="Fido2Credentials", value=json.dumps(fido2credentials_dict, indent=4), type=1)
             bw_item.fields.append(fido2field)
+
+        if bw_item.sshKey:
+            fingerprint = BwField(name="SSHKey fingerprint", value=bw_item.sshKey.keyFingerprint, type=1)
+            bw_item.fields.append(fingerprint)
+
         bw_item.fields += self.__add_uri(entry, bw_item)
         self.__add_fields(entry, bw_item)
         self.__add_attachment(entry, bw_item)

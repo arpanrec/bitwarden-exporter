@@ -16,10 +16,11 @@ Raises:
 import json
 import logging
 import os.path
+from datetime import datetime, timezone
 from typing import Any, Dict, List
 
 from . import BITWARDEN_SETTINGS, BitwardenException
-from .bw_models import BwCollection, BwFolder, BwItem, BwOrganization
+from .bw_models import BwCollection, BwFolder, BwItem, BwOrganization, BwItemAttachment
 from .cli import bw_exec, download_file
 from .keepass import KeePassStorage
 
@@ -112,6 +113,33 @@ def main() -> None:  # pylint: disable=too-many-locals
                     attachment.local_file_path,
                 )
                 download_file(bw_item.id, attachment.id, attachment.local_file_path)
+
+        if bw_item.sshKey:
+            LOGGER.debug("Processing SSH Key Item %s", bw_item.name)
+            epoch_id = str(datetime.now(timezone.utc).timestamp())
+            attachment_priv_key = BwItemAttachment(
+                id=epoch_id,
+                fileName="id_key",
+                size="",
+                sizeName="",
+                url="",
+                local_file_path=os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id, epoch_id)
+            )
+            with open(attachment_priv_key.local_file_path, "w", encoding="utf-8") as ssh_priv_file:
+                ssh_priv_file.write(bw_item.sshKey.privateKey)
+            bw_item.attachments.append(attachment_priv_key)
+
+            attachment_pub_key = BwItemAttachment(
+                id=epoch_id + "-pub",
+                fileName="id_key.pub",
+                size="",
+                sizeName="",
+                url="",
+                local_file_path=os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id, epoch_id + "-pub")
+            )
+            with open(attachment_pub_key.local_file_path, "w", encoding="utf-8") as ssh_pub_file:
+                ssh_pub_file.write(bw_item.sshKey.publicKey)
+            bw_item.attachments.append(attachment_pub_key)
 
         if bw_item.organizationId and not bw_item.folderId:
             add_items_to_organization(bw_organizations, bw_item)
