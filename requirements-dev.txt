@@ -5,21 +5,19 @@ annotated-types==0.7.0
     # via pydantic
 argon2-cffi==25.1.0
     # via pykeepass
-argon2-cffi-bindings==21.2.0 ; python_full_version >= '3.14'
+argon2-cffi-bindings==25.1.0
     # via argon2-cffi
-argon2-cffi-bindings==25.1.0 ; python_full_version < '3.14'
-    # via argon2-cffi
-astroid==3.3.11
+astroid==4.0.1
     # via pylint
 bandit==1.8.6
     # via bitwarden-exporter
-black==25.1.0
+black==25.9.0
     # via bitwarden-exporter
 cachier==4.1.0
     # via bitwarden-exporter
-cffi==1.17.1
+cffi==2.0.0
     # via argon2-cffi-bindings
-click==8.2.1
+click==8.3.0
     # via black
 colorama==0.4.6 ; sys_platform == 'win32'
     # via
@@ -34,11 +32,11 @@ gnupg==2.3.1
     # via bitwarden-exporter
 greenlet==3.2.4 ; platform_python_implementation != 'PyPy'
     # via pynvim
-isort==6.0.1
+isort==7.0.0
     # via
     #   bitwarden-exporter
     #   pylint
-lxml==6.0.1
+lxml==6.0.2
     # via pykeepass
 markdown-it-py==4.0.0
     # via rich
@@ -46,9 +44,9 @@ mccabe==0.7.0
     # via pylint
 mdurl==0.1.2
     # via markdown-it-py
-msgpack==1.1.1
+msgpack==1.1.2
     # via pynvim
-mypy==1.17.1
+mypy==1.18.2
     # via bitwarden-exporter
 mypy-extensions==1.1.0
     # via
@@ -66,21 +64,21 @@ pathspec==0.12.1
     # via
     #   black
     #   mypy
-platformdirs==4.4.0
+platformdirs==4.5.0
     # via
     #   black
     #   pylint
 portalocker==3.2.0
     # via cachier
-psutil==7.0.0
+psutil==7.1.0
     # via gnupg
-pycparser==2.22
+pycparser==2.23 ; implementation_name != 'PyPy'
     # via cffi
 pycryptodomex==3.23.0
     # via pykeepass
-pydantic==2.11.7
+pydantic==2.12.2
     # via bitwarden-exporter
-pydantic-core==2.33.2
+pydantic-core==2.41.4
     # via pydantic
 pyfiglet==1.0.4
     # via bitwarden-exporter
@@ -88,32 +86,34 @@ pygments==2.19.2
     # via rich
 pykeepass==4.1.1.post1
     # via bitwarden-exporter
-pylint==3.3.8
+pylint==4.0.1
     # via bitwarden-exporter
-pynvim==0.5.2
+pynvim==0.6.0
     # via neovim
 pyotp==2.9.0
     # via pykeepass
-pyright==1.1.404
+pyright==1.1.406
     # via bitwarden-exporter
+pytokens==0.2.0
+    # via black
 pywin32==311 ; sys_platform == 'win32'
     # via portalocker
-pyyaml==6.0.2
+pyyaml==6.0.3
     # via bandit
-rich==14.1.0
+rich==14.2.0
     # via bandit
 stevedore==5.5.0
     # via bandit
-tomli==2.2.1 ; python_full_version < '3.11'
+tomli==2.3.0 ; python_full_version < '3.11'
     # via
     #   black
     #   mypy
     #   pylint
 tomlkit==0.13.3
     # via pylint
-types-pyyaml==6.0.12.20250822
+types-pyyaml==6.0.12.20250915
     # via bitwarden-exporter
-types-requests==2.32.4.20250809
+types-requests==2.32.4.20250913
     # via bitwarden-exporter
 typing-extensions==4.15.0
     # via
@@ -125,7 +125,7 @@ typing-extensions==4.15.0
     #   pynvim
     #   pyright
     #   typing-inspection
-typing-inspection==0.4.1
+typing-inspection==0.4.2
     # via pydantic
 urllib3==2.5.0
     # via types-requests
