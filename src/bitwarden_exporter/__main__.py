@@ -118,9 +118,8 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
             LOGGER.debug("Processing SSH Key Item %s", bw_item.name)
 
             download_location = os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id)
-            parent_dir = os.path.dirname(download_location)
-            if not os.path.exists(parent_dir):
-                os.makedirs(parent_dir)
+            if not os.path.exists(download_location):
+                os.makedirs(download_location)
 
             epoch_id = str(datetime.now(timezone.utc).timestamp())
             attachment_priv_key = BwItemAttachment(
