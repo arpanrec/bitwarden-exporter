@@ -10,16 +10,17 @@ Functions:
           collections, items, and folders from the Bitwarden vault.
 
 Raises:
-    BitwardenException: If there is an error executing a Bitwarden CLI command or if the vault is not unlocked.
+    BitwardenException: If there is an error, executing a Bitwarden CLI command, or if the vault is not unlocked.
 """
 
 import json
 import logging
 import os.path
+from datetime import datetime, timezone
 from typing import Any, Dict, List
 
 from . import BITWARDEN_SETTINGS, BitwardenException
-from .bw_models import BwCollection, BwFolder, BwItem, BwOrganization
+from .bw_models import BwCollection, BwFolder, BwItem, BwItemAttachment, BwOrganization
 from .cli import bw_exec, download_file
 from .keepass import KeePassStorage
 
@@ -60,7 +61,7 @@ def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_it
         raise BitwardenException(f"Item {bw_item.name} belongs to multiple collections, but duplicates are not allowed")
 
 
-def main() -> None:  # pylint: disable=too-many-locals
+def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
     """
     Main function that handles the export process, including fetching organizations,
     """
@@ -112,6 +113,38 @@ def main() -> None:  # pylint: disable=too-many-locals
                     attachment.local_file_path,
                 )
                 download_file(bw_item.id, attachment.id, attachment.local_file_path)
+
+        if bw_item.sshKey:
+            LOGGER.debug("Processing SSH Key Item %s", bw_item.name)
+
+            download_location = os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id)
+            if not os.path.exists(download_location):
+                os.makedirs(download_location)
+
+            epoch_id = str(datetime.now(timezone.utc).timestamp())
+            attachment_priv_key = BwItemAttachment(
+                id=epoch_id,
+                fileName="id_key",
+                size="",
+                sizeName="",
+                url="",
+                local_file_path=os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id, epoch_id),
+            )
+            with open(attachment_priv_key.local_file_path, "w", encoding="utf-8") as ssh_priv_file:
+                ssh_priv_file.write(bw_item.sshKey.privateKey)
+            bw_item.attachments.append(attachment_priv_key)
+
+            attachment_pub_key = BwItemAttachment(
+                id=epoch_id + "-pub",
+                fileName="id_key.pub",
+                size="",
+                sizeName="",
+                url="",
+                local_file_path=os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id, epoch_id + "-pub"),
+            )
+            with open(attachment_pub_key.local_file_path, "w", encoding="utf-8") as ssh_pub_file:
+                ssh_pub_file.write(bw_item.sshKey.publicKey)
+            bw_item.attachments.append(attachment_pub_key)
 
         if bw_item.organizationId and not bw_item.folderId:
             add_items_to_organization(bw_organizations, bw_item)

@@ -15,6 +15,8 @@ import os.path
 import subprocess  # nosec B404
 from typing import Dict, List, Optional
 
+from . import BITWARDEN_SETTINGS
+
 LOGGER = logging.getLogger(__name__)
 
 
@@ -39,7 +41,7 @@ def bw_exec(
     """
     Executes a Bitwarden CLI command and returns the output as a string.
     """
-    cmd = ["bw"] + cmd
+    cmd = [BITWARDEN_SETTINGS.bw_executable] + cmd
 
     if is_raw:
         cmd.append("--raw")

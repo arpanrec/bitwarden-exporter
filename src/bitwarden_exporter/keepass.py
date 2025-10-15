@@ -1,5 +1,5 @@
 """
-Writes the given data to a file at the specified path.
+Convert Bitwarden data to KeePass format.
 """
 
 import json
@@ -7,7 +7,7 @@ import logging
 import os
 import urllib.parse
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Optional, Type, Union
 
 from pykeepass import PyKeePass, create_database  # type: ignore
 from pykeepass.entry import Entry  # type: ignore
@@ -67,7 +67,7 @@ class KeePassStorage:
 
     def __add_group_recursive(self, group_path: str, parent_group: Optional[Group] = None) -> Group:
         """
-        Recursively add group to Keepass
+        Recursively add a group to Keepass
         """
         if not parent_group:
             parent_group = self.__py_kee_pass.root_group
@@ -100,7 +100,7 @@ class KeePassStorage:
         """
         Add an entry to Keepass
         """
-        entry: Entry = self.__py_kee_pass.add_entry(
+        entry: Union[Entry | Group] = self.__py_kee_pass.add_entry(
             destination_group=group,
             title=bw_item.name,
             username="" if (not bw_item.login) or (not bw_item.login.username) else bw_item.login.username,
@@ -115,6 +115,11 @@ class KeePassStorage:
             ]
             fido2field = BwField(name="Fido2Credentials", value=json.dumps(fido2credentials_dict, indent=4), type=1)
             bw_item.fields.append(fido2field)
+
+        if bw_item.sshKey:
+            fingerprint = BwField(name="SSHKey fingerprint", value=bw_item.sshKey.keyFingerprint, type=1)
+            bw_item.fields.append(fingerprint)
+
         bw_item.fields += self.__add_uri(entry, bw_item)
         self.__add_fields(entry, bw_item)
         self.__add_attachment(entry, bw_item)
@@ -234,7 +239,7 @@ class KeePassStorage:
         for attachment in item.attachments:
             LOGGER.info("%s:: Adding Attachment to keepass %s", item.name, attachment.fileName)
             with open(attachment.local_file_path, "rb") as file_attach:
-                binary_id = self.__py_kee_pass.add_binary(data=file_attach.read(), protected=False, compressed=False)
+                binary_id = self.__py_kee_pass.add_binary(data=file_attach.read(), protected=True, compressed=False)
                 entry.add_attachment(binary_id, attachment.fileName)
 
     def process_organizations(self, bw_organizations: Dict[str, BwOrganization]) -> None:
@@ -303,7 +308,7 @@ class KeePassStorage:
         """
         Function to write to Keepass
         """
-        entry: Entry = self.__py_kee_pass.add_entry(
+        entry: Union[Entry | Group] = self.__py_kee_pass.add_entry(
             destination_group=self.__py_kee_pass.root_group,
             title="Bitwarden Export",
             username="",
@@ -311,6 +316,6 @@ class KeePassStorage:
         )
         for key, value in raw_items.items():
             binary_id = self.__py_kee_pass.add_binary(
-                data=json.dumps(value, indent=4).encode(), protected=False, compressed=False
+                data=json.dumps(value, indent=4).encode(), protected=True, compressed=False
             )
             entry.add_attachment(binary_id, key)
