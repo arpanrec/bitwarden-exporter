@@ -28,7 +28,7 @@ This allows you to take a whole backup of your bitwarden vault, including organi
 pipx install bitwarden-exporter
 ```
 
-### Run with [pipx](https://github.com/pypa/pipx).
+### Run with [uvx](https://docs.astral.sh/uv/guides/tools/).
 
 ```bash
 uvx bitwarden-exporter
