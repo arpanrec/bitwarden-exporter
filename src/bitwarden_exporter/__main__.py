@@ -10,7 +10,7 @@ Functions:
           collections, items, and folders from the Bitwarden vault.
 
 Raises:
-    BitwardenException: If there is an error executing a Bitwarden CLI command or if the vault is not unlocked.
+    BitwardenException: If there is an error, executing a Bitwarden CLI command, or if the vault is not unlocked.
 """
 
 import json
