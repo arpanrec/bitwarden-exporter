@@ -18,20 +18,23 @@ Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for e
 
 This allows you to take a whole backup of your bitwarden vault, including organizations where you don't have access for admin/owner.
 
-## Prerequisites
+### Prerequisites
 
 - [Bitwarden CLI](https://bitwarden.com/help/article/cli/#download-and-install)
-- [python-poetry](https://python-poetry.org/docs/#installation)
 
-## Installation
-
-Install with [pipx](https://github.com/pypa/pipx).
+### Install with [pipx](https://github.com/pypa/pipx).
 
 ```bash
 pipx install bitwarden-exporter
 ```
 
-## Options
+### Run with [pipx](https://github.com/pypa/pipx).
+
+```bash
+uvx bitwarden-exporter
+```
+
+### Options
 
 ```bash
 bitwarden-exporter --help
@@ -55,9 +58,10 @@ bitwarden-exporter --help
 
 ## Roadmap
 
-Make a cloud ready option for bitwarden zero touch backup
-
-- Upload to cloud storage.
+- Export Card Type.
+- Export Identity Type.
+- Make a cloud-ready option for bitwarden zero-touch backup, Upload to cloud storage.
+- Restore back to bitwarden.
 
 ## Credits
 
