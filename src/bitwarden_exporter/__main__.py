@@ -61,7 +61,7 @@ def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_it
         raise BitwardenException(f"Item {bw_item.name} belongs to multiple collections, but duplicates are not allowed")
 
 
-def main() -> None:  # pylint: disable=too-many-locals
+def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
     """
     Main function that handles the export process, including fetching organizations,
     """
