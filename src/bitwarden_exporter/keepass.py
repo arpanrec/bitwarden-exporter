@@ -120,6 +120,9 @@ class KeePassStorage:
             fingerprint = BwField(name="SSHKey fingerprint", value=bw_item.sshKey.keyFingerprint, type=1)
             bw_item.fields.append(fingerprint)
 
+        card_fields = self.__add_card_details_to_item_fields(bw_item)
+        bw_item.fields.extend(card_fields)
+
         bw_item.fields += self.__add_uri(entry, bw_item)
         self.__add_fields(entry, bw_item)
         self.__add_attachment(entry, bw_item)
@@ -129,6 +132,21 @@ class KeePassStorage:
             entry.notes = bw_item.notes
 
         return entry
+
+    @staticmethod
+    def __add_card_details_to_item_fields(bw_item: BwItem) -> List[BwField]:
+        """
+        Add Card to Keepass.
+        """
+        if bw_item.card:
+            card_holder_name = BwField(name="Card-cardholderName", value=bw_item.card.cardholderName or "", type=1)
+            card_brand = BwField(name="Card-brand", value=bw_item.card.brand, type=1)
+            card_number = BwField(name="Card-number", value=bw_item.card.number or "", type=1)
+            card_exp_month = BwField(name="Card-expMonth", value=bw_item.card.expMonth or "", type=1)
+            card_exp_year = BwField(name="Card-expYear", value=bw_item.card.expYear or "", type=1)
+            card_code = BwField(name="Card-code", value=bw_item.card.code or "", type=1)
+            return [card_holder_name, card_brand, card_number, card_exp_month, card_exp_year, card_code]
+        return []
 
     @staticmethod
     def __add_uri(entry: Entry, bw_item: BwItem) -> List[BwField]:

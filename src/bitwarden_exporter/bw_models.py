@@ -49,6 +49,17 @@ class BwItemLoginUri(BaseModel):
     match: Optional[int] = None
     uri: str
 
+class BwCard(BaseModel):
+    """
+    Bitwarden Card Model
+    """
+
+    cardholderName: Optional[str] = None
+    brand: str
+    number: Optional[str] = None
+    expMonth: Optional[str] = None
+    expYear: Optional[str] = None
+    code: Optional[str] = None
 
 class BwItemLogin(BaseModel):
     """
@@ -129,6 +140,7 @@ class BwItem(BaseModel):
     collectionIds: List[str] = []
     attachments: List[BwItemAttachment] = []
     fields: List[BwField] = []
+    card: Optional[BwCard] = None
 
 
 class BwCollection(BaseModel):
