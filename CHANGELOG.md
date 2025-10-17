@@ -1,6 +1,6 @@
-# [1.4.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.3.5...1.4.0) (2025-10-15)
+# [1.5.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.4.0...1.5.0) (2025-10-17)
 
 
 ### Features
 
-* Add SSH key support and improve documentation ([0357960](https://github.com/arpanrec/bitwarden-exporter/commit/0357960f3dfb43ab91ac6687f271627c1053a596))
+* Add Card and Identity type support ([fd73d12](https://github.com/arpanrec/bitwarden-exporter/commit/fd73d120af364a827960f3656b1692d7794e9277))
