@@ -22,16 +22,16 @@ This allows you to take a whole backup of your bitwarden vault, including organi
 
 - [Bitwarden CLI](https://bitwarden.com/help/article/cli/#download-and-install)
 
+### (Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/).
+
+```bash
+uvx bitwarden-exporter
+```
+
 ### Install with [pipx](https://github.com/pypa/pipx).
 
 ```bash
 pipx install bitwarden-exporter
-```
-
-### Run with [uvx](https://docs.astral.sh/uv/guides/tools/).
-
-```bash
-uvx bitwarden-exporter
 ```
 
 ### Options
@@ -58,8 +58,6 @@ bitwarden-exporter --help
 
 ## Roadmap
 
-- Export Card Type.
-- Export Identity Type.
 - Make a cloud-ready option for bitwarden zero-touch backup, Upload to cloud storage.
 - Restore back to bitwarden.
 
