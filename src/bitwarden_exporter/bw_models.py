@@ -49,6 +49,32 @@ class BwItemLoginUri(BaseModel):
     match: Optional[int] = None
     uri: str
 
+
+class BwIdentity(BaseModel):
+    """
+    Bitwarden Identity Model
+    """
+
+    title: Optional[str] = None
+    firstName: Optional[str] = None
+    middleName: Optional[str] = None
+    lastName: Optional[str] = None
+    address1: Optional[str] = None
+    address2: Optional[str] = None
+    address3: Optional[str] = None
+    city: Optional[str] = None
+    state: Optional[str] = None
+    postalCode: Optional[str] = None
+    country: Optional[str] = None
+    company: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    ssn: Optional[str] = None
+    username: Optional[str] = None
+    passportNumber: Optional[str] = None
+    licenseNumber: Optional[str] = None
+
+
 class BwCard(BaseModel):
     """
     Bitwarden Card Model
@@ -60,6 +86,7 @@ class BwCard(BaseModel):
     expMonth: Optional[str] = None
     expYear: Optional[str] = None
     code: Optional[str] = None
+
 
 class BwItemLogin(BaseModel):
     """
@@ -141,6 +168,7 @@ class BwItem(BaseModel):
     attachments: List[BwItemAttachment] = []
     fields: List[BwField] = []
     card: Optional[BwCard] = None
+    identity: Optional[BwIdentity] = None
 
 
 class BwCollection(BaseModel):

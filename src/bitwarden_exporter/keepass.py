@@ -123,6 +123,9 @@ class KeePassStorage:
         card_fields = self.__add_card_details_to_item_fields(bw_item)
         bw_item.fields.extend(card_fields)
 
+        identity_fields = self.__add_identity_to_item_fields(bw_item)
+        bw_item.fields.extend(identity_fields)
+
         bw_item.fields += self.__add_uri(entry, bw_item)
         self.__add_fields(entry, bw_item)
         self.__add_attachment(entry, bw_item)
@@ -146,6 +149,19 @@ class KeePassStorage:
             card_exp_year = BwField(name="Card-expYear", value=bw_item.card.expYear or "", type=1)
             card_code = BwField(name="Card-code", value=bw_item.card.code or "", type=1)
             return [card_holder_name, card_brand, card_number, card_exp_month, card_exp_year, card_code]
+        return []
+
+    @staticmethod
+    def __add_identity_to_item_fields(bw_item: BwItem) -> List[BwField]:
+        """
+        Add Identity to Keepass.
+        """
+        if bw_item.identity:
+            identity_fields = []
+            for key, value in bw_item.identity.model_dump().items():
+                if value:
+                    identity_fields.append(BwField(name=f"identity-{key}", value=value, type=1))
+            return identity_fields
         return []
 
     @staticmethod
