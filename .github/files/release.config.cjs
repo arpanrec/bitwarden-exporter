@@ -53,8 +53,8 @@ module.exports = {
             '@semantic-release/github',
             {
                 assets: [
-                    { path: 'dist/*.whl', label: 'Wheel' },
-                    { path: 'dist/*.tar.gz', label: 'Source' },
+                    { path: 'dist/bitwarden_exporter-*-py3-none-any.whl', label: 'bitwarden_exporter-py3-none-any.whl' },
+                    { path: 'dist/bitwarden_exporter-*.tar.gz', label: 'bitwarden_exporter.tar.gz' },
                 ],
             },
         ],

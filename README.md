@@ -1,8 +1,39 @@
 # Bitwarden Exporter
 
-Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for exporting bitwarden vaults with **attachments**.
+Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for exporting bitwarden vaults.
 
-This allows you to take a whole backup of your bitwarden vault, including organizations where you don't have access for admin/owner.
+## Features
+
+- Export your entire Bitwarden vault to a KeePass (.kdbx) database using the official Bitwarden CLI.
+- Preserves structure and grouping:
+  - Personal items are placed under a top-level "My Vault" group and organized by your Bitwarden folders.
+  - Organization items are grouped by Organization → Collection, mirroring Bitwarden.
+  - Items without a folder/collection are added to the "My Vault" root.
+- Rich item data mapping to KeePass entries:
+  - Title, Username, Password, Notes.
+  - URIs (primary URL mapped to entry URL; additional URIs stored as custom properties).
+  - TOTP/OTP codes are added to the entry so they can be used from KeePass.
+  - Custom fields (text/hidden/boolean and linked types) are preserved as KeePass custom properties.
+  - Identity and Card details (name, address, card brand/expiry, etc.) are included as custom properties.
+- Attachments and SSH keys:
+  - All Bitwarden attachments are downloaded and attached to the corresponding KeePass entry.
+  - If duplicate attachment names occur, they are de-duplicated automatically (e.g., by appending -1).
+  - Items with SSH keys have their private/public keys materialized as files and attached to the entry.
+- Built-in Bitwarden JSON snapshot:
+  - A "Bitwarden Export" entry is created at the database root with JSON attachments of status, organizations, collections, and items for reference/auditing.
+- Duplicate handling for items in multiple collections:
+  - By default, items that belong to multiple collections are written only to the first collection (with a warning).
+  - Use `--allow-duplicates` to place the item in all of its collections.
+- Safe temporary workspace:
+  - Attachments and generated SSH key files are stored in a configurable temporary directory during export.
+  - The temporary directory is automatically removed after export unless `--debug` is used.
+- Configurable and script-friendly CLI:
+  - Choose an output path for the KDBX and supply the database password directly or via a file path.
+  - Set a custom Bitwarden CLI executable path with `--bw-executable`.
+  - Verbose debug logging with `--debug` (may log sensitive data; keeps temp files for troubleshooting).
+- Prerequisites and safeguards:
+  - Requires the Bitwarden CLI (`bw`) and an unlocked vault; the exporter will error if the vault is locked.
+
 
 ## Prerequisites
 
@@ -11,19 +42,19 @@ This allows you to take a whole backup of your bitwarden vault, including organi
 ### (Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/)
 
 ```bash
-uvx bitwarden-exporter==VERSION --help
+BW_SESSION=<session token> uvx bitwarden-exporter==VERSION --help
 ```
 
 or
 
 ```bash
-uvx bitwarden-exporter --help
+BW_SESSION=<session token> uvx bitwarden-exporter --help
 ```
 
 ### Install with [pipx](https://github.com/pypa/pipx)
 
 ```bash
-pipx install bitwarden-exporter
+BW_SESSION=<session token> pipx install bitwarden-exporter
 ```
 
 ### Options
