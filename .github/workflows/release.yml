@@ -10,7 +10,6 @@ permissions:
 env:
     UV_MANAGED_PYTHON: "true"
     UV_PYTHON: "3.13.7"
-    UV_LOCKED: "true"
 
 jobs:
     release:
