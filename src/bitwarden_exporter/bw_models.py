@@ -6,6 +6,8 @@ Classes:
     SSHKey: Represents an SSH key.
     BwItemLoginUri: Represents a URI associated with a Bitwarden login item.
     BwItemLogin: Represents a Bitwarden login item.
+    BWCard: Represents a credit card associated with a Bitwarden item.
+    BwIdentity: Represents an identity associated with a Bitwarden item.
     BwItemPasswordHistory: Represents the password history of a Bitwarden item.
     BwItemAttachment: Represents an attachment associated with a Bitwarden item.
     BwField: Represents a custom field associated with a Bitwarden item.
