@@ -13,7 +13,7 @@ from .settings import BitwardenExportSettings, get_bitwarden_settings_based_on_a
 BITWARDEN_SETTINGS: BitwardenExportSettings = get_bitwarden_settings_based_on_args()
 
 logging.basicConfig(
-    level=logging.DEBUG if BITWARDEN_SETTINGS.debug else logging.ERROR,
+    level=logging.DEBUG if BITWARDEN_SETTINGS.debug else logging.WARNING,
     format="%(asctime)s - %(levelname)s - %(name)s.%(funcName)s():%(lineno)d:- %(message)s",
     handlers=[logging.StreamHandler(sys.stdout)],
 )
