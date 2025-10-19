@@ -5,8 +5,13 @@ name: Pylint
     push:
         paths:
             - "**.py"
-            - ".github/workflows/pylint.yml"
-            - ".pylint.*"
+            - ".github/workflows/bandit.yml"
+            - "uv.lock"
+            - "pyproject.toml"
+    pull_request:
+        paths:
+            - "**.py"
+            - ".github/workflows/bandit.yml"
             - "uv.lock"
             - "pyproject.toml"
     workflow_dispatch:
@@ -14,6 +19,9 @@ name: Pylint
 concurrency:
     group: ${{ github.workflow }}-${{ github.ref }}
     cancel-in-progress: true
+
+permissions:
+    contents: read
 
 env:
     UV_MANAGED_PYTHON: "true"
@@ -29,12 +37,12 @@ jobs:
         name: pylint
         steps:
             - name: Checkout
-              uses: actions/checkout@v4.2.2
+              uses: actions/checkout@v5.0.0
 
-            - name: Install uv 0.8.14
-              uses: astral-sh/setup-uv@v6.6.0
+            - name: Install uv 0.9.3
+              uses: astral-sh/setup-uv@v7.1.0
               with:
-                  version: 0.8.14
+                  version: "0.9.3"
                   python-version: "${{ matrix.python-version }}"
                   enable-cache: true
                   cache-suffix: python-${{ matrix.python-version }}

@@ -1,5 +1,9 @@
 """
-Convert Bitwarden data to KeePass format.
+Utilities to transform Bitwarden vault data structures into a KeePass (.kdbx) database.
+
+This module contains a thin abstraction (KeePassStorage) over pykeepass that maps Bitwarden
+organizations, collections, folders, and items (including fields, URIs, OTP, SSH keys, and
+attachments) to KeePass groups, entries, custom properties, and binaries.
 """
 
 import json
@@ -21,19 +25,41 @@ LOGGER = logging.getLogger(__name__)
 
 class KeePassStorage:
     """
-    Class to interact with Keepass
+    Adapter that creates and populates a KeePass database using Bitwarden data models.
+
+    This context manager creates a new KDBX database on enter and saves it on exit.
+
+    Attributes:
+        _KeePassStorage__py_kee_pass: Internal PyKeePass instance for DB operations.
+        _KeePassStorage__my_vault_group: Root group under which personal items are added.
     """
 
     __py_kee_pass: PyKeePass
     __my_vault_group: Group
 
     def __init__(self, kdbx_file: str, kdbx_password: str) -> None:
+        """
+        Initialize a new KeePassStorage context.
+
+        Args:
+            kdbx_file: Destination path for the KeePass database file (.kdbx). Must not already exist.
+            kdbx_password: Password used to protect the KeePass database.
+
+        Raises:
+            BitwardenException: If a file already exists at the given kdbx_file path.
+        """
         self.__kdbx_file = os.path.abspath(kdbx_file)
         self.__kdbx_password = kdbx_password
         if os.path.exists(self.__kdbx_file):
             raise BitwardenException(f"KeePass Database already exists at f{self.__kdbx_file}")
 
     def __enter__(self) -> "KeePassStorage":
+        """
+        Create the KeePass database and initial structure.
+
+        Returns:
+            KeePassStorage: The initialized context manager instance.
+        """
         LOGGER.info("Creating Keepass Database: %s", self.__kdbx_file)
         self.__py_kee_pass = create_database(self.__kdbx_file, password=self.__kdbx_password)
 
@@ -52,6 +78,20 @@ class KeePassStorage:
         exc_value: Optional[BaseException],
         traceback: Optional[TracebackType],
     ) -> Optional[bool]:
+        """
+        Save the database and translate exceptions to BitwardenException.
+
+        Args:
+            exc_type: Exception type, if any, raised within the context.
+            exc_value: Exception instance raised within the context.
+            traceback: Traceback object for the exception.
+
+        Returns:
+            bool | None: True to suppress further exception handling if no error occurred; None otherwise.
+
+        Raises:
+            BitwardenException: If saving the database fails, or if an error occurred during processing.
+        """
         try:
             self.__py_kee_pass.save()
             LOGGER.info("Keepass Database Saved")
@@ -214,11 +254,11 @@ class KeePassStorage:
         all_field_names = [] + list(entry.custom_properties.keys())
         for field in item.fields:
             if field.name in all_field_names:
-                LOGGER.warning("%s:: Field with name %s already exists, Adding -1", item.name, field.name)
+                LOGGER.warning('%s: Field with name "%s" already exists, Adding -1', item.name, field.name)
                 field.name = f"{field.name}-1"
                 self.__fix_duplicate_field_names(entry, item)
             if field.name == "otp":
-                LOGGER.warning("%s:: Field with name otp is reserved in keepass, Changing to otp-1", item.name)
+                LOGGER.warning("%s: Field with name otp is reserved in keepass, Changing to otp-1", item.name)
                 field.name = "otp-1"
                 self.__fix_duplicate_field_names(entry, item)
             all_field_names.append(field.name)
@@ -227,7 +267,7 @@ class KeePassStorage:
         """
         Add fields to Keepass
         """
-        LOGGER.info("%s:: Adding Custom Fields to custom_properties", item.name)
+        LOGGER.info("%s: Adding Custom Fields to custom_properties", item.name)
         self.__fix_duplicate_field_names(entry, item)
         for field in item.fields:
             if field.type == 0:
@@ -259,7 +299,9 @@ class KeePassStorage:
         all_attachment_names = [] + [attachment.fileName for attachment in entry.attachments]
         for attachment in item.attachments:
             if attachment.fileName in all_attachment_names:
-                LOGGER.warning("%s:: Attachment with name %s already exists, Adding -1", item.name, attachment.fileName)
+                LOGGER.warning(
+                    '%s: Attachment with name "%s" already exists, Adding -1', item.name, attachment.fileName
+                )
                 attachment.fileName = f"{attachment.fileName}-1"
                 self.__fix_duplicate_attachment_names(entry, item)
             all_attachment_names.append(attachment.fileName)
@@ -268,10 +310,10 @@ class KeePassStorage:
         """
         Add an attachment to Keepass
         """
-        LOGGER.info("%s:: Adding Attachments", item.name)
+        LOGGER.info("%s: Adding Attachments", item.name)
         self.__fix_duplicate_attachment_names(entry, item)
         for attachment in item.attachments:
-            LOGGER.info("%s:: Adding Attachment to keepass %s", item.name, attachment.fileName)
+            LOGGER.info('%s: Adding Attachment to keepass "%s"', item.name, attachment.fileName)
             with open(attachment.local_file_path, "rb") as file_attach:
                 binary_id = self.__py_kee_pass.add_binary(data=file_attach.read(), protected=True, compressed=False)
                 entry.add_attachment(binary_id, attachment.fileName)
