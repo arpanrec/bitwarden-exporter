@@ -26,20 +26,38 @@ from pydantic import BaseModel
 
 class BitwardenExportSettings(BaseModel):
     """
-    Settings Model
+    Configuration for the Bitwarden Exporter CLI.
+
+    Attributes:
+        export_location: Absolute or relative path to the output KeePass (.kdbx) file.
+        export_password: KeePass database password as plain text (read from file if a path is supplied).
+        allow_duplicates: If True, items that belong to multiple collections will be duplicated across them.
+        tmp_dir: Directory used to store temporary, sensitive artifacts (attachments, SSH keys) during export.
+        debug: Enables verbose logging and keeps the temporary directory after export for troubleshooting.
+        bw_executable: Path or command name of the Bitwarden CLI executable (defaults to "bw").
     """
 
     export_location: str
     export_password: str
     allow_duplicates: bool
     tmp_dir: str
-    verbose: bool
+    debug: bool
     bw_executable: str = "bw"
 
 
 def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     """
-    Manage Input Arguments for Bitwarden Exporter
+    Parse CLI arguments and build a BitwardenExportSettings instance.
+
+    Behavior:
+    - If --export-password points to an existing file, its contents are read and used as the password.
+    - A temporary directory path and other flags can be configured with switches.
+
+    Returns:
+        BitwardenExportSettings: Parsed and validated settings for the current run.
+
+    Raises:
+        SystemExit: If required arguments are missing (handled by argparse).
     """
 
     parser = argparse.ArgumentParser()
@@ -55,15 +73,8 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     parser.add_argument(
         "-p",
         "--export-password",
-        help="Bitwarden Export Password, It is recommended to use a password file",
-        required=False,
-    )
-
-    parser.add_argument(
-        "-pf",
-        "--export-password-file",
-        help="Bitwarden Export Password File, Mutually Exclusive with --export-password",
-        required=False,
+        help="Bitwarden Export Password or Path to Password File.",
+        required=True,
     )
 
     parser.add_argument(
@@ -89,23 +100,21 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     )
 
     parser.add_argument(
-        "--verbose",
+        "--debug",
         help="Enable Verbose Logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,"
-        " Default: --no-verbose",
+        "This will not delete the temporary directory after the export,"
+        " Default: --no-debug",
         action=argparse.BooleanOptionalAction,
         default=False,
     )
     print(pyfiglet.figlet_format("Bitwarden Exporter"))
     args = parser.parse_args()
 
-    if args.export_password is None and args.export_password_file is None:
-        parser.error("Please provide either --export-password or --export-password-file")
+    if args.export_password is None:
+        parser.error("Please provide --export-password")
 
-    if args.export_password is not None and args.export_password_file is not None:
-        parser.error("Please provide either --export-password or --export-password-file, not both")
-
-    if args.export_password_file is not None:
-        with open(args.export_password_file, "r", encoding="utf-8") as file:
+    if os.path.isfile(args.export_password):
+        with open(args.export_password, "r", encoding="utf-8") as file:
             args.export_password = file.read().strip()
 
     return BitwardenExportSettings(
@@ -113,6 +122,6 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         export_password=args.export_password,
         allow_duplicates=args.allow_duplicates,
         tmp_dir=args.tmp_dir,
-        verbose=args.verbose,
+        debug=args.debug,
         bw_executable=args.bw_executable,
     )

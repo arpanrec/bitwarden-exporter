@@ -25,7 +25,7 @@ pycparser==2.23 ; implementation_name != 'PyPy'
     # via cffi
 pycryptodomex==3.23.0
     # via pykeepass
-pydantic==2.12.2
+pydantic==2.12.3
     # via bitwarden-exporter
 pydantic-core==2.41.4
     # via pydantic
