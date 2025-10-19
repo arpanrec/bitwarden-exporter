@@ -8,6 +8,12 @@ name: "Bandit: A security linter from PyCQA"
             - ".github/workflows/bandit.yml"
             - "uv.lock"
             - "pyproject.toml"
+    pull_request:
+        paths:
+            - "**.py"
+            - ".github/workflows/bandit.yml"
+            - "uv.lock"
+            - "pyproject.toml"
     workflow_dispatch:
 
 concurrency:

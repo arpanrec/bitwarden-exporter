@@ -5,8 +5,13 @@ name: Pylint
     push:
         paths:
             - "**.py"
-            - ".github/workflows/pylint.yml"
-            - ".pylint.*"
+            - ".github/workflows/bandit.yml"
+            - "uv.lock"
+            - "pyproject.toml"
+    pull_request:
+        paths:
+            - "**.py"
+            - ".github/workflows/bandit.yml"
             - "uv.lock"
             - "pyproject.toml"
     workflow_dispatch:

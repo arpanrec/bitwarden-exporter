@@ -5,7 +5,13 @@ name: isort
     push:
         paths:
             - "**.py"
-            - ".github/workflows/isort.yml"
+            - ".github/workflows/bandit.yml"
+            - "uv.lock"
+            - "pyproject.toml"
+    pull_request:
+        paths:
+            - "**.py"
+            - ".github/workflows/bandit.yml"
             - "uv.lock"
             - "pyproject.toml"
     workflow_dispatch:
