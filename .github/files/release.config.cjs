@@ -52,7 +52,10 @@ module.exports = {
         [
             '@semantic-release/github',
             {
-                assets: [{ path: 'dist/*.whl', label: 'Wheel', path: 'dist/*.tar.gz', label: 'Source' }],
+                assets: [
+                    { path: 'dist/*.whl', label: 'Wheel' },
+                    { path: 'dist/*.tar.gz', label: 'Source' },
+                ],
             },
         ],
     ],
