@@ -162,7 +162,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
         storage.process_no_folder_items(no_folder_items)
         storage.process_bw_exports(raw_items)
 
-    if not BITWARDEN_SETTINGS.verbose:
+    if not BITWARDEN_SETTINGS.debug:
         LOGGER.info("Removing Temporary Directory %s", BITWARDEN_SETTINGS.tmp_dir)
         shutil.rmtree(BITWARDEN_SETTINGS.tmp_dir)
         LOGGER.info("Clearing Bitwarden Cache")
