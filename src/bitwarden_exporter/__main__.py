@@ -16,6 +16,7 @@ Raises:
 import json
 import logging
 import os.path
+import shutil
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
@@ -161,11 +162,10 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
         storage.process_no_folder_items(no_folder_items)
         storage.process_bw_exports(raw_items)
 
-    # if not is_debug():
-    #     LOGGER.info("Removing Temporary Directory %s", args.tmp_dir)
-    #     shutil.rmtree(args.tmp_dir)
-    #     LOGGER.info("Clearing Bitwarden Cache")
-    #     bw_exec.clear_cache()
+    if not BITWARDEN_SETTINGS.verbose:
+        LOGGER.info("Removing Temporary Directory %s", BITWARDEN_SETTINGS.tmp_dir)
+        shutil.rmtree(BITWARDEN_SETTINGS.tmp_dir)
+        LOGGER.info("Clearing Bitwarden Cache")
 
 
 if __name__ == "__main__":

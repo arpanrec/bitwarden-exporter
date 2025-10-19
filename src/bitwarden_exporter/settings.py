@@ -33,7 +33,7 @@ class BitwardenExportSettings(BaseModel):
     export_password: str
     allow_duplicates: bool
     tmp_dir: str
-    verbose: bool
+    debug: bool
     bw_executable: str = "bw"
 
 
@@ -89,9 +89,10 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     )
 
     parser.add_argument(
-        "--verbose",
+        "--debug",
         help="Enable Verbose Logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,"
-        " Default: --no-verbose",
+        "This will not delete the temporary directory after the export,"
+        " Default: --no-debug",
         action=argparse.BooleanOptionalAction,
         default=False,
     )
@@ -113,6 +114,6 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         export_password=args.export_password,
         allow_duplicates=args.allow_duplicates,
         tmp_dir=args.tmp_dir,
-        verbose=args.verbose,
+        debug=args.debug,
         bw_executable=args.bw_executable,
     )

@@ -25,7 +25,7 @@ from pydantic import BaseModel
 
 class BwItemLoginFido2Credentials(BaseModel):
     """
-    Bitwarden Fido2 Credentials Model
+    Bitwarden Fido2 Credentials Model.
     """
 
     credentialId: str
@@ -45,7 +45,7 @@ class BwItemLoginFido2Credentials(BaseModel):
 
 class BwItemLoginUri(BaseModel):
     """
-    Bitwarden Login URI Model
+    Bitwarden Login URI Model.
     """
 
     match: Optional[int] = None
@@ -54,7 +54,7 @@ class BwItemLoginUri(BaseModel):
 
 class BwIdentity(BaseModel):
     """
-    Bitwarden Identity Model
+    Bitwarden Identity Model.
     """
 
     title: Optional[str] = None
@@ -79,7 +79,7 @@ class BwIdentity(BaseModel):
 
 class BwCard(BaseModel):
     """
-    Bitwarden Card Model
+    Bitwarden Card Model.
     """
 
     cardholderName: Optional[str] = None
@@ -92,7 +92,7 @@ class BwCard(BaseModel):
 
 class BwItemLogin(BaseModel):
     """
-    Bitwarden Login Model
+    Bitwarden Login Model.
     """
 
     username: Optional[str] = None
@@ -105,7 +105,7 @@ class BwItemLogin(BaseModel):
 
 class BwItemPasswordHistory(BaseModel):
     """
-    Bitwarden Password History Model
+    Bitwarden Password History Model.
     """
 
     lastUsedDate: str
@@ -114,7 +114,7 @@ class BwItemPasswordHistory(BaseModel):
 
 class BwItemAttachment(BaseModel):
     """
-    Bitwarden Attachment Model
+    Bitwarden Attachment Model.
     """
 
     id: str
@@ -127,7 +127,7 @@ class BwItemAttachment(BaseModel):
 
 class SSHKey(BaseModel):
     """
-    SSH Key Model
+    SSH Key Model.
     """
 
     privateKey: str
@@ -148,7 +148,7 @@ class BwField(BaseModel):
 
 class BwItem(BaseModel):
     """
-    Bitwarden Item Model
+    Bitwarden Item Model.
     """
 
     passwordHistory: Optional[List[BwItemPasswordHistory]] = None
@@ -175,7 +175,7 @@ class BwItem(BaseModel):
 
 class BwCollection(BaseModel):
     """
-    Bitwarden Collection Model
+    Bitwarden Collection Model.
     """
 
     object: str
@@ -188,7 +188,7 @@ class BwCollection(BaseModel):
 
 class BwOrganization(BaseModel):
     """
-    Bitwarden Organization Model
+    Bitwarden Organization Model.
     """
 
     object: str
@@ -202,7 +202,7 @@ class BwOrganization(BaseModel):
 
 class BwFolder(BaseModel):
     """
-    Bitwarden Folder Model
+    Bitwarden Folder Model.
     """
 
     object: str
