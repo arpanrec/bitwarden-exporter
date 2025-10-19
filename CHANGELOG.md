@@ -1,3 +1,16 @@
+# [1.6.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.5.0...1.6.0) (2025-10-19)
+
+
+### Bug Fixes
+
+* improve logging, error handling, and CLI configuration ([5fca95a](https://github.com/arpanrec/bitwarden-exporter/commit/5fca95a912f8d30ed49a7b61b75f270a8fbca7f5))
+* improve logging, error handling, and CLI configuration ([02d098c](https://github.com/arpanrec/bitwarden-exporter/commit/02d098c59975aabc0739bee637139c7b9c14485c))
+
+
+### Features
+
+* improve logging, error handling, and CLI configuration ([4decde5](https://github.com/arpanrec/bitwarden-exporter/commit/4decde534f0ff2130cd39d5e5119de600be27751))
+
 # [1.5.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.4.0...1.5.0) (2025-10-17)
 
 
