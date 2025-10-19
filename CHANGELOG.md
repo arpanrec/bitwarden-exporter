@@ -1,3 +1,10 @@
+## [1.6.1](https://github.com/arpanrec/bitwarden-exporter/compare/1.6.0...1.6.1) (2025-10-19)
+
+
+### Bug Fixes
+
+* expand README with feature details, usage examples, and prerequisites. ([7e67d49](https://github.com/arpanrec/bitwarden-exporter/commit/7e67d49c98c823656c8cbd5866492eda14337691))
+
 # [1.6.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.5.0...1.6.0) (2025-10-19)
 
 
