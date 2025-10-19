@@ -214,11 +214,11 @@ class KeePassStorage:
         all_field_names = [] + list(entry.custom_properties.keys())
         for field in item.fields:
             if field.name in all_field_names:
-                LOGGER.warning("%s:: Field with name %s already exists, Adding -1", item.name, field.name)
+                LOGGER.warning('%s: Field with name "%s" already exists, Adding -1', item.name, field.name)
                 field.name = f"{field.name}-1"
                 self.__fix_duplicate_field_names(entry, item)
             if field.name == "otp":
-                LOGGER.warning("%s:: Field with name otp is reserved in keepass, Changing to otp-1", item.name)
+                LOGGER.warning('%s: Field with name otp is reserved in keepass, Changing to otp-1', item.name)
                 field.name = "otp-1"
                 self.__fix_duplicate_field_names(entry, item)
             all_field_names.append(field.name)
@@ -227,7 +227,7 @@ class KeePassStorage:
         """
         Add fields to Keepass
         """
-        LOGGER.info("%s:: Adding Custom Fields to custom_properties", item.name)
+        LOGGER.info('%s: Adding Custom Fields to custom_properties', item.name)
         self.__fix_duplicate_field_names(entry, item)
         for field in item.fields:
             if field.type == 0:
@@ -259,7 +259,7 @@ class KeePassStorage:
         all_attachment_names = [] + [attachment.fileName for attachment in entry.attachments]
         for attachment in item.attachments:
             if attachment.fileName in all_attachment_names:
-                LOGGER.warning("%s:: Attachment with name %s already exists, Adding -1", item.name, attachment.fileName)
+                LOGGER.warning('%s: Attachment with name "%s" already exists, Adding -1', item.name, attachment.fileName)
                 attachment.fileName = f"{attachment.fileName}-1"
                 self.__fix_duplicate_attachment_names(entry, item)
             all_attachment_names.append(attachment.fileName)
@@ -268,10 +268,10 @@ class KeePassStorage:
         """
         Add an attachment to Keepass
         """
-        LOGGER.info("%s:: Adding Attachments", item.name)
+        LOGGER.info('%s: Adding Attachments', item.name)
         self.__fix_duplicate_attachment_names(entry, item)
         for attachment in item.attachments:
-            LOGGER.info("%s:: Adding Attachment to keepass %s", item.name, attachment.fileName)
+            LOGGER.info('%s: Adding Attachment to keepass "%s"', item.name, attachment.fileName)
             with open(attachment.local_file_path, "rb") as file_attach:
                 binary_id = self.__py_kee_pass.add_binary(data=file_attach.read(), protected=True, compressed=False)
                 entry.add_attachment(binary_id, attachment.fileName)

@@ -2,9 +2,6 @@
 This script interacts with the Bitwarden CLI to export data from a Bitwarden vault.
 
 Functions:
-    bw_exec(cmd: List[str], ret_encoding: str = "UTF-8", env_vars: Optional[Dict[str, str]] = None) -> str:
-        Executes a Bitwarden CLI command and returns the output as a string.
-
     main() -> None:
         Main function that handles the export process, including fetching organizations,
           collections, items, and folders from the Bitwarden vault.
@@ -53,7 +50,7 @@ def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_it
             collection.items[bw_item.id] = bw_item
     elif (len(bw_item.collectionIds) > 1) and (not BITWARDEN_SETTINGS.allow_duplicates):
         LOGGER.warning(
-            "Item: \"%s\" belongs to multiple collections, Just using the first one collection: \"%s\"",
+            'Item: "%s" belongs to multiple collections, Just using the first one collection: "%s"',
             bw_item.name,
             organization.collections[bw_item.collectionIds[0]].name,
         )
