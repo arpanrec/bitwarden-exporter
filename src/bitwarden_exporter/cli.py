@@ -22,7 +22,16 @@ LOGGER = logging.getLogger(__name__)
 
 def download_file(item_id: str, attachment_id: str, download_location: str) -> None:
     """
-    Downloads a file from bitwarden.
+    Download an attachment from Bitwarden to a local path.
+
+    Args:
+        item_id: The Bitwarden item identifier.
+        attachment_id: The attachment identifier within the item.
+        download_location: Absolute or relative path where the file will be saved. Parent
+            directories are created if missing. If the file already exists, the download is skipped.
+
+    Returns:
+        None
     """
     parent_dir = os.path.dirname(download_location)
     if not os.path.exists(parent_dir):
@@ -39,7 +48,19 @@ def bw_exec(
     cmd: List[str], ret_encoding: str = "UTF-8", env_vars: Optional[Dict[str, str]] = None, is_raw: bool = True
 ) -> str:
     """
-    Executes a Bitwarden CLI command and returns the output as a string.
+    Execute the Bitwarden CLI and return stdout.
+
+    Args:
+        cmd: Arguments to pass to the bw executable (e.g., ["list", "items"]).
+        ret_encoding: The character encoding for stdout/stderr decoding.
+        env_vars: Optional environment variables to add/override for this invocation.
+        is_raw: When True, appends --raw to the command to simplify parsing.
+
+    Returns:
+        str: The command's stdout content.
+
+    Raises:
+        ValueError: If the command returns a non-zero exit status.
     """
     cmd = [BITWARDEN_SETTINGS.bw_executable] + cmd
 

@@ -26,7 +26,15 @@ from pydantic import BaseModel
 
 class BitwardenExportSettings(BaseModel):
     """
-    Settings Model
+    Configuration for the Bitwarden Exporter CLI.
+
+    Attributes:
+        export_location: Absolute or relative path to the output KeePass (.kdbx) file.
+        export_password: KeePass database password as plain text (read from file if a path is supplied).
+        allow_duplicates: If True, items that belong to multiple collections will be duplicated across them.
+        tmp_dir: Directory used to store temporary, sensitive artifacts (attachments, SSH keys) during export.
+        debug: Enables verbose logging and keeps the temporary directory after export for troubleshooting.
+        bw_executable: Path or command name of the Bitwarden CLI executable (defaults to "bw").
     """
 
     export_location: str
@@ -39,7 +47,17 @@ class BitwardenExportSettings(BaseModel):
 
 def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     """
-    Manage Input Arguments for Bitwarden Exporter
+    Parse CLI arguments and build a BitwardenExportSettings instance.
+
+    Behavior:
+    - If --export-password points to an existing file, its contents are read and used as the password.
+    - A temporary directory path and other flags can be configured with switches.
+
+    Returns:
+        BitwardenExportSettings: Parsed and validated settings for the current run.
+
+    Raises:
+        SystemExit: If required arguments are missing (handled by argparse).
     """
 
     parser = argparse.ArgumentParser()

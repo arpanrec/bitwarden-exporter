@@ -27,7 +27,14 @@ LOGGER = logging.getLogger(__name__)
 
 def add_items_to_folder(bw_folders: Dict[str, BwFolder], bw_item: BwItem) -> None:
     """
-    Adds an item to the folder's items.
+    Add a Bitwarden item into its corresponding KeePass folder bucket.
+
+    Args:
+        bw_folders: Mapping of folder ID to BwFolder instances.
+        bw_item: The Bitwarden item to assign to a folder.
+
+    Raises:
+        KeyError: If the item references a folderId that does not exist in bw_folders.
     """
 
     folder = bw_folders[str(bw_item.folderId)]
@@ -36,7 +43,19 @@ def add_items_to_folder(bw_folders: Dict[str, BwFolder], bw_item: BwItem) -> Non
 
 def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_item: BwItem) -> None:
     """
-    Adds an item to the organization's collections.
+    Add a Bitwarden item into one or more organization collections.
+
+    Behavior:
+    - If the item belongs to multiple collections and allow_duplicates is False,
+      only the first collection is used and a warning is logged.
+
+    Args:
+        bw_organizations: Mapping of organization ID to BwOrganization instances.
+        bw_item: The Bitwarden item to assign to collections within an organization.
+
+    Raises:
+        BitwardenException: If the item has no collections but has an organizationId, or
+            if duplicates are not allowed and logic yields an unexpected state.
     """
 
     organization = bw_organizations[str(bw_item.organizationId)]
@@ -61,7 +80,21 @@ def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_it
 
 def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
     """
-    Main function that handles the export process, including fetching organizations,
+    Run the Bitwarden-to-KeePass export process end-to-end.
+
+    Steps:
+    1. Verify BW vault is unlocked and fetch folders, organizations, collections, and items via the Bitwarden CLI.
+    2. Download item attachments and materialize SSH keys into temporary files.
+    3. Organize items by organization/collection and by folder; collect items without either.
+    4. Persist all content to a KeePass database via KeePassStorage, including JSON exports as attachments.
+    5. Optionally remove the temporary directory when not in debug mode.
+
+    Returns:
+        None
+
+    Raises:
+        BitwardenException: If the vault is locked or an invariant fails during processing.
+        ValueError: If CLI execution fails (propagated from bw_exec).
     """
 
     raw_items: Dict[str, Any] = {}

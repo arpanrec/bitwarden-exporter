@@ -149,6 +149,28 @@ class BwField(BaseModel):
 class BwItem(BaseModel):
     """
     Bitwarden Item Model.
+
+    Attributes:
+        passwordHistory: Optional previous passwords for the item.
+        revisionDate: ISO date-time when the item was last modified.
+        creationDate: ISO date-time when the item was created.
+        deletedDate: ISO date-time when the item was deleted, if applicable.
+        object: Bitwarden object type string (e.g., "item").
+        id: Unique identifier of the item.
+        organizationId: Organization ID if the item belongs to an organization.
+        folderId: Folder ID if the item belongs to a personal folder.
+        type: Numeric BW item type (1=login, 2=secure note, 3=card, 4=identity, etc.).
+        reprompt: Reprompt policy value.
+        name: Human-readable item title.
+        notes: Optional freeform notes.
+        favorite: Whether the item is marked as favorite.
+        login: Login-specific details (username/password/uris/totp), if any.
+        sshKey: Optional SSH key bundle if stored with the item.
+        collectionIds: Organization collection IDs this item belongs to.
+        attachments: Attachments metadata.
+        fields: Custom fields defined on the item.
+        card: Credit card details if type is card.
+        identity: Identity details if type is identity.
     """
 
     passwordHistory: Optional[List[BwItemPasswordHistory]] = None
@@ -176,6 +198,14 @@ class BwItem(BaseModel):
 class BwCollection(BaseModel):
     """
     Bitwarden Collection Model.
+
+    Attributes:
+        object: Bitwarden object type (e.g., "collection").
+        id: Unique identifier of the collection.
+        organizationId: ID of the parent organization.
+        name: Collection name.
+        externalId: Optional external reference.
+        items: Mutable mapping of item ID to BwItem, used during export organization.
     """
 
     object: str
@@ -189,6 +219,15 @@ class BwCollection(BaseModel):
 class BwOrganization(BaseModel):
     """
     Bitwarden Organization Model.
+
+    Attributes:
+        object: Bitwarden object type (e.g., "organization").
+        id: Unique identifier of the organization.
+        name: Organization name.
+        status: Organization status code.
+        type: Organization type code.
+        enabled: Whether the organization is enabled.
+        collections: Collections keyed by collection ID.
     """
 
     object: str
@@ -203,6 +242,12 @@ class BwOrganization(BaseModel):
 class BwFolder(BaseModel):
     """
     Bitwarden Folder Model.
+
+    Attributes:
+        object: Bitwarden object type (e.g., "folder").
+        id: Optional folder ID; may be None for the implicit "No Folder".
+        name: Folder name.
+        items: Items keyed by item ID within this folder bucket.
     """
 
     object: str
