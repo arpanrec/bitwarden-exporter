@@ -1,28 +1,14 @@
 # Bitwarden Exporter
 
-```text
- ____  _ _                         _
-| __ )(_) |___      ____ _ _ __ __| | ___ _ __
-|  _ \| | __\ \ /\ / / _` | '__/ _` |/ _ \ '_ \
-| |_) | | |_ \ V  V / (_| | | | (_| |  __/ | | |
-|____/|_|\__| \_/\_/ \__,_|_|  \__,_|\___|_| |_|
-
- _____                       _
-| ____|_  ___ __   ___  _ __| |_ ___ _ __
-|  _| \ \/ / '_ \ / _ \| '__| __/ _ \ '__|
-| |___ >  <| |_) | (_) | |  | ||  __/ |
-|_____/_/\_\ .__/ \___/|_|   \__\___|_|
-```
-
 Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for exporting bitwarden vaults with **attachments**.
 
 This allows you to take a whole backup of your bitwarden vault, including organizations where you don't have access for admin/owner.
 
-### Prerequisites
+## Prerequisites
 
 - [Bitwarden CLI](https://bitwarden.com/help/article/cli/#download-and-install)
 
-### (Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/).
+### (Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/)
 
 ```bash
 uvx bitwarden-exporter==VERSION --help
@@ -34,7 +20,7 @@ or
 uvx bitwarden-exporter --help
 ```
 
-### Install with [pipx](https://github.com/pypa/pipx).
+### Install with [pipx](https://github.com/pypa/pipx)
 
 ```bash
 pipx install bitwarden-exporter
