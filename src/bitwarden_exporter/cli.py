@@ -38,6 +38,7 @@ def download_file(item_id: str, attachment_id: str, download_location: str) -> N
         os.makedirs(parent_dir)
 
     if os.path.exists(download_location):
+        LOGGER.warning("Skipping download: application detected existing file at target location")
         LOGGER.info("File already exists, skipping download")
         return
 

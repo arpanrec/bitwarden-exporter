@@ -112,6 +112,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
 
     bw_folders_dict = json.loads((bw_exec(["list", "folders"])))
     bw_folders: Dict[str, BwFolder] = {folder["id"]: BwFolder(**folder) for folder in bw_folders_dict}
+    LOGGER.warning("Fetching summary: application retrieved folders from Bitwarden CLI")
     LOGGER.info("Total Folders Fetched: %s", len(bw_folders))
 
     no_folder_items: List[BwItem] = []
@@ -121,10 +122,12 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
     bw_organizations: Dict[str, BwOrganization] = {
         organization["id"]: BwOrganization(**organization) for organization in bw_organizations_dict
     }
+    LOGGER.warning("Fetching summary: application retrieved organizations from Bitwarden CLI")
     LOGGER.info("Total Organizations Fetched: %s", len(bw_organizations))
 
     bw_collections_dict = json.loads((bw_exec(["list", "collections"])))
     raw_items["collections.json"] = bw_collections_dict
+    LOGGER.warning("Fetching summary: application retrieved collections from Bitwarden CLI")
     LOGGER.info("Total Collections Fetched: %s", len(bw_collections_dict))
 
     for bw_collection_dict in bw_collections_dict:
@@ -135,6 +138,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
     bw_items_dict: List[Dict[str, Any]] = json.loads((bw_exec(["list", "items"])))
     raw_items["items.json"] = bw_items_dict
 
+    LOGGER.warning("Fetching summary: application retrieved items from Bitwarden CLI")
     LOGGER.info("Total Items Fetched: %s", len(bw_items_dict))
     for bw_item_dict in bw_items_dict:
         bw_item = BwItem(**bw_item_dict)
@@ -142,6 +146,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
         if bw_item.attachments and len(bw_item.attachments) > 0:
             for attachment in bw_item.attachments:
                 attachment.local_file_path = os.path.join(BITWARDEN_SETTINGS.tmp_dir, bw_item.id, attachment.id)
+                LOGGER.warning("Downloading attachment: application is saving Bitwarden attachment to a temporary path")
                 LOGGER.info(
                     "%s:: Downloading Attachment %s to %s",
                     bw_item.name,
@@ -189,6 +194,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
         else:
             no_folder_items.append(bw_item)
 
+    LOGGER.warning("Summary: application finished processing items and is about to write to KeePass")
     LOGGER.info("Total Items Fetched: %s", len(bw_items_dict))
 
     with KeePassStorage(BITWARDEN_SETTINGS.export_location, BITWARDEN_SETTINGS.export_password) as storage:
@@ -200,6 +206,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
     if not BITWARDEN_SETTINGS.debug:
         shutil.rmtree(BITWARDEN_SETTINGS.tmp_dir)
     else:
+        LOGGER.warning("Debug enabled: application will keep the temporary directory for troubleshooting")
         LOGGER.info("Keeping temporary directory %s", BITWARDEN_SETTINGS.tmp_dir)
 
 
