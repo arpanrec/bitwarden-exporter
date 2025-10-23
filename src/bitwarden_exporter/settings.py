@@ -107,7 +107,9 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         action=argparse.BooleanOptionalAction,
         default=False,
     )
-    print(pyfiglet.figlet_format("Bitwarden Exporter"))
+
+    if __name__ == "__main__":
+        print(pyfiglet.figlet_format("Bitwarden Exporter"))
     args = parser.parse_args()
 
     if args.export_password is None:

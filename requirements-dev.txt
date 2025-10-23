@@ -68,7 +68,7 @@ platformdirs==4.5.0
     #   pylint
 portalocker==3.2.0
     # via cachier
-psutil==7.1.0
+psutil==7.1.1
     # via gnupg
 pycparser==2.23 ; implementation_name != 'PyPy'
     # via cffi
@@ -84,7 +84,7 @@ pygments==2.19.2
     # via rich
 pykeepass==4.1.1.post1
     # via bitwarden-exporter
-pylint==4.0.1
+pylint==4.0.2
     # via bitwarden-exporter
 pynvim==0.6.0
     # via neovim

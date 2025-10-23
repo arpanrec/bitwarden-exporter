@@ -27,7 +27,7 @@ class KeePassStorage:
     """
     Adapter that creates and populates a KeePass database using Bitwarden data models.
 
-    This context manager creates a new KDBX database on enter and saves it on exit.
+    This context manager creates a new KDBX database on entering and saves it on exit.
 
     Attributes:
         _KeePassStorage__py_kee_pass: Internal PyKeePass instance for DB operations.
@@ -51,7 +51,7 @@ class KeePassStorage:
         self.__kdbx_file = os.path.abspath(kdbx_file)
         self.__kdbx_password = kdbx_password
         if os.path.exists(self.__kdbx_file):
-            raise BitwardenException(f"KeePass Database already exists at f{self.__kdbx_file}")
+            raise BitwardenException(f"KeePass Database already exists at {self.__kdbx_file}")
 
     def __enter__(self) -> "KeePassStorage":
         """
@@ -60,14 +60,16 @@ class KeePassStorage:
         Returns:
             KeePassStorage: The initialized context manager instance.
         """
+        LOGGER.warning("Initialization: application is creating a new KeePass database file")
         LOGGER.info("Creating Keepass Database: %s", self.__kdbx_file)
-        self.__py_kee_pass = create_database(self.__kdbx_file, password=self.__kdbx_password)
-
         __kdbx_dir = os.path.dirname(self.__kdbx_file)
         if not os.path.exists(__kdbx_dir):
+            LOGGER.warning("Initialization: application is creating destination directory for KeePass file")
             LOGGER.info("Creating Directory %s", __kdbx_dir)
             os.makedirs(__kdbx_dir)
+        self.__py_kee_pass = create_database(self.__kdbx_file, password=self.__kdbx_password)
 
+        LOGGER.warning("Initialization: application is creating the root 'My Vault' group in KeePass")
         LOGGER.info("Creating Keepass group My Vault")
         self.__my_vault_group = self.__add_group_recursive(group_path="My Vault")
         return self
@@ -94,6 +96,7 @@ class KeePassStorage:
         """
         try:
             self.__py_kee_pass.save()
+            LOGGER.warning("Finalization: application saved the KeePass database to disk")
             LOGGER.info("Keepass Database Saved")
         except Exception as e:  # pylint: disable=broad-except
             LOGGER.error("Error in saving Keepass Database %s", e)
@@ -146,10 +149,12 @@ class KeePassStorage:
             username="" if (not bw_item.login) or (not bw_item.login.username) else bw_item.login.username,
             password="" if (not bw_item.login) or (not bw_item.login.password) else bw_item.login.password,
         )
+        LOGGER.warning("KeePass write: application is creating a new entry in the database")
         LOGGER.info("Adding Entry %s", bw_item.name)
 
         if bw_item.login and bw_item.login.fido2Credentials and len(bw_item.login.fido2Credentials) > 0:
-            LOGGER.warning("Fido2Credentials are not supported in Keepass for %s", bw_item.name)
+            LOGGER.warning("There is an item with Fido2Credentials. Enable debug logging for more information")
+            LOGGER.info("Fido2Credentials are not supported in Keepass for %s", bw_item.name)
             fido2credentials_dict: List[Dict[str, Any]] = [
                 fido2Credentials.model_dump() for fido2Credentials in bw_item.login.fido2Credentials
             ]
@@ -212,12 +217,16 @@ class KeePassStorage:
         if (not bw_item.login) or (not bw_item.login.uris) or len(bw_item.login.uris) == 0:
             return []
 
+        LOGGER.warning("KeePass write: application is adding primary URL and storing extra URIs as fields if needed")
         LOGGER.info("Adding URI for %s", bw_item.name)
         entry.url = bw_item.login.uris[0].uri
         if len(bw_item.login.uris) > 1:
-            LOGGER.warning("Multiple URIs are not supported in Keepass for %s", bw_item.name)
-            LOGGER.warning("Only the first URI will be added")
-            LOGGER.warning("Rest of the URIs will be added as fields")
+            LOGGER.warning("Multiple URIs are not supported in Keepass. Enable debug logging for more information")
+            LOGGER.info(
+                "Multiple URIs are not supported in Keepass for %s. Only the first URI will be added; "
+                "the rest will be added as fields.",
+                bw_item.name,
+            )
         uri_list: List[BwField] = []
         for uri in bw_item.login.uris:
             field_name = "URI"
@@ -235,6 +244,7 @@ class KeePassStorage:
         if (not bw_item.login) or (not bw_item.login.totp):
             return None
 
+        LOGGER.warning("KeePass write: application is attaching TOTP/OTP configuration to the entry")
         LOGGER.info("Adding OTP for %s", bw_item.name)
         if not bw_item.login.totp.startswith("otpauth://"):
             url_safe_totp = bw_item.login.totp.replace(" ", "").lower()
@@ -254,11 +264,13 @@ class KeePassStorage:
         all_field_names = [] + list(entry.custom_properties.keys())
         for field in item.fields:
             if field.name in all_field_names:
-                LOGGER.warning('%s: Field with name "%s" already exists, Adding -1', item.name, field.name)
+                LOGGER.warning("Duplicate field name detected. Enable debug logging for more information")
+                LOGGER.info('%s: Field with name "%s" already exists, Adding -1', item.name, field.name)
                 field.name = f"{field.name}-1"
                 self.__fix_duplicate_field_names(entry, item)
             if field.name == "otp":
-                LOGGER.warning("%s: Field with name otp is reserved in keepass, Changing to otp-1", item.name)
+                LOGGER.warning("Reserved field name detected. Enable debug logging for more information")
+                LOGGER.info("%s: Field with name otp is reserved in keepass, Changing to otp-1", item.name)
                 field.name = "otp-1"
                 self.__fix_duplicate_field_names(entry, item)
             all_field_names.append(field.name)
@@ -267,6 +279,7 @@ class KeePassStorage:
         """
         Add fields to Keepass
         """
+        LOGGER.warning("KeePass write: application is adding Bitwarden custom fields into KeePass custom properties")
         LOGGER.info("%s: Adding Custom Fields to custom_properties", item.name)
         self.__fix_duplicate_field_names(entry, item)
         for field in item.fields:
@@ -299,9 +312,8 @@ class KeePassStorage:
         all_attachment_names = [] + [attachment.fileName for attachment in entry.attachments]
         for attachment in item.attachments:
             if attachment.fileName in all_attachment_names:
-                LOGGER.warning(
-                    '%s: Attachment with name "%s" already exists, Adding -1', item.name, attachment.fileName
-                )
+                LOGGER.warning("Duplicate attachment name detected. Enable debug logging for more information")
+                LOGGER.info('%s: Attachment with name "%s" already exists, Adding -1', item.name, attachment.fileName)
                 attachment.fileName = f"{attachment.fileName}-1"
                 self.__fix_duplicate_attachment_names(entry, item)
             all_attachment_names.append(attachment.fileName)
@@ -310,9 +322,11 @@ class KeePassStorage:
         """
         Add an attachment to Keepass
         """
+        LOGGER.warning("KeePass write: application is attaching downloaded Bitwarden files to the entry")
         LOGGER.info("%s: Adding Attachments", item.name)
         self.__fix_duplicate_attachment_names(entry, item)
         for attachment in item.attachments:
+            LOGGER.warning("KeePass write: application is embedding an attachment binary into the KeePass entry")
             LOGGER.info('%s: Adding Attachment to keepass "%s"', item.name, attachment.fileName)
             with open(attachment.local_file_path, "rb") as file_attach:
                 binary_id = self.__py_kee_pass.add_binary(data=file_attach.read(), protected=True, compressed=False)
@@ -324,12 +338,14 @@ class KeePassStorage:
         """
 
         for organization in bw_organizations.values():
+            LOGGER.warning("KeePass write: application is creating groups for a Bitwarden organization")
             LOGGER.info("Processing Organization %s", organization.name)
             organization_group: Group = self.__add_group_recursive(group_path=organization.name)
             collections = organization.collections
             organization.collections = {}
             organization_group.notes = json.dumps(organization.model_dump(), indent=4)
             for collection in collections.values():
+                LOGGER.warning("KeePass write: application is creating a collection group under the organization")
                 LOGGER.info("%s:: Processing Collection %s", organization.name, collection.name)
                 collection_group = self.__add_group_recursive(
                     group_path=collection.name, parent_group=organization_group
@@ -338,6 +354,7 @@ class KeePassStorage:
                 collection.items = {}
                 collection_group.notes = json.dumps(collection.model_dump(), indent=4)
                 for item in items.values():
+                    LOGGER.warning("KeePass write: application is converting a Bitwarden item into a KeePass entry")
                     LOGGER.info("%s::%s:: Processing Item %s", organization.name, collection.name, item.name)
                     try:
                         self.__add_entry(collection_group, item)
@@ -353,12 +370,14 @@ class KeePassStorage:
         for folder in bw_folders.values():
             if folder.name == "No Folder":
                 continue
+            LOGGER.warning("KeePass write: application is creating a personal folder group in 'My Vault'")
             LOGGER.info("Processing Folder %s", folder.name)
             folder_group: Group = self.__add_group_recursive(group_path=folder.name, parent_group=self.__my_vault_group)
             items = folder.items
             folder.items = {}
             folder_group.notes = json.dumps(folder.model_dump(), indent=4)
             for item in items.values():
+                LOGGER.warning("KeePass write: application is adding an item from a personal folder into KeePass")
                 LOGGER.info("%s:: Processing Item %s", folder.name, item.name)
                 try:
                     self.__add_entry(folder_group, item)
@@ -371,8 +390,10 @@ class KeePassStorage:
         Function to write to Keepass
         """
 
+        LOGGER.warning("KeePass write: application is adding items that are not assigned to any folder")
         LOGGER.info("Processing Items with no Folder")
         for item in no_folder_items:
+            LOGGER.warning("KeePass write: application is adding an ungrouped item into 'My Vault'")
             LOGGER.info("Processing Item %s", item.name)
             try:
                 self.__add_entry(self.__my_vault_group, item)

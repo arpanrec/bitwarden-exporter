@@ -20,7 +20,7 @@ Classes:
 
 from typing import Dict, List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BwItemLoginFido2Credentials(BaseModel):
@@ -98,7 +98,7 @@ class BwItemLogin(BaseModel):
     username: Optional[str] = None
     password: Optional[str] = None
     totp: Optional[str] = None
-    uris: List[BwItemLoginUri] = []
+    uris: List[BwItemLoginUri] = Field(default_factory=list)
     passwordRevisionDate: Optional[str] = None
     fido2Credentials: Optional[List[BwItemLoginFido2Credentials]] = None
 
@@ -188,9 +188,9 @@ class BwItem(BaseModel):
     favorite: bool
     login: Optional[BwItemLogin] = None
     sshKey: Optional[SSHKey] = None
-    collectionIds: List[str] = []
-    attachments: List[BwItemAttachment] = []
-    fields: List[BwField] = []
+    collectionIds: List[str] = Field(default_factory=list)
+    attachments: List[BwItemAttachment] = Field(default_factory=list)
+    fields: List[BwField] = Field(default_factory=list)
     card: Optional[BwCard] = None
     identity: Optional[BwIdentity] = None
 
@@ -213,7 +213,7 @@ class BwCollection(BaseModel):
     organizationId: str
     name: str
     externalId: Optional[str] = None
-    items: Dict[str, BwItem] = {}
+    items: Dict[str, BwItem] = Field(default_factory=dict)
 
 
 class BwOrganization(BaseModel):
@@ -236,7 +236,7 @@ class BwOrganization(BaseModel):
     status: int
     type: int
     enabled: bool
-    collections: Dict[str, BwCollection] = {}
+    collections: Dict[str, BwCollection] = Field(default_factory=dict)
 
 
 class BwFolder(BaseModel):
@@ -253,4 +253,4 @@ class BwFolder(BaseModel):
     object: str
     id: Optional[str] = None
     name: str
-    items: Dict[str, BwItem] = {}
+    items: Dict[str, BwItem] = Field(default_factory=dict)
