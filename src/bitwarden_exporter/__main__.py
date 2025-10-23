@@ -47,7 +47,7 @@ def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_it
 
     Behavior:
     - If the item belongs to multiple collections and allow_duplicates is False,
-      only the first collection is used and a warning is logged.
+      only the first collection is used, and a warning is logged.
 
     Args:
         bw_organizations: Mapping of organization ID to BwOrganization instances.
@@ -63,11 +63,7 @@ def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_it
     if not bw_item.collectionIds or len(bw_item.collectionIds) < 1:
         raise BitwardenException(f"Item {bw_item.id} does not have any collection, but belongs to an organization")
 
-    if (len(bw_item.collectionIds) == 1) or ((len(bw_item.collectionIds) > 1) and BITWARDEN_SETTINGS.allow_duplicates):
-        for collection_id in bw_item.collectionIds:
-            collection = organization.collections[collection_id]
-            collection.items[bw_item.id] = bw_item
-    elif (len(bw_item.collectionIds) > 1) and (not BITWARDEN_SETTINGS.allow_duplicates):
+    if len(bw_item.collectionIds) > 1 and not BITWARDEN_SETTINGS.allow_duplicates:
         LOGGER.warning(
             'Item: "%s" belongs to multiple collections, Just using the first one collection: "%s"',
             bw_item.name,
@@ -75,7 +71,9 @@ def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_it
         )
         organization.collections[bw_item.collectionIds[0]].items[bw_item.id] = bw_item
     else:
-        raise BitwardenException(f"Item {bw_item.name} belongs to multiple collections, but duplicates are not allowed")
+        for collection_id in bw_item.collectionIds:
+            collection = organization.collections[collection_id]
+            collection.items[bw_item.id] = bw_item
 
 
 def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
@@ -87,7 +85,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
     2. Download item attachments and materialize SSH keys into temporary files.
     3. Organize items by organization/collection and by folder; collect items without either.
     4. Persist all content to a KeePass database via KeePassStorage, including JSON exports as attachments.
-    5. Optionally remove the temporary directory when not in debug mode.
+    5. Optionally, remove the temporary directory when not in debug mode.
 
     Returns:
         None

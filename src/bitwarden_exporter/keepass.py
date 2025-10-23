@@ -27,7 +27,7 @@ class KeePassStorage:
     """
     Adapter that creates and populates a KeePass database using Bitwarden data models.
 
-    This context manager creates a new KDBX database on enter and saves it on exit.
+    This context manager creates a new KDBX database on entering and saves it on exit.
 
     Attributes:
         _KeePassStorage__py_kee_pass: Internal PyKeePass instance for DB operations.
