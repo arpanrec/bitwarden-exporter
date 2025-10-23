@@ -148,7 +148,8 @@ class KeePassStorage:
         LOGGER.info("Adding Entry %s", bw_item.name)
 
         if bw_item.login and bw_item.login.fido2Credentials and len(bw_item.login.fido2Credentials) > 0:
-            LOGGER.warning("Fido2Credentials are not supported in Keepass for %s", bw_item.name)
+            LOGGER.warning("There is a item with Fido2Credentials, but Keepass does not support Fido2Credentials")
+            LOGGER.info("Fido2Credentials are not supported in Keepass for %s", bw_item.name)
             fido2credentials_dict: List[Dict[str, Any]] = [
                 fido2Credentials.model_dump() for fido2Credentials in bw_item.login.fido2Credentials
             ]
