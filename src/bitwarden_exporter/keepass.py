@@ -148,7 +148,9 @@ class KeePassStorage:
         LOGGER.info("Adding Entry %s", bw_item.name)
 
         if bw_item.login and bw_item.login.fido2Credentials and len(bw_item.login.fido2Credentials) > 0:
-            LOGGER.warning("There is a item with Fido2Credentials, but Keepass does not support Fido2Credentials")
+            LOGGER.warning(
+                "There is an item with Fido2Credentials. Enable debug logging for more information"
+            )
             LOGGER.info("Fido2Credentials are not supported in Keepass for %s", bw_item.name)
             fido2credentials_dict: List[Dict[str, Any]] = [
                 fido2Credentials.model_dump() for fido2Credentials in bw_item.login.fido2Credentials
@@ -215,9 +217,10 @@ class KeePassStorage:
         LOGGER.info("Adding URI for %s", bw_item.name)
         entry.url = bw_item.login.uris[0].uri
         if len(bw_item.login.uris) > 1:
-            LOGGER.warning("Multiple URIs are not supported in Keepass for %s", bw_item.name)
-            LOGGER.warning("Only the first URI will be added")
-            LOGGER.warning("Rest of the URIs will be added as fields")
+            LOGGER.warning("Multiple URIs are not supported in Keepass. Enable debug logging for more information")
+            LOGGER.info("Multiple URIs are not supported in Keepass for %s", bw_item.name)
+            LOGGER.info("Only the first URI will be added")
+            LOGGER.info("Rest of the URIs will be added as fields")
         uri_list: List[BwField] = []
         for uri in bw_item.login.uris:
             field_name = "URI"
@@ -254,11 +257,13 @@ class KeePassStorage:
         all_field_names = [] + list(entry.custom_properties.keys())
         for field in item.fields:
             if field.name in all_field_names:
-                LOGGER.warning('%s: Field with name "%s" already exists, Adding -1', item.name, field.name)
+                LOGGER.warning("Duplicate field name detected. Enable debug logging for more information")
+                LOGGER.info('%s: Field with name "%s" already exists, Adding -1', item.name, field.name)
                 field.name = f"{field.name}-1"
                 self.__fix_duplicate_field_names(entry, item)
             if field.name == "otp":
-                LOGGER.warning("%s: Field with name otp is reserved in keepass, Changing to otp-1", item.name)
+                LOGGER.warning("Reserved field name detected. Enable debug logging for more information")
+                LOGGER.info("%s: Field with name otp is reserved in keepass, Changing to otp-1", item.name)
                 field.name = "otp-1"
                 self.__fix_duplicate_field_names(entry, item)
             all_field_names.append(field.name)
@@ -299,7 +304,8 @@ class KeePassStorage:
         all_attachment_names = [] + [attachment.fileName for attachment in entry.attachments]
         for attachment in item.attachments:
             if attachment.fileName in all_attachment_names:
-                LOGGER.warning(
+                LOGGER.warning("Duplicate attachment name detected. Enable debug logging for more information")
+                LOGGER.info(
                     '%s: Attachment with name "%s" already exists, Adding -1', item.name, attachment.fileName
                 )
                 attachment.fileName = f"{attachment.fileName}-1"

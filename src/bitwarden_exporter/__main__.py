@@ -57,7 +57,10 @@ def add_items_to_organization(
     organization = bw_organizations[organization_id]
 
     if not bw_item.collectionIds or len(bw_item.collectionIds) < 1:
-        error_msg = "There is a item included in a organization without collection"
+        error_msg = (
+            "There is an item without any collection, but included in organization. "
+            "Enable debug logging for more information"
+        )
         LOGGER.warning(error_msg)
         LOGGER.info(
             "Item: %s does not belong to any collection, but included in organization %s",
@@ -67,7 +70,9 @@ def add_items_to_organization(
         raise BitwardenException(error_msg)
 
     if len(bw_item.collectionIds) > 1 and not BITWARDEN_SETTINGS.allow_duplicates:
-        LOGGER.warning("There is a item included in multiple collections, Just using the first one")
+        LOGGER.warning(
+            "Item belongs to multiple collections. Enable debug logging for more information"
+        )
         LOGGER.info(
             'Item: "%s" belongs to multiple collections, Just using the first one collection: "%s"',
             bw_item.name,

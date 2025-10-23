@@ -77,7 +77,7 @@ def bw_exec(
             cmd, capture_output=True, check=False, encoding=ret_encoding, env=cli_env_vars, timeout=30
         )  # nosec B603
         if len(command_out.stderr) > 0:
-            LOGGER.warning("Error while executing a command")
+            LOGGER.warning("Error while executing a command. Enable debug logging for more information")
             LOGGER.info("Error executing command %s", command_out.stderr)
         command_out.check_returncode()
         return command_out.stdout
