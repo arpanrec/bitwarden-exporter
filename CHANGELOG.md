@@ -1,3 +1,10 @@
+## [1.6.2](https://github.com/arpanrec/bitwarden-exporter/compare/1.6.1...1.6.2) (2025-10-23)
+
+
+### Bug Fixes
+
+* allow duplicate entries in collections. ([#12](https://github.com/arpanrec/bitwarden-exporter/issues/12)) ([4b0c40a](https://github.com/arpanrec/bitwarden-exporter/commit/4b0c40a48f77b5ef72023216f9a9ba76b71bf128))
+
 ## [1.6.1](https://github.com/arpanrec/bitwarden-exporter/compare/1.6.0...1.6.1) (2025-10-19)
 
 
