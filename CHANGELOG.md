@@ -1,3 +1,10 @@
+## [1.6.3](https://github.com/arpanrec/bitwarden-exporter/compare/1.6.2...1.6.3) (2025-10-23)
+
+
+### Bug Fixes
+
+* Folder or organization detection ([5ab00f6](https://github.com/arpanrec/bitwarden-exporter/commit/5ab00f64aa7ff3e93e1234c0df35cf057550d562))
+
 ## [1.6.2](https://github.com/arpanrec/bitwarden-exporter/compare/1.6.1...1.6.2) (2025-10-23)
 
 
