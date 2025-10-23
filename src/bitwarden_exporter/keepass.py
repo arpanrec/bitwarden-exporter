@@ -148,9 +148,7 @@ class KeePassStorage:
         LOGGER.info("Adding Entry %s", bw_item.name)
 
         if bw_item.login and bw_item.login.fido2Credentials and len(bw_item.login.fido2Credentials) > 0:
-            LOGGER.warning(
-                "There is an item with Fido2Credentials. Enable debug logging for more information"
-            )
+            LOGGER.warning("There is an item with Fido2Credentials. Enable debug logging for more information")
             LOGGER.info("Fido2Credentials are not supported in Keepass for %s", bw_item.name)
             fido2credentials_dict: List[Dict[str, Any]] = [
                 fido2Credentials.model_dump() for fido2Credentials in bw_item.login.fido2Credentials
@@ -218,9 +216,11 @@ class KeePassStorage:
         entry.url = bw_item.login.uris[0].uri
         if len(bw_item.login.uris) > 1:
             LOGGER.warning("Multiple URIs are not supported in Keepass. Enable debug logging for more information")
-            LOGGER.info("Multiple URIs are not supported in Keepass for %s", bw_item.name)
-            LOGGER.info("Only the first URI will be added")
-            LOGGER.info("Rest of the URIs will be added as fields")
+            LOGGER.info(
+                "Multiple URIs are not supported in Keepass for %s. Only the first URI will be added; "
+                "the rest will be added as fields.",
+                bw_item.name,
+            )
         uri_list: List[BwField] = []
         for uri in bw_item.login.uris:
             field_name = "URI"
@@ -305,9 +305,7 @@ class KeePassStorage:
         for attachment in item.attachments:
             if attachment.fileName in all_attachment_names:
                 LOGGER.warning("Duplicate attachment name detected. Enable debug logging for more information")
-                LOGGER.info(
-                    '%s: Attachment with name "%s" already exists, Adding -1', item.name, attachment.fileName
-                )
+                LOGGER.info('%s: Attachment with name "%s" already exists, Adding -1', item.name, attachment.fileName)
                 attachment.fileName = f"{attachment.fileName}-1"
                 self.__fix_duplicate_attachment_names(entry, item)
             all_attachment_names.append(attachment.fileName)

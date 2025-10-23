@@ -70,9 +70,7 @@ def add_items_to_organization(
         raise BitwardenException(error_msg)
 
     if len(bw_item.collectionIds) > 1 and not BITWARDEN_SETTINGS.allow_duplicates:
-        LOGGER.warning(
-            "Item belongs to multiple collections. Enable debug logging for more information"
-        )
+        LOGGER.warning("Item belongs to multiple collections. Enable debug logging for more information")
         LOGGER.info(
             'Item: "%s" belongs to multiple collections, Just using the first one collection: "%s"',
             bw_item.name,
