@@ -65,9 +65,7 @@ def add_items_to_organization(
         first_collection_id = bw_item.collectionIds[0]
         collection = organization.collections.get(first_collection_id)
         if collection is None:
-            LOGGER.warning(
-                "There is a item with multiple collections, but allow_duplicates is False;"
-            )
+            LOGGER.warning("There is a item with multiple collections, but allow_duplicates is False;")
             LOGGER.info(
                 "%s: collectionId %s not found in organization %s; skipping this collection",
                 bw_item.name,
