@@ -25,23 +25,22 @@ from .keepass import KeePassStorage
 LOGGER = logging.getLogger(__name__)
 
 
-def add_items_to_folder(bw_folders: Dict[str, BwFolder], bw_item: BwItem) -> None:
+def add_items_to_folder(folder_id: str, bw_folders: Dict[str, BwFolder], bw_item: BwItem) -> None:
     """
     Add a Bitwarden item into its corresponding KeePass folder bucket.
 
     Args:
+        folder_id: The ID of the folder to which the item should be added.
         bw_folders: Mapping of folder ID to BwFolder instances.
         bw_item: The Bitwarden item to assign to a folder.
-
-    Raises:
-        KeyError: If the item references a folderId that does not exist in bw_folders.
     """
 
-    folder = bw_folders[str(bw_item.folderId)]
-    folder.items[bw_item.id] = bw_item
+    bw_folders[folder_id].items[bw_item.id] = bw_item
 
 
-def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_item: BwItem) -> None:
+def add_items_to_organization(
+    organization_id: str, bw_organizations: Dict[str, BwOrganization], bw_item: BwItem
+) -> None:
     """
     Add a Bitwarden item into one or more organization collections.
 
@@ -50,29 +49,49 @@ def add_items_to_organization(bw_organizations: Dict[str, BwOrganization], bw_it
       only the first collection is used, and a warning is logged.
 
     Args:
+        organization_id: The ID of the organization to which the item should be added.
         bw_organizations: Mapping of organization ID to BwOrganization instances.
         bw_item: The Bitwarden item to assign to collections within an organization.
-
-    Raises:
-        BitwardenException: If the item has no collections but has an organizationId, or
-            if duplicates are not allowed and logic yields an unexpected state.
     """
 
-    organization = bw_organizations[str(bw_item.organizationId)]
+    organization = bw_organizations[organization_id]
 
     if not bw_item.collectionIds or len(bw_item.collectionIds) < 1:
-        raise BitwardenException(f"Item {bw_item.id} does not have any collection, but belongs to an organization")
+        LOGGER.warning("There is no collection for one or more items; skipping")
+        LOGGER.info("Item %s does not have any collection, but belongs to an organization; skipping", bw_item.id)
+        return
 
     if len(bw_item.collectionIds) > 1 and not BITWARDEN_SETTINGS.allow_duplicates:
+        first_collection_id = bw_item.collectionIds[0]
+        collection = organization.collections.get(first_collection_id)
+        if collection is None:
+            LOGGER.warning(
+                "There is a item with multiple collections, but allow_duplicates is False;"
+            )
+            LOGGER.info(
+                "%s: collectionId %s not found in organization %s; skipping this collection",
+                bw_item.name,
+                first_collection_id,
+                organization.name,
+            )
+            return
         LOGGER.warning(
             'Item: "%s" belongs to multiple collections, Just using the first one collection: "%s"',
             bw_item.name,
-            organization.collections[bw_item.collectionIds[0]].name,
+            collection.name,
         )
-        organization.collections[bw_item.collectionIds[0]].items[bw_item.id] = bw_item
+        collection.items[bw_item.id] = bw_item
     else:
         for collection_id in bw_item.collectionIds:
-            collection = organization.collections[collection_id]
+            collection = organization.collections.get(collection_id)
+            if collection is None:
+                LOGGER.warning(
+                    "%s: collectionId %s not found in organization %s; skipping this collection",
+                    bw_item.name,
+                    collection_id,
+                    organization.name,
+                )
+                continue
             collection.items[bw_item.id] = bw_item
 
 
@@ -176,9 +195,9 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
             bw_item.attachments.append(attachment_pub_key)
 
         if bw_item.organizationId and not bw_item.folderId:
-            add_items_to_organization(bw_organizations, bw_item)
+            add_items_to_organization(bw_item.organizationId, bw_organizations, bw_item)
         elif not bw_item.organizationId and bw_item.folderId:
-            add_items_to_folder(bw_folders, bw_item)
+            add_items_to_folder(bw_item.folderId, bw_folders, bw_item)
         else:
             no_folder_items.append(bw_item)
 

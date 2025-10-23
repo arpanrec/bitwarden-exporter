@@ -67,11 +67,11 @@ def bw_exec(
     if is_raw:
         cmd.append("--raw")
 
-    cli_env_vars = os.environ
+    cli_env_vars = os.environ.copy()
 
     if env_vars is not None:
         cli_env_vars.update(env_vars)
-    LOGGER.debug("Executing CLI :: %s", {" ".join(cmd)})
+    LOGGER.debug("Executing CLI :: %s", " ".join(cmd))
     try:
         command_out = subprocess.run(
             cmd, capture_output=True, check=False, encoding=ret_encoding, env=cli_env_vars, timeout=30

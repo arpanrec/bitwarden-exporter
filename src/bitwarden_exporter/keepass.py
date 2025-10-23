@@ -51,7 +51,7 @@ class KeePassStorage:
         self.__kdbx_file = os.path.abspath(kdbx_file)
         self.__kdbx_password = kdbx_password
         if os.path.exists(self.__kdbx_file):
-            raise BitwardenException(f"KeePass Database already exists at f{self.__kdbx_file}")
+            raise BitwardenException(f"KeePass Database already exists at {self.__kdbx_file}")
 
     def __enter__(self) -> "KeePassStorage":
         """
@@ -61,12 +61,11 @@ class KeePassStorage:
             KeePassStorage: The initialized context manager instance.
         """
         LOGGER.info("Creating Keepass Database: %s", self.__kdbx_file)
-        self.__py_kee_pass = create_database(self.__kdbx_file, password=self.__kdbx_password)
-
         __kdbx_dir = os.path.dirname(self.__kdbx_file)
         if not os.path.exists(__kdbx_dir):
             LOGGER.info("Creating Directory %s", __kdbx_dir)
             os.makedirs(__kdbx_dir)
+        self.__py_kee_pass = create_database(self.__kdbx_file, password=self.__kdbx_password)
 
         LOGGER.info("Creating Keepass group My Vault")
         self.__my_vault_group = self.__add_group_recursive(group_path="My Vault")
