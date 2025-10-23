@@ -103,21 +103,21 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
     """
 
     raw_items: Dict[str, Any] = {}
-    bw_current_status = json.loads(bw_exec(["status"]))
+    bw_current_status = json.loads(bw_exec(["status"], is_raw=False))
     raw_items["status.json"] = bw_current_status
 
     if bw_current_status["status"] != "unlocked":
         raise BitwardenException("Vault is not unlocked")
     LOGGER.debug("Vault status: %s", json.dumps(bw_current_status))
 
-    bw_folders_dict = json.loads((bw_exec(["list", "folders"])))
+    bw_folders_dict = json.loads((bw_exec(["list", "folders"], is_raw=False)))
     bw_folders: Dict[str, BwFolder] = {folder["id"]: BwFolder(**folder) for folder in bw_folders_dict}
     LOGGER.warning("Fetching summary: application retrieved folders from Bitwarden CLI")
     LOGGER.info("Total Folders Fetched: %s", len(bw_folders))
 
     no_folder_items: List[BwItem] = []
 
-    bw_organizations_dict = json.loads((bw_exec(["list", "organizations"])))
+    bw_organizations_dict = json.loads((bw_exec(["list", "organizations"], is_raw=False)))
     raw_items["organizations.json"] = bw_organizations_dict
     bw_organizations: Dict[str, BwOrganization] = {
         organization["id"]: BwOrganization(**organization) for organization in bw_organizations_dict
@@ -125,7 +125,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
     LOGGER.warning("Fetching summary: application retrieved organizations from Bitwarden CLI")
     LOGGER.info("Total Organizations Fetched: %s", len(bw_organizations))
 
-    bw_collections_dict = json.loads((bw_exec(["list", "collections"])))
+    bw_collections_dict = json.loads((bw_exec(["list", "collections"], is_raw=False)))
     raw_items["collections.json"] = bw_collections_dict
     LOGGER.warning("Fetching summary: application retrieved collections from Bitwarden CLI")
     LOGGER.info("Total Collections Fetched: %s", len(bw_collections_dict))
@@ -135,7 +135,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
         organization = bw_organizations[bw_collection.organizationId]
         organization.collections[bw_collection.id] = bw_collection
 
-    bw_items_dict: List[Dict[str, Any]] = json.loads((bw_exec(["list", "items"])))
+    bw_items_dict: List[Dict[str, Any]] = json.loads((bw_exec(["list", "items"], is_raw=False)))
     raw_items["items.json"] = bw_items_dict
 
     LOGGER.warning("Fetching summary: application retrieved items from Bitwarden CLI")
@@ -187,9 +187,9 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
                 ssh_pub_file.write(bw_item.sshKey.publicKey)
             bw_item.attachments.append(attachment_pub_key)
 
-        if bw_item.organizationId and not bw_item.folderId:
+        if bw_item.organizationId:
             add_items_to_organization(bw_item.organizationId, bw_organizations, bw_item)
-        elif not bw_item.organizationId and bw_item.folderId:
+        elif bw_item.folderId:
             add_items_to_folder(bw_item.folderId, bw_folders, bw_item)
         else:
             no_folder_items.append(bw_item)
