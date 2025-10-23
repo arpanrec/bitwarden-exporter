@@ -62,34 +62,15 @@ def add_items_to_organization(
         return
 
     if len(bw_item.collectionIds) > 1 and not BITWARDEN_SETTINGS.allow_duplicates:
-        first_collection_id = bw_item.collectionIds[0]
-        collection = organization.collections.get(first_collection_id)
-        if collection is None:
-            LOGGER.warning("There is a item with multiple collections, but allow_duplicates is False;")
-            LOGGER.info(
-                "%s: collectionId %s not found in organization %s; skipping this collection",
-                bw_item.name,
-                first_collection_id,
-                organization.name,
-            )
-            return
         LOGGER.warning(
             'Item: "%s" belongs to multiple collections, Just using the first one collection: "%s"',
             bw_item.name,
-            collection.name,
+            organization.collections[bw_item.collectionIds[0]].name,
         )
-        collection.items[bw_item.id] = bw_item
+        organization.collections[bw_item.collectionIds[0]].items[bw_item.id] = bw_item
     else:
         for collection_id in bw_item.collectionIds:
-            collection = organization.collections.get(collection_id)
-            if collection is None:
-                LOGGER.warning(
-                    "%s: collectionId %s not found in organization %s; skipping this collection",
-                    bw_item.name,
-                    collection_id,
-                    organization.name,
-                )
-                continue
+            collection = organization.collections[collection_id]
             collection.items[bw_item.id] = bw_item
 
 
