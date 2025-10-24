@@ -1,38 +1,23 @@
 # Bitwarden Exporter
 
-Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for exporting bitwarden vaults.
+Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for exporting bitwarden vaults to KeePass.
 
 ## Features
 
-- Export your entire Bitwarden vault to a KeePass (.kdbx) database using the official Bitwarden CLI.
-- Preserves structure and grouping:
-  - Personal items are placed under a top-level "My Vault" group and organized by your Bitwarden folders.
-  - Organization items are grouped by Organization → Collection, mirroring Bitwarden.
-  - Items without a folder/collection are added to the "My Vault" root.
-- Rich item data mapping to KeePass entries:
-  - Title, Username, Password, Notes.
-  - URIs (primary URL mapped to entry URL; additional URIs stored as custom properties).
-  - TOTP/OTP codes are added to the entry so they can be used from KeePass.
-  - Custom fields (text/hidden/boolean and linked types) are preserved as KeePass custom properties.
-  - Identity and Card details (name, address, card brand/expiry, etc.) are included as custom properties.
-- Attachments and SSH keys:
-  - All Bitwarden attachments are downloaded and attached to the corresponding KeePass entry.
-  - If duplicate attachment names occur, they are de-duplicated automatically (e.g., by appending -1).
-  - Items with SSH keys have their private/public keys materialized as files and attached to the entry.
-- Built-in Bitwarden JSON snapshot:
-  - A "Bitwarden Export" entry is created at the database root with JSON attachments of status, organizations, collections, and items for reference/auditing.
-- Duplicate handling for items in multiple collections:
-  - By default, items that belong to multiple collections are written only to the first collection (with a warning).
-  - Use `--allow-duplicates` to place the item in all of its collections.
-- Safe temporary workspace:
-  - Attachments and generated SSH key files are stored in a configurable temporary directory during export.
-  - The temporary directory is automatically removed after export unless `--debug` is used.
-- Configurable and script-friendly CLI:
-  - Choose an output path for the KDBX and supply the database password directly or via a file path.
-  - Set a custom Bitwarden CLI executable path with `--bw-executable`.
-  - Verbose debug logging with `--debug` (may log sensitive data; keeps temp files for troubleshooting).
-- Prerequisites and safeguards:
-  - Requires the Bitwarden CLI (`bw`) and an unlocked vault; the exporter will error if the vault is locked.
+- **Comprehensive data mapping**
+  - Credentials
+  - URIs (Compatible with keepass URL)
+  - Notes (Compatible with keepass note)
+  - TOTP codes (Compatible with keepass totp)
+  - Custom Fields (Compatible with additional attributes)
+  - Identity/Cards (Backup only, not supported by Keepass yet)
+  - Attachments (Compatible with keepass attachment)
+  - SSH keys (Compatible with keepass ssh and attachments)
+  - Fido U2F Keys (Backup only, not supported by Keepass yet)
+- **Preserves vault structure**
+  - Collection and Folder hierarchy is preserved as Keepass groups.
+- Built-in JSON snapshot of vault data for auditing.
+- Configurable CLI with options for duplicates handling, custom temp directory, debug logging, and Bitwarden CLI path.
 
 ## Prerequisites
 
@@ -65,38 +50,49 @@ bitwarden-exporter --help
 #### Export Location (-l, --export-location)
 
 Bitwarden Export Location, Default: `bitwarden_dump_<timestamp>.kdbx`,
+
 This is a dynamic value, Just in case if it exists, it will be overwritten.
 
 #### Export Password (-p, --export-password)
 
-**Required**
+- Required
 
 Bitwarden Export Password or Path to Password File.
+
 File paths can be prefixed with 'file:' to reference a file, e.g. file:secret.txt.
+
 Environment variables can be used to reference a file, e.g. env:SECRET_PASSWORD.
+
 From vault, jmespath expression on `bw list items`,
+
 e.g. `jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value`.
 
 #### Allow Duplicates (-d, --allow-duplicates)
 
 Allow Duplicates entries in Export, In bitwarden each item can be in multiple collections.
+
 Default: --no-allow-duplicates
 
 #### Temporary Directory (-t, --tmp-dir)
 
 Temporary Directory to store temporary sensitive files, Make sure to delete it after the export.
+
 Default: ./bitwarden_dump_attachments
 
 #### Bitwarden CLI Executable (-e, --bw-executable)
 
 Path to the Bitwarden CLI executable.
+
 Default: bw
 
 #### Debug (-d, --debug)
 
 Enable Verbose Logging.
+
 This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION.
-_This will not delete the temporary directory after the export._
+
+**This will not delete the temporary directory after the export.**
+
 Default: --no-debug
 
 ## Roadmap
