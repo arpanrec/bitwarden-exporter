@@ -16,6 +16,7 @@ import os.path
 import shutil
 from datetime import datetime, timezone
 from typing import Any, Dict, List
+
 import jmespath
 
 from . import BITWARDEN_SETTINGS, BitwardenException

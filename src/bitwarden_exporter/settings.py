@@ -17,11 +17,9 @@ The settings include:
 """
 
 import argparse
-import json
 import os
 import time
 
-import jmespath
 import pyfiglet  # type: ignore
 from pydantic import BaseModel
 
