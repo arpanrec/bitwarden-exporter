@@ -34,7 +34,6 @@ Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for e
 - Prerequisites and safeguards:
   - Requires the Bitwarden CLI (`bw`) and an unlocked vault; the exporter will error if the vault is locked.
 
-
 ## Prerequisites
 
 - [Bitwarden CLI](https://bitwarden.com/help/article/cli/#download-and-install)
@@ -63,22 +62,42 @@ BW_SESSION=<session token> pipx install bitwarden-exporter
 bitwarden-exporter --help
 ```
 
-```text
-usage: bitwarden-exporter [-h] [-l EXPORT_LOCATION] -p EXPORT_PASSWORD [--allow-duplicates | --no-allow-duplicates] [--tmp-dir TMP_DIR] [--bw-executable BW_EXECUTABLE] [--debug | --no-debug]
+#### Export Location (-l, --export-location)
 
-options:
-  -h, --help            show this help message and exit
-  -l, --export-location EXPORT_LOCATION
-                        Bitwarden Export Location, Default: bitwarden_dump_<timestamp>.kdbx, This is a dynamic value, Just in case if it exists, it will be overwritten
-  -p, --export-password EXPORT_PASSWORD
-                        Bitwarden Export Password or Path to Password File. File paths can be prefixed with 'file:' to reference a file, e.g. file:secret.txt. Environment variables can be used to reference a file, e.g. env:SECRET_PASSWORD. From vault, jmespath expression on `bw list items`, e.g. jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value
-  --allow-duplicates, --no-allow-duplicates
-                        Allow Duplicates entries in Export, In bitwarden each item can be in multiple collections, Default: --no-allow-duplicates
-  --tmp-dir TMP_DIR     Temporary Directory to store temporary sensitive files, Make sure to delete it after the export, Default: /home/arpan/workspace/src/bitwarden-exporter/bitwarden_dump_attachments
-  --bw-executable BW_EXECUTABLE
-                        Path to the Bitwarden CLI executable, Default: bw
-  --debug, --no-debug   Enable Verbose Logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,This will not delete the temporary directory after the export, Default: --no-debug
-```
+Bitwarden Export Location, Default: `bitwarden_dump_<timestamp>.kdbx`,
+This is a dynamic value, Just in case if it exists, it will be overwritten.
+
+#### Export Password (-p, --export-password)
+
+**Required**
+
+Bitwarden Export Password or Path to Password File.
+File paths can be prefixed with 'file:' to reference a file, e.g. file:secret.txt.
+Environment variables can be used to reference a file, e.g. env:SECRET_PASSWORD.
+From vault, jmespath expression on `bw list items`,
+e.g. `jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value`.
+
+#### Allow Duplicates (-d, --allow-duplicates)
+
+Allow Duplicates entries in Export, In bitwarden each item can be in multiple collections.
+Default: --no-allow-duplicates
+
+#### Temporary Directory (-t, --tmp-dir)
+
+Temporary Directory to store temporary sensitive files, Make sure to delete it after the export.
+Default: ./bitwarden_dump_attachments
+
+#### Bitwarden CLI Executable (-e, --bw-executable)
+
+Path to the Bitwarden CLI executable.
+Default: bw
+
+#### Debug (-d, --debug)
+
+Enable Verbose Logging.
+This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION.
+_This will not delete the temporary directory after the export._
+Default: --no-debug
 
 ## Roadmap
 
@@ -87,7 +106,8 @@ options:
 
 ## Credits
 
-[@ckabalan](https://github.com/ckabalan) for [bitwarden-attachment-exporter](https://github.com/ckabalan/bitwarden-attachment-exporter)
+[@ckabalan](https://github.com/ckabalan)
+for [bitwarden-attachment-exporter](https://github.com/ckabalan/bitwarden-attachment-exporter)
 
 ## License
 
