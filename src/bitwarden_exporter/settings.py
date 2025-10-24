@@ -73,9 +73,12 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     parser.add_argument(
         "-p",
         "--export-password",
-        help="Bitwarden Export Password or Path to Password File. "
+        help="Bitwarden Export Password or Path to Password File."
         " File paths can be prefixed with 'file:' to reference a file, e.g. file:secret.txt."
-        " Environment variables can be used to reference a file, e.g. env:SECRET_PASSWORD.",
+        " Environment variables can be used to reference a file, e.g. env:SECRET_PASSWORD."
+        " From vault, jmespath expression on `bw list items`, e.g. jmespath:["
+        "?id=='xx-xx-xx-xxx-xxx'].fields[] | ["
+        "?name=='export-password'].value",
         required=True,
     )
 

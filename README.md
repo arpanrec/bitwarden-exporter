@@ -64,11 +64,14 @@ bitwarden-exporter --help
 ```
 
 ```text
+usage: bitwarden-exporter [-h] [-l EXPORT_LOCATION] -p EXPORT_PASSWORD [--allow-duplicates | --no-allow-duplicates] [--tmp-dir TMP_DIR] [--bw-executable BW_EXECUTABLE] [--debug | --no-debug]
+
+options:
   -h, --help            show this help message and exit
   -l, --export-location EXPORT_LOCATION
                         Bitwarden Export Location, Default: bitwarden_dump_<timestamp>.kdbx, This is a dynamic value, Just in case if it exists, it will be overwritten
   -p, --export-password EXPORT_PASSWORD
-                        Bitwarden Export Password or Path to Password File.
+                        Bitwarden Export Password or Path to Password File. File paths can be prefixed with 'file:' to reference a file, e.g. file:secret.txt. Environment variables can be used to reference a file, e.g. env:SECRET_PASSWORD. From vault, jmespath expression on `bw list items`, e.g. jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value
   --allow-duplicates, --no-allow-duplicates
                         Allow Duplicates entries in Export, In bitwarden each item can be in multiple collections, Default: --no-allow-duplicates
   --tmp-dir TMP_DIR     Temporary Directory to store temporary sensitive files, Make sure to delete it after the export, Default: /home/arpan/workspace/src/bitwarden-exporter/bitwarden_dump_attachments
