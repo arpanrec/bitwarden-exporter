@@ -141,7 +141,7 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements,too-m
 
     if BITWARDEN_SETTINGS.export_password.startswith("jmespath:"):
         jmespath_expression = BITWARDEN_SETTINGS.export_password[len("jmespath:") :]
-        LOGGER.info("Using JMESPath expression to extract vault password: %s", jmespath_expression)
+        LOGGER.debug("Using JMESPath expression to extract vault password: %s", jmespath_expression)
         vault_password = jmespath.search(jmespath_expression, bw_items_dict)
 
         if not vault_password:
