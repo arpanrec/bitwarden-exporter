@@ -91,8 +91,8 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         "--tmp-dir",
         help="Temporary Directory to store temporary sensitive files,"
         " Make sure to delete it after the export,"
-        f" Default: ./bitwarden_dump_attachments",
-        default="bitwarden_dump_attachments",
+        f" Default: {os.path.abspath('bitwarden_dump_attachments')}",
+        default=os.path.abspath("bitwarden_dump_attachments"),
     )
 
     parser.add_argument(
@@ -133,17 +133,20 @@ def __read_secret(secret_path: str) -> str:
     """
 
     if secret_path.startswith("env:"):
-        secret_path = os.environ.get(secret_path[4:])
-        if secret_path is None or len(secret_path) == 0:
-            raise ValueError(f"Environment variable not found: {secret_path[4:]}")
+        env_password = secret_path[4:]
+        if env_password is None or len(env_password) == 0:
+            raise ValueError(f"Environment variable not found: {secret_path}")
+        secret_path = env_password
     elif secret_path.startswith("file:"):
         secret_path = secret_path[5:]
         if not os.path.exists(secret_path):
             raise FileNotFoundError(f"File not found: {secret_path}")
+        if not os.path.isfile(secret_path):
+            raise ValueError(f"File is not a file: {secret_path}")
     else:
         pass
 
-    if os.path.exists(secret_path):
+    if os.path.exists(secret_path) and os.path.isfile(secret_path):
         with open(secret_path, "r") as f:
             return f.read().strip()
 

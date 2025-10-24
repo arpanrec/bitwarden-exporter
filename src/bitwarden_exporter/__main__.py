@@ -85,7 +85,7 @@ def add_items_to_organization(
             collection.items[bw_item.id] = bw_item
 
 
-def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
+def main() -> None:  # pylint: disable=too-many-locals,too-many-statements,too-many-branches
     """
     Run the Bitwarden-to-KeePass export process end-to-end.
 
@@ -147,10 +147,10 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
         if not vault_password:
             raise BitwardenException("Vault password is not found")
 
-        if type(vault_password) is list:
+        if isinstance(vault_password, list):
             vault_password = vault_password[0]
 
-        if type(vault_password) is not str:
+        if not isinstance(vault_password, str):
             raise BitwardenException("Vault password is not a string")
         BITWARDEN_SETTINGS.export_password = vault_password
         LOGGER.warning("Vault password is set from JMESPath expression")
