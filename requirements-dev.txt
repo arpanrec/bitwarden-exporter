@@ -36,6 +36,8 @@ isort==7.0.0
     # via
     #   bitwarden-exporter
     #   pylint
+jmespath==1.0.1
+    # via bitwarden-exporter
 lxml==6.0.2
     # via pykeepass
 markdown-it-py==4.0.0
@@ -109,6 +111,8 @@ tomli==2.3.0 ; python_full_version < '3.11'
     #   pylint
 tomlkit==0.13.3
     # via pylint
+types-jmespath==1.0.2.20250809
+    # via bitwarden-exporter
 types-pyyaml==6.0.12.20250915
     # via bitwarden-exporter
 types-requests==2.32.4.20250913

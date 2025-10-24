@@ -17,6 +17,8 @@ import shutil
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
+import jmespath
+
 from . import BITWARDEN_SETTINGS, BitwardenException
 from .bw_models import BwCollection, BwFolder, BwItem, BwItemAttachment, BwOrganization
 from .cli import bw_exec, download_file
@@ -83,7 +85,7 @@ def add_items_to_organization(
             collection.items[bw_item.id] = bw_item
 
 
-def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
+def main() -> None:  # pylint: disable=too-many-locals,too-many-statements,too-many-branches
     """
     Run the Bitwarden-to-KeePass export process end-to-end.
 
@@ -136,6 +138,22 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements
         organization.collections[bw_collection.id] = bw_collection
 
     bw_items_dict: List[Dict[str, Any]] = json.loads((bw_exec(["list", "items"], is_raw=False)))
+
+    if BITWARDEN_SETTINGS.export_password.startswith("jmespath:"):
+        jmespath_expression = BITWARDEN_SETTINGS.export_password[len("jmespath:") :]
+        vault_password = jmespath.search(jmespath_expression, bw_items_dict)
+
+        if not vault_password:
+            raise BitwardenException("Vault password is not found")
+
+        if isinstance(vault_password, list):
+            vault_password = vault_password[0]
+
+        if not isinstance(vault_password, str):
+            raise BitwardenException("Vault password is not a string")
+        BITWARDEN_SETTINGS.export_password = vault_password
+        LOGGER.warning("Vault password is set from JMESPath expression")
+
     raw_items["items.json"] = bw_items_dict
 
     LOGGER.warning("Fetching summary: application retrieved items from Bitwarden CLI")
