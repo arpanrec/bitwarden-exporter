@@ -17,9 +17,11 @@ The settings include:
 """
 
 import argparse
+import json
 import os
 import time
 
+import jmespath
 import pyfiglet  # type: ignore
 from pydantic import BaseModel
 
@@ -66,21 +68,24 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         "-l",
         "--export-location",
         help="Bitwarden Export Location, Default: bitwarden_dump_<timestamp>.kdbx, This is a dynamic value,"
-        " Just in case if it exists, it will be overwritten",
+             " Just in case if it exists, it will be overwritten",
         default=f"bitwarden_dump_{int(time.time())}.kdbx",
     )
 
     parser.add_argument(
         "-p",
         "--export-password",
-        help="Bitwarden Export Password or Path to Password File.",
+        help="Bitwarden Export Password or Path to Password File. "
+             " File paths can be prefixed with 'file:' to reference a file, e.g. file:secret.txt."
+             " Environment variables can be used to reference a file, e.g. env:SECRET_PASSWORD."
+        ,
         required=True,
     )
 
     parser.add_argument(
         "--allow-duplicates",
         help="Allow Duplicates entries in Export, In bitwarden each item can be in multiple collections,"
-        " Default: --no-allow-duplicates",
+             " Default: --no-allow-duplicates",
         action=argparse.BooleanOptionalAction,
         default=False,
     )
@@ -88,9 +93,9 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     parser.add_argument(
         "--tmp-dir",
         help="Temporary Directory to store temporary sensitive files,"
-        " Make sure to delete it after the export,"
-        f" Default: {os.path.abspath('bitwarden_dump_attachments')}",
-        default=os.path.abspath("bitwarden_dump_attachments"),
+             " Make sure to delete it after the export,"
+             f" Default: ./bitwarden_dump_attachments",
+        default="bitwarden_dump_attachments",
     )
 
     parser.add_argument(
@@ -102,8 +107,8 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     parser.add_argument(
         "--debug",
         help="Enable Verbose Logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,"
-        "This will not delete the temporary directory after the export,"
-        " Default: --no-debug",
+             "This will not delete the temporary directory after the export,"
+             " Default: --no-debug",
         action=argparse.BooleanOptionalAction,
         default=False,
     )
@@ -115,15 +120,34 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     if args.export_password is None:
         parser.error("Please provide --export-password")
 
-    if os.path.isfile(args.export_password):
-        with open(args.export_password, "r", encoding="utf-8") as file:
-            args.export_password = file.read().strip()
-
     return BitwardenExportSettings(
         export_location=args.export_location,
-        export_password=args.export_password,
+        export_password=__read_secret(args.export_password),
         allow_duplicates=args.allow_duplicates,
         tmp_dir=args.tmp_dir,
         debug=args.debug,
         bw_executable=args.bw_executable,
     )
+
+
+def __read_secret(secret_path: str) -> str:
+    """
+    Read a secret from a file or environment variable.
+    """
+
+    if secret_path.startswith("env:"):
+        secret_path = os.environ.get(secret_path[4:])
+        if secret_path is None or len(secret_path) == 0:
+            raise ValueError(f"Environment variable not found: {secret_path[4:]}")
+    elif secret_path.startswith("file:"):
+        secret_path = secret_path[5:]
+        if not os.path.exists(secret_path):
+            raise FileNotFoundError(f"File not found: {secret_path}")
+    else:
+        pass
+
+    if os.path.exists(secret_path):
+        with open(secret_path, "r") as f:
+            return f.read().strip()
+
+    return secret_path

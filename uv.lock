@@ -99,6 +99,7 @@ source = { editable = "." }
 dependencies = [
     { name = "cachier" },
     { name = "gnupg" },
+    { name = "jmespath" },
     { name = "pydantic" },
     { name = "pyfiglet" },
     { name = "pykeepass" },
@@ -124,6 +125,7 @@ requires-dist = [
     { name = "cachier", specifier = "==4.1.0" },
     { name = "gnupg", specifier = "==2.3.1" },
     { name = "isort", marker = "extra == 'dev'", specifier = "==7.0.0" },
+    { name = "jmespath", specifier = ">=1.0.1" },
     { name = "mypy", marker = "extra == 'dev'", specifier = "==1.18.2" },
     { name = "neovim", marker = "extra == 'dev'", specifier = "==0.3.1" },
     { name = "pydantic", specifier = "==2.12.3" },
@@ -372,6 +374,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/63/53/4f3c058e3bace40282876f9b553343376ee687f3c35a525dc79dbd450f88/isort-7.0.0.tar.gz", hash = "sha256:5513527951aadb3ac4292a41a16cbc50dd1642432f5e8c20057d414bdafb4187", size = 805049, upload-time = "2025-10-11T13:30:59.107Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7f/ed/e3705d6d02b4f7aea715a353c8ce193efd0b5db13e204df895d38734c244/isort-7.0.0-py3-none-any.whl", hash = "sha256:1bcabac8bc3c36c7fb7b98a76c8abb18e0f841a3ba81decac7691008592499c1", size = 94672, upload-time = "2025-10-11T13:30:57.665Z" },
+]
+
+[[package]]
+name = "jmespath"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/00/2a/e867e8531cf3e36b41201936b7fa7ba7b5702dbef42922193f05c8976cd6/jmespath-1.0.1.tar.gz", hash = "sha256:90261b206d6defd58fdd5e85f478bf633a2901798906be2ad389150c5c60edbe", size = 25843, upload-time = "2022-06-17T18:00:12.224Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/31/b4/b9b800c45527aadd64d5b442f9b932b00648617eb5d63d2c7a6587b7cafc/jmespath-1.0.1-py3-none-any.whl", hash = "sha256:02e2e4cc71b5bcab88332eebf907519190dd9e6e82107fa7f83b1003a6252980", size = 20256, upload-time = "2022-06-17T18:00:10.251Z" },
 ]
 
 [[package]]

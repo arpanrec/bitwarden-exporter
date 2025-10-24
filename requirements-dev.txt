@@ -36,6 +36,8 @@ isort==7.0.0
     # via
     #   bitwarden-exporter
     #   pylint
+jmespath==1.0.1
+    # via bitwarden-exporter
 lxml==6.0.2
     # via pykeepass
 markdown-it-py==4.0.0
