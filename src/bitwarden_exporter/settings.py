@@ -147,7 +147,7 @@ def __read_secret(secret_path: str) -> str:
         pass
 
     if os.path.exists(secret_path) and os.path.isfile(secret_path):
-        with open(secret_path, "r") as f:
+        with open(secret_path, "r", encoding="utf-8") as f:
             return f.read().strip()
 
     return secret_path
