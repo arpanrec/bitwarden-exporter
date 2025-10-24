@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.6.3...1.7.0) (2025-10-24)
+
+
+### Features
+
+* Add support for multiple password input methods including file paths, environment variables, and JMESPath expressions for vault queries. ([#13](https://github.com/arpanrec/bitwarden-exporter/issues/13)) ([6c13404](https://github.com/arpanrec/bitwarden-exporter/commit/6c13404c7243b9719aaa339894c538be41044931))
+
 ## [1.6.3](https://github.com/arpanrec/bitwarden-exporter/compare/1.6.2...1.6.3) (2025-10-23)
 
 
