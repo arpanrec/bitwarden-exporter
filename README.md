@@ -38,7 +38,8 @@ Structure TOTP
 
 ## Installation
 
-(Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/) from [PyPI](https://pypi.org/project/bitwarden-exporter/)
+(Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/)
+from [PyPI](https://pypi.org/project/bitwarden-exporter/)
 
 ```bash
 BW_SESSION=<session token> uvx bitwarden-exporter==VERSION --help
@@ -64,60 +65,58 @@ BW_SESSION=<session token> pipx install bitwarden-exporter
 
 ## Options
 
-```bash
-bitwarden-exporter --help
-```
+Run `bitwarden-exporter --help` to see all available options.
 
-### Export Location (-l, --export-location)
+### Required Options
 
-Bitwarden Export Location, Default: `bitwarden_dump_<timestamp>.kdbx`,
+#### `--export-password`, `-p`
 
-This is a dynamic value, Just in case if it exists, it will be overwritten.
+**Required** - Password for the exported KeePass database.
 
-### Export Password (-p, --export-password) _Required_
+You can provide the password in multiple ways:
 
-Bitwarden Export Password or Path to Password File.
+- **Direct value**: `--export-password "my-secret-password"`
+- **From file**: `--export-password file:secret.txt`
+- **From environment**: `--export-password env:SECRET_PASSWORD`
+- **From vault** (JMESPath expression):
+  `--export-password "jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value"`
 
-File paths can be prefixed with 'file:' to reference a file, e.g. file:secret.txt.
+### Optional Configuration
 
-Environment variables can be used to reference a file, e.g. env:SECRET_PASSWORD.
+#### `--export-location`, `-l`
 
-From vault, jmespath expression on `bw list items`,
+Path for the exported KeePass database file.
 
-e.g. `jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value`.
+- **Default**: `bitwarden_dump_<timestamp>.kdbx`
+- **Note**: If the file exists, it will be overwritten.
 
-### Allow Duplicates (-d, --allow-duplicates)
+#### `--allow-duplicates`, `-d`
 
-Allow Duplicates entries in Export, In bitwarden each item can be in multiple collections.
+Allow duplicate entries in the export. Since Bitwarden items can belong to multiple collections, this option controls
+whether to create duplicate entries in KeePass.
 
-Default: --no-allow-duplicates
+- **Default**: `--no-allow-duplicates`
 
-### Temporary Directory (-t, --tmp-dir)
+#### `--tmp-dir`, `-t`
 
-Temporary Directory to store temporary sensitive files, Make sure to delete it after the export.
+Custom temporary directory for storing temporary sensitive files during export.
 
-Default: Temporary Directory
+- **Default**: System temporary directory
+- **⚠️ Security Note**: Make sure to delete this directory after export.
 
-### Bitwarden CLI Executable (-e, --bw-executable)
+#### `--bw-executable`, `-e`
 
 Path to the Bitwarden CLI executable.
 
-Default: bw
+- **Default**: `bw` (from system PATH)
 
-### Debug (-d, --debug)
+#### `--debug`
 
-Enable Verbose Logging.
+Enable verbose logging for troubleshooting.
 
-This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION.
-
-**This will not delete the temporary directory after the export.**
-
-Default: --no-debug
-
-## Roadmap
-
-- Make a cloud-ready option for bitwarden zero-touch backup, Upload to cloud storage.
-- Restore back to bitwarden.
+- **Default**: `--no-debug`
+- **⚠️ Warning**: Debug logs may contain sensitive information. When enabled, the temporary directory will NOT be
+  automatically deleted.
 
 ## Credits
 
