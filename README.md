@@ -118,11 +118,6 @@ Enable verbose logging for troubleshooting.
 - **⚠️ Warning**: Debug logs may contain sensitive information. When enabled, the temporary directory will NOT be
   automatically deleted.
 
-## Roadmap
-
-- Make a cloud-ready option for bitwarden zero-touch backup, Upload to cloud storage.
-- Restore back to bitwarden.
-
 ## Credits
 
 [@ckabalan](https://github.com/ckabalan)
