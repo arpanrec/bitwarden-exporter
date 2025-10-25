@@ -63,7 +63,10 @@ def __resolve_secret(secret_path: str, all_items_list: list[dict[str, Any]]) -> 
 
     if os.path.exists(secret_path) and os.path.isfile(secret_path):
         with open(secret_path, "r", encoding="utf-8") as f:
-            return f.read().strip()
+            content = f.read().strip()
+            if not content:
+                raise ValueError(f"File is empty: {secret_path}")
+            return content
 
     return secret_path
 
