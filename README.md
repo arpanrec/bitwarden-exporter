@@ -19,10 +19,6 @@ Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for e
 - Built-in JSON snapshot of vault data for auditing.
 - Configurable CLI with options for duplicates handling, custom temp directory, debug logging, and Bitwarden CLI path.
 
-![Bitwarden Web](./docs/Screenshot_20251025_175253.png "Bitwarden Web")
-![TOTP](./docs/Screenshot_20251025_175031.png "TOTP")
-![SSH KEY](./docs/Screenshot_20251025_175050.png "SSH KEY")
-
 ## Prerequisites
 
 - [Bitwarden CLI](https://bitwarden.com/help/article/cli/#download-and-install)
@@ -112,3 +108,9 @@ for [bitwarden-attachment-exporter](https://github.com/ckabalan/bitwarden-attach
 ## License
 
 MIT
+
+## Screenshots
+
+![Bitwarden Web](./docs/Screenshot_20251025_175253_bitwarden_web.png "Bitwarden Web")
+![TOTP](./docs/Screenshot_20251025_175031_otp.png "TOTP")
+![SSH KEY](./docs/Screenshot_20251025_175050_ssh_attachments.png "SSH KEY")
