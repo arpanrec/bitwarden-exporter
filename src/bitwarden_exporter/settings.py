@@ -136,7 +136,7 @@ def __read_secret(secret_path: str) -> str:
     """
 
     if secret_path.startswith("env:"):
-        env_password = secret_path[4:]
+        env_password = os.getenv(secret_path[4:])
         if env_password is None or len(env_password) == 0:
             raise ValueError(f"Environment variable not found: {secret_path}")
         secret_path = env_password
