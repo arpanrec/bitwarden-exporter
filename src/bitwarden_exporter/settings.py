@@ -119,8 +119,8 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     if args.export_password is None:
         parser.error("Please provide --export-password")
 
-    if args.tmp_dir is None or args.tmp_dir == "":
-        args.tmp_dir = tempfile.mkdtemp()
+    if not args.tmp_dir:
+        args.tmp_dir = tempfile.mkdtemp(prefix="bitwarden_exporter_")
 
     return BitwardenExportSettings(
         export_location=args.export_location,
