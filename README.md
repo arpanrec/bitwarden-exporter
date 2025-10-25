@@ -19,6 +19,8 @@ Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for e
 - Built-in JSON snapshot of vault data for auditing.
 - Configurable CLI with options for duplicates handling, custom temp directory, debug logging, and Bitwarden CLI path.
 
+![Bitwarden Web](./docs/Screenshot_20251025_175253.png "Bitwarden Web")![TOTP](./docs/Screenshot_20251025_175031.png "TOTP")
+
 ## Prerequisites
 
 - [Bitwarden CLI](https://bitwarden.com/help/article/cli/#download-and-install)
