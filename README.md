@@ -96,7 +96,7 @@ Default: --no-allow-duplicates
 
 Temporary Directory to store temporary sensitive files, Make sure to delete it after the export.
 
-Default: ./bitwarden_dump_attachments
+Default: Temporary Directory
 
 #### Bitwarden CLI Executable (-e, --bw-executable)
 

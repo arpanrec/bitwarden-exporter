@@ -17,7 +17,7 @@ The settings include:
 """
 
 import argparse
-import os
+import tempfile
 import time
 
 import pyfiglet  # type: ignore
@@ -94,8 +94,7 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         "--tmp-dir",
         help="Temporary Directory to store temporary sensitive files,"
         " Make sure to delete it after the export,"
-        f" Default: {os.path.abspath('bitwarden_dump_attachments')}",
-        default=os.path.abspath("bitwarden_dump_attachments"),
+        " Default: Temporary Directory",
     )
 
     parser.add_argument(
@@ -120,37 +119,14 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
     if args.export_password is None:
         parser.error("Please provide --export-password")
 
+    if args.tmp_dir is None or args.tmp_dir == "":
+        args.tmp_dir = tempfile.TemporaryDirectory(delete=False).name  # pylint: disable=consider-using-with
+
     return BitwardenExportSettings(
         export_location=args.export_location,
-        export_password=__read_secret(args.export_password),
+        export_password=args.export_password,
         allow_duplicates=args.allow_duplicates,
         tmp_dir=args.tmp_dir,
         debug=args.debug,
         bw_executable=args.bw_executable,
     )
-
-
-def __read_secret(secret_path: str) -> str:
-    """
-    Read a secret from a file or environment variable.
-    """
-
-    if secret_path.startswith("env:"):
-        env_password = os.getenv(secret_path[4:])
-        if env_password is None or len(env_password) == 0:
-            raise ValueError(f"Environment variable not found: {secret_path}")
-        secret_path = env_password
-    elif secret_path.startswith("file:"):
-        secret_path = secret_path[5:]
-        if not os.path.exists(secret_path):
-            raise FileNotFoundError(f"File not found: {secret_path}")
-        if not os.path.isfile(secret_path):
-            raise ValueError(f"File is not a file: {secret_path}")
-    else:
-        pass
-
-    if os.path.exists(secret_path) and os.path.isfile(secret_path):
-        with open(secret_path, "r", encoding="utf-8") as f:
-            return f.read().strip()
-
-    return secret_path

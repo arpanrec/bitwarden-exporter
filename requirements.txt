@@ -21,7 +21,7 @@ lxml==6.0.2
     # via pykeepass
 portalocker==3.2.0
     # via cachier
-psutil==7.1.1
+psutil==7.1.2
     # via gnupg
 pycparser==2.23 ; implementation_name != 'PyPy'
     # via cffi
