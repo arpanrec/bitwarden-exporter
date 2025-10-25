@@ -1,8 +1,5 @@
 # Screen Shots
 
-Bitwarden Web
-![Bitwarden Web](./Screenshot_webvault.png "Bitwarden Web")
-
 SSH Keys
 ![SSH KEY](./Screenshot_ssh_key.png "SSH KEY")
 
