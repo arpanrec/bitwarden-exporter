@@ -38,7 +38,7 @@ Structure TOTP
 
 ## Installation
 
-(Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/)
+(Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/) from [PyPI](https://pypi.org/project/bitwarden-exporter/)
 
 ```bash
 BW_SESSION=<session token> uvx bitwarden-exporter==VERSION --help
@@ -50,13 +50,13 @@ or
 BW_SESSION=<session token> uvx bitwarden-exporter --help
 ```
 
-Run it from source
+Run it from [source](https://github.com/arpanrec/bitwarden-exporter)
 
 ```bash
 BW_SESSION=<session token> uvx git+https://github.com/arpanrec/bitwarden-exporter.git@main bitwarden-exporter --help
 ```
 
-Install with [pipx](https://github.com/pypa/pipx)
+Install with [pipx](https://github.com/pypa/pipx) from [PyPI](https://pypi.org/project/bitwarden-exporter/)
 
 ```bash
 BW_SESSION=<session token> pipx install bitwarden-exporter
