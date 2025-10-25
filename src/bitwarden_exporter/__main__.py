@@ -43,7 +43,7 @@ def __resolve_secret(secret_path: str, all_items_list: list[dict[str, Any]]) -> 
             raise FileNotFoundError(f"File not found: {secret_path}")
         if not os.path.isfile(secret_path):
             raise ValueError(f"File is not a file: {secret_path}")
-    if secret_path.startswith("jmespath:"):
+    elif secret_path.startswith("jmespath:"):
         jmespath_expression = secret_path[len("jmespath:") :]
         jmespath_password = jmespath.search(jmespath_expression, all_items_list)
 
