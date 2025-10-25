@@ -31,6 +31,11 @@ Structure TOTP
 
 - [Bitwarden CLI](https://bitwarden.com/help/article/cli/#download-and-install)
 
+- [Python](https://www.python.org/)
+  - [uvx](https://docs.astral.sh/uv/guides/tools/) (optional)
+  - [pipx](https://github.com/pypa/pipx) (optional)
+  - venv (optional)
+
 ### (Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/)
 
 ```bash
