@@ -1,3 +1,10 @@
+## [1.7.2](https://github.com/arpanrec/bitwarden-exporter/compare/1.7.1...1.7.2) (2025-10-25)
+
+
+### Bug Fixes
+
+* Temporary directory default changed from './bitwarden_dump_attachments' to system temp directory ([#15](https://github.com/arpanrec/bitwarden-exporter/issues/15)) ([e2ddde4](https://github.com/arpanrec/bitwarden-exporter/commit/e2ddde46be46565791ab889aa4654332feebb643))
+
 ## [1.7.1](https://github.com/arpanrec/bitwarden-exporter/compare/1.7.0...1.7.1) (2025-10-25)
 
 
