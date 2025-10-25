@@ -60,8 +60,6 @@ def __resolve_secret(secret_path: str, all_items_list: list[dict[str, Any]]) -> 
 
         LOGGER.warning("Vault password is set from JMESPath expression")
         secret_path = jmespath_password
-    else:
-        pass
 
     if os.path.exists(secret_path) and os.path.isfile(secret_path):
         with open(secret_path, "r", encoding="utf-8") as f:
