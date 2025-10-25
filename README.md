@@ -43,6 +43,12 @@ or
 BW_SESSION=<session token> uvx bitwarden-exporter --help
 ```
 
+Run it from source
+
+```bash
+BW_SESSION=<session token> uvx git+https://github.com/arpanrec/bitwarden-exporter.git@main bitwarden-exporter --help
+```
+
 ### Install with [pipx](https://github.com/pypa/pipx)
 
 ```bash
