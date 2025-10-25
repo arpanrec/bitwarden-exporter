@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/arpanrec/bitwarden-exporter/compare/1.7.0...1.7.1) (2025-10-25)
+
+
+### Bug Fixes
+
+* use `os.getenv` to retrieve environment variables in secret handling ([ed4a9e4](https://github.com/arpanrec/bitwarden-exporter/commit/ed4a9e40f449d7ec2476b4e300a4b913b99599d4))
+
 # [1.7.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.6.3...1.7.0) (2025-10-24)
 
 
