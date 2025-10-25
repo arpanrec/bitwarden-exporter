@@ -28,22 +28,21 @@ LOGGER = logging.getLogger(__name__)
 
 
 def __resolve_secret(secret_path: str, all_items_list: list[dict[str, Any]]) -> str:
-def __resolve_secret(secret_path: str, all_items_list: list[dict[str, Any]]) -> str:
     """
     Resolve a secret from multiple sources with optional file indirection.
-    
+
     Supports three prefix types:
     - env:<VAR_NAME>: Read from environment variable
-    - file:<PATH>: Read from file at the given path
+    - file:<PATH>: Read from a file at the given path
     - jmespath:<EXPR>: Evaluate JMESPath expression against all_items_list
-    
+
     After prefix resolution, if the result is a valid file path, its contents
     are read and returned. Otherwise, the resolved value is returned as-is.
-    
+
     Args:
         secret_path: The secret identifier with optional prefix
         all_items_list: List of Bitwarden items for JMESPath evaluation
-        
+
     Returns:
         The resolved secret string
     """
