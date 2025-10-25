@@ -51,6 +51,8 @@ def __resolve_secret(secret_path: str, all_items_list: list[dict[str, Any]]) -> 
             raise BitwardenException("Vault password is not found")
 
         if isinstance(jmespath_password, list):
+            if len(jmespath_password) == 0:
+                raise BitwardenException("JMESPath expression returned empty list")
             jmespath_password = jmespath_password[0]
 
         if not isinstance(jmespath_password, str):
