@@ -70,10 +70,10 @@ dev = [
     "mypy==1.18.2",
     "neovim==0.3.1",
     "pylint==4.0.2",
-    "pyright==1.1.406",
+    "pyright==1.1.407",
     "types-pyyaml==6.0.12.20250915",
     "types-requests==2.32.4.20250913",
-    "types-jmespath==1.0.2.20250809"
+    "types-jmespath==1.0.2.20250809",
 ]
 
 [[tool.uv.index]]

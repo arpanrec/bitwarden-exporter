@@ -20,10 +20,10 @@ Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for e
 - Configurable CLI with options for duplicates handling, custom temp directory, debug logging, and Bitwarden CLI path.
 
 Bitwarden Web
-![Bitwarden Web](./docs/Screenshot_webvault.png "Bitwarden Web")
+![Bitwarden Web](./docs/Screenshot_webvault.png 'Bitwarden Web')
 
 Structure TOTP
-![Structure TOTP](./docs/Screenshot_structure_totp.png "Structure TOTP")
+![Structure TOTP](./docs/Screenshot_structure_totp.png 'Structure TOTP')
 
 [Other screenshots](./docs/screenshots.md).
 
@@ -36,7 +36,9 @@ Structure TOTP
   - [pipx](https://github.com/pypa/pipx) (optional)
   - venv (optional)
 
-### (Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/)
+## Installation
+
+(Recommended) Run with [uvx](https://docs.astral.sh/uv/guides/tools/)
 
 ```bash
 BW_SESSION=<session token> uvx bitwarden-exporter==VERSION --help
@@ -54,27 +56,25 @@ Run it from source
 BW_SESSION=<session token> uvx git+https://github.com/arpanrec/bitwarden-exporter.git@main bitwarden-exporter --help
 ```
 
-### Install with [pipx](https://github.com/pypa/pipx)
+Install with [pipx](https://github.com/pypa/pipx)
 
 ```bash
 BW_SESSION=<session token> pipx install bitwarden-exporter
 ```
 
-### Options
+## Options
 
 ```bash
 bitwarden-exporter --help
 ```
 
-#### Export Location (-l, --export-location)
+### Export Location (-l, --export-location)
 
 Bitwarden Export Location, Default: `bitwarden_dump_<timestamp>.kdbx`,
 
 This is a dynamic value, Just in case if it exists, it will be overwritten.
 
-#### Export Password (-p, --export-password)
-
-- Required
+### Export Password (-p, --export-password) _Required_
 
 Bitwarden Export Password or Path to Password File.
 
@@ -86,25 +86,25 @@ From vault, jmespath expression on `bw list items`,
 
 e.g. `jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value`.
 
-#### Allow Duplicates (-d, --allow-duplicates)
+### Allow Duplicates (-d, --allow-duplicates)
 
 Allow Duplicates entries in Export, In bitwarden each item can be in multiple collections.
 
 Default: --no-allow-duplicates
 
-#### Temporary Directory (-t, --tmp-dir)
+### Temporary Directory (-t, --tmp-dir)
 
 Temporary Directory to store temporary sensitive files, Make sure to delete it after the export.
 
-Default: ./bitwarden_dump_attachments
+Default: Temporary Directory
 
-#### Bitwarden CLI Executable (-e, --bw-executable)
+### Bitwarden CLI Executable (-e, --bw-executable)
 
 Path to the Bitwarden CLI executable.
 
 Default: bw
 
-#### Debug (-d, --debug)
+### Debug (-d, --debug)
 
 Enable Verbose Logging.
 
