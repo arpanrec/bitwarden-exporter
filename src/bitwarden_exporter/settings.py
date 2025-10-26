@@ -17,15 +17,15 @@ The settings include:
 """
 
 import argparse
-import os
 import tempfile
 import time
+from importlib.metadata import PackageNotFoundError, version
 from typing import Optional
-from importlib.metadata import version, PackageNotFoundError
 
 from pydantic import BaseModel
 
 from . import constants
+
 
 class BitwardenExportSettings(BaseModel):
     """
@@ -114,8 +114,8 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
 
     try:
         uv_version = version(constants.APPLICATION_PACKAGE_NAME)
-    except PackageNotFoundError:
-        raise SystemExit(f"Package {constants.APPLICATION_PACKAGE_NAME} not found")
+    except PackageNotFoundError as e:
+        raise SystemExit(f"Package {constants.APPLICATION_PACKAGE_NAME} not found") from e
 
     parser.add_argument(
         "--version",

@@ -28,6 +28,7 @@ from .keepass import KeePassStorage
 LOGGER = logging.getLogger(__name__)
 
 
+# pylint: disable=too-many-branches
 def __resolve_secret(secret_path: str, all_items_list: Optional[list[dict[str, Any]]]) -> str:
     """
     Resolve a secret from multiple sources with optional file indirection.

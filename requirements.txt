@@ -11,6 +11,8 @@ cffi==2.0.0
     # via argon2-cffi-bindings
 construct==2.10.70
     # via pykeepass
+importlib-metadata==8.7.0
+    # via bitwarden-exporter
 jmespath==1.0.1
     # via bitwarden-exporter
 lxml==6.0.2
@@ -34,3 +36,5 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
+zipp==3.23.0
+    # via importlib-metadata
