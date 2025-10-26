@@ -62,7 +62,7 @@ def __resolve_secret(secret_path: str, all_items_list: Optional[list[dict[str, A
             raise ValueError(f"File is not a file: {secret_path}")
     elif secret_path.startswith("jmespath:"):
         if not all_items_list:
-            raise BitwardenException("Vault password is not set")
+            raise BitwardenException("Cannot use JMESPath expressions: vault items not available")
         jmespath_expression = secret_path[len("jmespath:") :]
         jmespath_password = jmespath.search(jmespath_expression, all_items_list)
 
