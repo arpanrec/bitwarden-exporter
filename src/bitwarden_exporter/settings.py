@@ -119,7 +119,6 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
 
     with open(
         os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "version.txt"),
-        "r",
         encoding="utf-8",
     ) as f:
         cli_version = f.read()
