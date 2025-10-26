@@ -129,9 +129,6 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         version=cli_version,
     )
 
-    args = parser.parse_args()
-
-    # Print banner only for actual export runs, not for --help or --version
     with open(
         os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "ascii.txt"), encoding="utf-8"
     ) as f:
