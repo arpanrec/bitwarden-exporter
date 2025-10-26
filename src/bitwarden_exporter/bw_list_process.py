@@ -167,9 +167,6 @@ def main(settings: BitwardenExportSettings) -> None:
     bw_current_status = json.loads(bw_exec(["status"], is_raw=False, settings=settings))
     raw_items["status.json"] = bw_current_status
 
-    if bw_current_status["status"] == "unlocked":
-        settings.session_token = None
-
     if bw_current_status["status"] != "unlocked":
         raise BitwardenException("Vault is not unlocked")
     LOGGER.debug("Vault status: %s", json.dumps(bw_current_status))

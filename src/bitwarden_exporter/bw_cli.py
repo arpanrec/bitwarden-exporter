@@ -83,9 +83,6 @@ def bw_exec(
     if env_vars is not None:
         cli_env_vars.update(env_vars)
 
-    if settings.session_token:
-        cli_env_vars["BW_SESSION"] = settings.session_token
-
     LOGGER.debug("Executing CLI :: %s", " ".join(cmd))
     try:
         command_out = subprocess.run(
