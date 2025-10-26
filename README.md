@@ -110,6 +110,10 @@ Path to the Bitwarden CLI executable.
 
 - **Default**: `bw` (from system PATH)
 
+#### `--version`
+
+Show the version and exit.
+
 #### `--debug`
 
 Enable verbose logging for troubleshooting.

@@ -39,10 +39,10 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v5.0.0
 
-            - name: Install uv 0.9.3
-              uses: astral-sh/setup-uv@v7.1.0
+            - name: Install uv 0.9.5
+              uses: astral-sh/setup-uv@v7.1.1
               with:
-                  version: "0.9.3"
+                  version: "0.9.5"
                   python-version: "${{ matrix.python-version }}"
                   enable-cache: true
                   cache-suffix: python-${{ matrix.python-version }}

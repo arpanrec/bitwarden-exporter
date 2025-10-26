@@ -13,8 +13,6 @@ bandit==1.8.6
     # via bitwarden-exporter
 black==25.9.0
     # via bitwarden-exporter
-cachier==4.1.0
-    # via bitwarden-exporter
 cffi==2.0.0
     # via argon2-cffi-bindings
 click==8.3.0
@@ -28,8 +26,6 @@ construct==2.10.70
     # via pykeepass
 dill==0.4.0
     # via pylint
-gnupg==2.3.1
-    # via bitwarden-exporter
 greenlet==3.2.4 ; platform_python_implementation != 'PyPy'
     # via pynvim
 isort==7.0.0
@@ -68,10 +64,6 @@ platformdirs==4.5.0
     # via
     #   black
     #   pylint
-portalocker==3.2.0
-    # via cachier
-psutil==7.1.2
-    # via gnupg
 pycparser==2.23 ; implementation_name != 'PyPy'
     # via cffi
 pycryptodomex==3.23.0
@@ -80,8 +72,6 @@ pydantic==2.12.3
     # via bitwarden-exporter
 pydantic-core==2.41.4
     # via pydantic
-pyfiglet==1.0.4
-    # via bitwarden-exporter
 pygments==2.19.2
     # via rich
 pykeepass==4.1.1.post1
@@ -96,8 +86,6 @@ pyright==1.1.407
     # via bitwarden-exporter
 pytokens==0.2.0
     # via black
-pywin32==311 ; sys_platform == 'win32'
-    # via portalocker
 pyyaml==6.0.3
     # via bandit
 rich==14.2.0
@@ -113,10 +101,6 @@ tomlkit==0.13.3
     # via pylint
 types-jmespath==1.0.2.20250809
     # via bitwarden-exporter
-types-pyyaml==6.0.12.20250915
-    # via bitwarden-exporter
-types-requests==2.32.4.20250913
-    # via bitwarden-exporter
 typing-extensions==4.15.0
     # via
     #   astroid
@@ -129,7 +113,3 @@ typing-extensions==4.15.0
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
-urllib3==2.5.0
-    # via types-requests
-watchdog==6.0.0
-    # via cachier

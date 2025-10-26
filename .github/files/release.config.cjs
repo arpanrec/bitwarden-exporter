@@ -30,6 +30,7 @@ module.exports = {
                     'uv version ${nextRelease.version}',
                     'uv export --format requirements.txt --no-hashes -o requirements.txt',
                     'uv export --format requirements.txt --no-hashes --extra dev -o requirements-dev.txt',
+                    'echo ${nextRelease.version} | tee src/bitwarden_exporter/resources/version.txt',
                     'uv build',
                     `uv publish --index test-pypi --token ${process.env.PYPI_TEST_API_TOKEN}`,
                 ].join(' && '),
@@ -45,21 +46,28 @@ module.exports = {
         [
             '@semantic-release/git',
             {
-                assets: ['CHANGELOG.md', 'pyproject.toml', 'uv.lock', 'requirements.txt', 'requirements-dev.txt'],
+                assets: [
+                    'CHANGELOG.md',
+                    'pyproject.toml',
+                    'uv.lock',
+                    'requirements.txt',
+                    'requirements-dev.txt',
+                    'src/bitwarden_exporter/resources/version.txt',
+                ],
                 message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
             },
         ],
-        [
-            '@semantic-release/github',
-            {
-                assets: [
-                    {
-                        path: 'dist/bitwarden_exporter-*-py3-none-any.whl',
-                        label: 'bitwarden_exporter-py3-none-any.whl',
-                    },
-                    { path: 'dist/bitwarden_exporter-*.tar.gz', label: 'bitwarden_exporter.tar.gz' },
-                ],
-            },
-        ],
+        // [
+        //     '@semantic-release/github',
+        //     {
+        //         assets: [
+        //             {
+        //                 path: 'dist/bitwarden_exporter-*-py3-none-any.whl',
+        //                 label: 'bitwarden_exporter-py3-none-any.whl',
+        //             },
+        //             { path: 'dist/bitwarden_exporter-*.tar.gz', label: 'bitwarden_exporter.tar.gz' },
+        //         ],
+        //     },
+        // ],
     ],
 };
