@@ -17,10 +17,10 @@ The settings include:
 """
 
 import argparse
+import os
 import tempfile
 import time
 
-import pyfiglet  # type: ignore
 from pydantic import BaseModel
 
 
@@ -69,22 +69,23 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         " Just in case if it exists, it will be overwritten",
         default=f"bitwarden_dump_{int(time.time())}.kdbx",
     )
+    with open(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "cli-help-password.txt"),
+        "r",
+        encoding="utf-8",
+    ) as f:
+        cli_help_password = f.read()
 
     parser.add_argument(
         "-p",
         "--export-password",
-        help="Bitwarden Export Password or Path to Password File."
-        " File paths can be prefixed with 'file:' to reference a file, e.g. file:secret.txt."
-        " Environment variables can be used to reference a file, e.g. env:SECRET_PASSWORD."
-        " From vault, jmespath expression on `bw list items`, e.g. jmespath:["
-        "?id=='xx-xx-xx-xxx-xxx'].fields[] | ["
-        "?name=='export-password'].value",
+        help=cli_help_password,
         required=True,
     )
 
     parser.add_argument(
         "--allow-duplicates",
-        help="Allow Duplicates entries in Export, In bitwarden each item can be in multiple collections,"
+        help="Allow duplicates entries in export, In bitwarden each item can be in multiple collections,"
         " Default: --no-allow-duplicates",
         action=argparse.BooleanOptionalAction,
         default=False,
@@ -92,9 +93,9 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
 
     parser.add_argument(
         "--tmp-dir",
-        help="Temporary Directory to store temporary sensitive files,"
+        help="Temporary directory to store temporary sensitive files,"
         " Make sure to delete it after the export,"
-        " Default: Temporary Directory",
+        " Default: Temporary directory",
     )
 
     parser.add_argument(
@@ -103,17 +104,38 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         default="bw",
     )
 
+    with open(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "cli-help-debug.txt"),
+        "r",
+        encoding="utf-8",
+    ) as f:
+        cli_debug_help = f.read()
+
     parser.add_argument(
         "--debug",
-        help="Enable Verbose Logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,"
-        "This will not delete the temporary directory after the export,"
-        " Default: --no-debug",
+        help=cli_debug_help,
         action=argparse.BooleanOptionalAction,
         default=False,
     )
 
-    if __name__ == "__main__":
-        print(pyfiglet.figlet_format("Bitwarden Exporter"))
+    with open(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "version.txt"),
+        "r",
+        encoding="utf-8",
+    ) as f:
+        cli_version = f.read()
+
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=cli_version,
+    )
+
+    with open(
+        os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "ascii.txt"), "r", encoding="utf-8"
+    ) as f:
+        print(f.read())
+
     args = parser.parse_args()
 
     if args.export_password is None:
