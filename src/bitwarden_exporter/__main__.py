@@ -14,6 +14,7 @@ import json
 import logging
 import os.path
 import shutil
+import sys
 from datetime import datetime, timezone
 from typing import Any, Dict, List
 
@@ -275,4 +276,8 @@ def main() -> None:  # pylint: disable=too-many-locals,too-many-statements,too-m
 
 
 if __name__ == "__main__":
+
+    if sys.version_info < (3, 10, 0):
+        raise RuntimeError("Python 3.10 or higher is required")
+
     main()
