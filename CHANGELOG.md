@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/arpanrec/bitwarden-exporter/compare/1.8.0...1.8.1) (2025-10-26)
+
+
+### Bug Fixes
+
+* remove unused dependencies and update workflow UV versions ([#26](https://github.com/arpanrec/bitwarden-exporter/issues/26)) ([cda9577](https://github.com/arpanrec/bitwarden-exporter/commit/cda9577f136a2ce68b8bc0a1714e6b25e724bacb))
+
 # [1.8.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.7.2...1.8.0) (2025-10-26)
 
 
