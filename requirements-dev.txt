@@ -16,7 +16,9 @@ black==25.9.0
 cffi==2.0.0
     # via argon2-cffi-bindings
 click==8.3.0
-    # via black
+    # via
+    #   black
+    #   typer
 colorama==0.4.6 ; sys_platform == 'win32'
     # via
     #   bandit
@@ -91,7 +93,11 @@ pytokens==0.2.0
 pyyaml==6.0.3
     # via bandit
 rich==14.2.0
-    # via bandit
+    # via
+    #   bandit
+    #   typer
+shellingham==1.5.4
+    # via typer
 stevedore==5.5.0
     # via bandit
 tomli==2.3.0 ; python_full_version < '3.11'
@@ -101,6 +107,8 @@ tomli==2.3.0 ; python_full_version < '3.11'
     #   pylint
 tomlkit==0.13.3
     # via pylint
+typer==0.20.0
+    # via bitwarden-exporter
 types-jmespath==1.0.2.20250809
     # via bitwarden-exporter
 typing-extensions==4.15.0
@@ -112,6 +120,7 @@ typing-extensions==4.15.0
     #   pydantic-core
     #   pynvim
     #   pyright
+    #   typer
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic

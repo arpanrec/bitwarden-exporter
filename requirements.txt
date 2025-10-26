@@ -9,6 +9,10 @@ argon2-cffi-bindings==25.1.0
     # via argon2-cffi
 cffi==2.0.0
     # via argon2-cffi-bindings
+click==8.3.0
+    # via typer
+colorama==0.4.6 ; sys_platform == 'win32'
+    # via click
 construct==2.10.70
     # via pykeepass
 importlib-metadata==8.7.0
@@ -17,6 +21,10 @@ jmespath==1.0.1
     # via bitwarden-exporter
 lxml==6.0.2
     # via pykeepass
+markdown-it-py==4.0.0
+    # via rich
+mdurl==0.1.2
+    # via markdown-it-py
 pycparser==2.23 ; implementation_name != 'PyPy'
     # via cffi
 pycryptodomex==3.23.0
@@ -25,14 +33,23 @@ pydantic==2.12.3
     # via bitwarden-exporter
 pydantic-core==2.41.4
     # via pydantic
+pygments==2.19.2
+    # via rich
 pykeepass==4.1.1.post1
     # via bitwarden-exporter
 pyotp==2.9.0
     # via pykeepass
+rich==14.2.0
+    # via typer
+shellingham==1.5.4
+    # via typer
+typer==0.20.0
+    # via bitwarden-exporter
 typing-extensions==4.15.0
     # via
     #   pydantic
     #   pydantic-core
+    #   typer
     #   typing-inspection
 typing-inspection==0.4.2
     # via pydantic
