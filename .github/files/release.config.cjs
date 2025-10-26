@@ -46,7 +46,14 @@ module.exports = {
         [
             '@semantic-release/git',
             {
-                assets: ['CHANGELOG.md', 'pyproject.toml', 'uv.lock', 'requirements.txt', 'requirements-dev.txt'],
+                assets: [
+                    'CHANGELOG.md',
+                    'pyproject.toml',
+                    'uv.lock',
+                    'requirements.txt',
+                    'requirements-dev.txt',
+                    'src/bitwarden_exporter/resources/version.txt',
+                ],
                 message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
             },
         ],
