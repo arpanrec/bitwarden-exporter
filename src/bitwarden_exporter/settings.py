@@ -129,12 +129,12 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         version=cli_version,
     )
 
+    args = parser.parse_args()
+
     with open(
         os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "ascii.txt"), encoding="utf-8"
     ) as f:
         print(f.read())
-
-    args = parser.parse_args()
 
     if args.export_password is None:
         parser.error("Please provide --export-password")
