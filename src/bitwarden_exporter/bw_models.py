@@ -163,7 +163,7 @@ class BwItem(BaseModel):
         reprompt: Reprompt policy value.
         name: Human-readable item title.
         notes: Optional freeform notes.
-        favorite: Whether the item is marked as favorite.
+        favorite: Whether the item is marked as a favorite.
         login: Login-specific details (username/password/uris/totp), if any.
         sshKey: Optional SSH key bundle if stored with the item.
         collectionIds: Organization collection IDs this item belongs to.
