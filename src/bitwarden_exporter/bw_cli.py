@@ -15,12 +15,12 @@ import os.path
 import subprocess  # nosec B404
 from typing import Dict, List, Optional
 
-from . import BITWARDEN_SETTINGS
+from . import BitwardenExportSettings
 
 LOGGER = logging.getLogger(__name__)
 
 
-def download_file(item_id: str, attachment_id: str, download_location: str) -> None:
+def download_file(item_id: str, attachment_id: str, download_location: str, settings: BitwardenExportSettings) -> None:
     """
     Download an attachment from Bitwarden to a local path.
 
@@ -29,6 +29,7 @@ def download_file(item_id: str, attachment_id: str, download_location: str) -> N
         attachment_id: The attachment identifier within the item.
         download_location: Absolute or relative path where the file will be saved. Parent
             directories are created if missing. If the file already exists, the download is skipped.
+        settings: BitwardenExportSettings instance.
 
     Returns:
         None
@@ -42,17 +43,26 @@ def download_file(item_id: str, attachment_id: str, download_location: str) -> N
         LOGGER.info("File already exists, skipping download")
         return
 
-    bw_exec(["get", "attachment", attachment_id, "--itemid", item_id, "--output", download_location], is_raw=False)
+    bw_exec(
+        ["get", "attachment", attachment_id, "--itemid", item_id, "--output", download_location],
+        is_raw=False,
+        settings=settings,
+    )
 
 
 def bw_exec(
-    cmd: List[str], ret_encoding: str = "UTF-8", env_vars: Optional[Dict[str, str]] = None, is_raw: bool = True
+    cmd: List[str],
+    settings: BitwardenExportSettings,
+    ret_encoding: str = "UTF-8",
+    env_vars: Optional[Dict[str, str]] = None,
+    is_raw: bool = True,
 ) -> str:
     """
     Execute the Bitwarden CLI and return stdout.
 
     Args:
         cmd: Arguments to pass to the bw executable (e.g., ["list", "items"]).
+        settings: BitwardenExportSettings instance.
         ret_encoding: The character encoding for stdout/stderr decoding.
         env_vars: Optional environment variables to add/override for this invocation.
         is_raw: When True, appends --raw to the command to simplify parsing.
@@ -63,7 +73,7 @@ def bw_exec(
     Raises:
         ValueError: If the command returns a non-zero exit status.
     """
-    cmd = [BITWARDEN_SETTINGS.bw_executable] + cmd
+    cmd = [settings.bw_executable] + cmd
 
     if is_raw:
         cmd.append("--raw")
@@ -72,6 +82,10 @@ def bw_exec(
 
     if env_vars is not None:
         cli_env_vars.update(env_vars)
+
+    if settings.session_token:
+        cli_env_vars["BW_SESSION"] = settings.session_token
+
     LOGGER.debug("Executing CLI :: %s", " ".join(cmd))
     try:
         command_out = subprocess.run(
