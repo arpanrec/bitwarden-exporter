@@ -20,9 +20,12 @@ import argparse
 import os
 import tempfile
 import time
+from typing import Optional
+from importlib.metadata import version, PackageNotFoundError
 
 from pydantic import BaseModel
 
+from . import constants
 
 class BitwardenExportSettings(BaseModel):
     """
@@ -30,11 +33,13 @@ class BitwardenExportSettings(BaseModel):
 
     Attributes:
         export_location: Absolute or relative path to the output KeePass (.kdbx) file.
-        export_password: KeePass database password as plain text (read from file if a path is supplied).
+        export_password: KeePass database password as plain text (read from a file if a path is supplied).
         allow_duplicates: If True, items that belong to multiple collections will be duplicated across them.
         tmp_dir: Directory used to store temporary, sensitive artifacts (attachments, SSH keys) during export.
         debug: Enables verbose logging and keeps the temporary directory after export for troubleshooting.
         bw_executable: Path or command name of the Bitwarden CLI executable (defaults to "bw").
+        master_password: Master password for a Bitwarden account, if not using session token.
+        session_token: Session token for a Bitwarden account, if not using master password.
     """
 
     export_location: str
@@ -43,6 +48,8 @@ class BitwardenExportSettings(BaseModel):
     tmp_dir: str
     debug: bool
     bw_executable: str = "bw"
+    master_password: Optional[str] = None
+    session_token: Optional[str] = None
 
 
 def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
@@ -69,17 +76,11 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         " Just in case if it exists, it will be overwritten",
         default=f"bitwarden_dump_{int(time.time())}.kdbx",
     )
-    with open(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "cli-help-password.txt"),
-        "r",
-        encoding="utf-8",
-    ) as f:
-        cli_help_password = f.read()
 
     parser.add_argument(
         "-p",
         "--export-password",
-        help=cli_help_password,
+        help=constants.CLI_EXPORT_PASSWORD_HELP,
         required=True,
     )
 
@@ -104,37 +105,41 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         default="bw",
     )
 
-    with open(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "cli-help-debug.txt"),
-        encoding="utf-8",
-    ) as f:
-        cli_debug_help = f.read()
-
     parser.add_argument(
         "--debug",
-        help=cli_debug_help,
+        help=constants.CLI_DEBUG_HELP,
         action=argparse.BooleanOptionalAction,
         default=False,
     )
 
-    with open(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "version.txt"),
-        encoding="utf-8",
-    ) as f:
-        cli_version = f.read()
+    try:
+        uv_version = version(constants.APPLICATION_PACKAGE_NAME)
+    except PackageNotFoundError:
+        raise SystemExit(f"Package {constants.APPLICATION_PACKAGE_NAME} not found")
 
     parser.add_argument(
         "--version",
         action="version",
-        version=cli_version,
+        version=uv_version,
+    )
+
+    parser.add_argument(
+        "--master-password",
+        help=constants.CLI_MASTER_PASSWORD_HELP,
+        default=None,
+        required=False,
+    )
+
+    parser.add_argument(
+        "--session-token",
+        help=constants.CLI_SESSION_TOKEN_HELP,
+        default=None,
+        required=False,
     )
 
     args = parser.parse_args()
 
-    with open(
-        os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", "ascii.txt"), encoding="utf-8"
-    ) as f:
-        print(f.read())
+    print(constants.APPLICATION_NAME_ASCII)
 
     if args.export_password is None:
         parser.error("Please provide --export-password")
@@ -149,4 +154,6 @@ def get_bitwarden_settings_based_on_args() -> BitwardenExportSettings:
         tmp_dir=args.tmp_dir,
         debug=args.debug,
         bw_executable=args.bw_executable,
+        master_password=args.master_password,
+        session_token=args.session_token,
     )

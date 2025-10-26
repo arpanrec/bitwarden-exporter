@@ -16,7 +16,7 @@ import os.path
 import shutil
 import sys
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 import jmespath
 
@@ -28,7 +28,7 @@ from .keepass import KeePassStorage
 LOGGER = logging.getLogger(__name__)
 
 
-def __resolve_secret(secret_path: str, all_items_list: list[dict[str, Any]]) -> str:
+def __resolve_secret(secret_path: str, all_items_list: Optional[list[dict[str, Any]]]) -> str:
     """
     Resolve a secret from multiple sources with optional file indirection.
 
@@ -60,6 +60,8 @@ def __resolve_secret(secret_path: str, all_items_list: list[dict[str, Any]]) -> 
         if not os.path.isfile(secret_path):
             raise ValueError(f"File is not a file: {secret_path}")
     elif secret_path.startswith("jmespath:"):
+        if not all_items_list:
+            raise BitwardenException("Vault password is not set")
         jmespath_expression = secret_path[len("jmespath:") :]
         jmespath_password = jmespath.search(jmespath_expression, all_items_list)
 
