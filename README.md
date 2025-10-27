@@ -42,19 +42,19 @@ Structure TOTP
 from [PyPI](https://pypi.org/project/bitwarden-exporter/)
 
 ```bash
-BW_SESSION=<session token> uvx bitwarden-exporter==VERSION --help
+BW_SESSION=<session token> uvx bitwarden-exporter==VERSION keepass --help
 ```
 
 or
 
 ```bash
-BW_SESSION=<session token> uvx bitwarden-exporter --help
+BW_SESSION=<session token> uvx bitwarden-exporter keepass --help
 ```
 
 Run it from [source](https://github.com/arpanrec/bitwarden-exporter)
 
 ```bash
-BW_SESSION=<session token> uvx git+https://github.com/arpanrec/bitwarden-exporter.git@main bitwarden-exporter --help
+BW_SESSION=<session token> uvx git+https://github.com/arpanrec/bitwarden-exporter.git@main keepass --help
 ```
 
 Install with [pipx](https://github.com/pypa/pipx) from [PyPI](https://pypi.org/project/bitwarden-exporter/)
