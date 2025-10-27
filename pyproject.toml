@@ -72,6 +72,9 @@ dev = [
     "types-jmespath==1.0.2.20250809",
 ]
 
+[tool.uv]
+package = true
+
 [[tool.uv.index]]
 name = "test-pypi"
 url = "https://test.pypi.org/simple/"

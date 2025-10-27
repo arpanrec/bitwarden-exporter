@@ -10,8 +10,8 @@ from importlib.metadata import PackageNotFoundError, version
 
 import typer
 
-from bitwarden_exporter_lib import BitwardenExportSettings
-from bitwarden_exporter_lib.bw_list_process import process_list
+from . import BitwardenExportSettings
+from .bw_list_process import process_list
 
 CLI_SESSION_TOKEN_HELP = """
 Direct value: --session-token "my-secret-password".
