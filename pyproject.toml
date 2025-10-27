@@ -58,7 +58,7 @@ dependencies = [
 ]
 
 [project.scripts]
-bitwarden-exporter = "bitwarden_exporter.__main__:app"
+bwe = "cli:app"
 
 [project.optional-dependencies]
 dev = [
@@ -74,7 +74,6 @@ dev = [
 
 [tool.uv]
 package = true
-package-name = "bitwarden-exporter"
 
 [[tool.uv.index]]
 name = "test-pypi"
