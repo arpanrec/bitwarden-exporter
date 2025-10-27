@@ -42,19 +42,19 @@ Structure TOTP
 from [PyPI](https://pypi.org/project/bitwarden-exporter/)
 
 ```bash
-BW_SESSION=<session token> uvx bitwarden-exporter==VERSION --help
+BW_SESSION=<session token> uvx bitwarden-exporter==VERSION keepass --help
 ```
 
 or
 
 ```bash
-BW_SESSION=<session token> uvx bitwarden-exporter --help
+BW_SESSION=<session token> uvx bitwarden-exporter keepass --help
 ```
 
 Run it from [source](https://github.com/arpanrec/bitwarden-exporter)
 
 ```bash
-BW_SESSION=<session token> uvx git+https://github.com/arpanrec/bitwarden-exporter.git@main bitwarden-exporter --help
+BW_SESSION=<session token> uvx git+https://github.com/arpanrec/bitwarden-exporter.git@main keepass --help
 ```
 
 Install with [pipx](https://github.com/pypa/pipx) from [PyPI](https://pypi.org/project/bitwarden-exporter/)
@@ -63,64 +63,9 @@ Install with [pipx](https://github.com/pypa/pipx) from [PyPI](https://pypi.org/p
 BW_SESSION=<session token> pipx install bitwarden-exporter
 ```
 
-## Options
+## [CLI Usage](./docs/cli.md)
 
 Run `bitwarden-exporter --help` to see all available options.
-
-### Required Options
-
-#### `--export-password`, `-p`
-
-**Required** - Password for the exported KeePass database.
-
-You can provide the password in multiple ways:
-
-- **Direct value**: `--export-password "my-secret-password"`
-- **From file**: `--export-password file:secret.txt`
-- **From environment**: `--export-password env:SECRET_PASSWORD`
-- **From vault** (JMESPath expression):
-  `--export-password "jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value"`
-
-### Optional Configuration
-
-#### `--export-location`, `-l`
-
-Path for the exported KeePass database file.
-
-- **Default**: `bitwarden_dump_<timestamp>.kdbx`
-- **Note**: If the file exists, it will be overwritten.
-
-#### `--allow-duplicates`, `-d`
-
-Allow duplicate entries in the export. Since Bitwarden items can belong to multiple collections, this option controls
-whether to create duplicate entries in KeePass.
-
-- **Default**: `--no-allow-duplicates`
-
-#### `--tmp-dir`, `-t`
-
-Custom temporary directory for storing temporary sensitive files during export.
-
-- **Default**: System temporary directory
-- **⚠️ Security Note**: Make sure to delete this directory after export.
-
-#### `--bw-executable`, `-e`
-
-Path to the Bitwarden CLI executable.
-
-- **Default**: `bw` (from system PATH)
-
-#### `--version`
-
-Show the version and exit.
-
-#### `--debug`
-
-Enable verbose logging for troubleshooting.
-
-- **Default**: `--no-debug`
-- **⚠️ Warning**: Debug logs may contain sensitive information. When enabled, the temporary directory will NOT be
-  automatically deleted.
 
 ## Credits
 

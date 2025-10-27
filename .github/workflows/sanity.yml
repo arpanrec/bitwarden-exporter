@@ -1,17 +1,17 @@
 ---
-name: "Bandit: A security linter from PyCQA"
+name: "Sanity help"
 
 "on":
     push:
         paths:
             - "**.py"
-            - ".github/workflows/bandit.yml"
+            - ".github/workflows/sanity.yml"
             - "uv.lock"
             - "pyproject.toml"
     pull_request:
         paths:
             - "**.py"
-            - ".github/workflows/bandit.yml"
+            - ".github/workflows/sanity.yml"
             - "uv.lock"
             - "pyproject.toml"
     workflow_dispatch:
@@ -28,9 +28,9 @@ env:
     UV_LOCKED: "true"
 
 jobs:
-    bandit:
+    sanity:
         runs-on: ubuntu-latest
-        name: bandit
+        name: sanity
         strategy:
             fail-fast: false
             matrix:
@@ -41,23 +41,20 @@ jobs:
               with:
                   version: "0.9.5"
                   python-version: "${{ matrix.python-version }}"
-                  enable-cache: true
                   cache-suffix: python-${{ matrix.python-version }}
-                  cache-dependency-glob: |
-                      **/uv.lock
+                  ignore-empty-workdir: true
+                  ignore-nothing-to-cache: true
+                  enable-cache: false
 
-            - name: Install dependencies
-              run: |+
-                  uv run python --version
-                  uv sync --extra dev
-              env:
-                  UV_PYTHON: ${{ matrix.python-version }}
-
-            - name: Analyzing the code with bandit
+            - name: Analyzing the code with sanity
               run: |+
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --version
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --help
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} keepass --help
+
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --version
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --help
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter keepass --help
 
               env:
                   UV_PYTHON: ${{ matrix.python-version }}
