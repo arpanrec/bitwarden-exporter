@@ -95,24 +95,32 @@ def version_registered(
 @app.command(name="keepass", add_help_option=True)
 def get_bitwarden_settings_based_on_args(
     export_location: str = typer.Option(
-        default=f"bitwarden_dump_{int(time.time())}.kdbx",
+        f"bitwarden_dump_{int(time.time())}.kdbx",
+        "-l",
+        "--export-location",
         help="Bitwarden Export Location",
         show_default="bitwarden_dump_<timestamp>.kdbx",
     ),
     export_password: str = typer.Option(
         ...,
+        "-p",
+        "--export-password",
         help=CLI_EXPORT_PASSWORD_HELP,
     ),
     allow_duplicates: bool = typer.Option(
         False, help="Allow duplicates entries in export, In bitwarden each item can be in multiple collections,"
     ),
     tmp_dir: str = typer.Option(
-        default=tempfile.mkdtemp(prefix="bitwarden_exporter_"),
+        tempfile.mkdtemp(prefix="bitwarden_exporter_"),
+        "-t",
+        "--tmp-dir",
         help="Temporary directory to store temporary sensitive files.",
-        show_default="Temporary directory",
+        show_default="System Temporary directory",
     ),
     bw_executable: str = typer.Option(
         "bw",
+        "-b",
+        "--bw-executable",
         help="Path to the Bitwarden CLI executable.",
     ),
     debug: bool = typer.Option(
