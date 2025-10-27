@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.8.1...1.9.0) (2025-10-27)
+
+
+### Features
+
+* Use typer for CLI ARGS ([#29](https://github.com/arpanrec/bitwarden-exporter/issues/29)) ([2bc90e8](https://github.com/arpanrec/bitwarden-exporter/commit/2bc90e8f5a0570bd566afa50a2307eeef262a79d))
+
 ## [1.8.1](https://github.com/arpanrec/bitwarden-exporter/compare/1.8.0...1.8.1) (2025-10-26)
 
 

@@ -40,5 +40,5 @@ From vault (JMESPath expression): --export-password &quot;jmespath:[?id==&#x27;x
 * `--tmp-dir TEXT`: Temporary directory to store temporary sensitive files.  [default: (Temporary directory)]
 * `--bw-executable TEXT`: Path to the Bitwarden CLI executable.  [default: bw]
 * `--debug / --no-debug`: Enable verbose logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,
-This will not delete the temporary directory after the export, Default: --no-debug  [default: no-debug]
+This will not delete the temporary directory after the export.  [default: no-debug]
 * `--help`: Show this message and exit.

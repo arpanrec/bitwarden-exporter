@@ -1,0 +1,60 @@
+---
+name: "Sanity help"
+
+"on":
+    push:
+        paths:
+            - "**.py"
+            - ".github/workflows/sanity.yml"
+            - "uv.lock"
+            - "pyproject.toml"
+    pull_request:
+        paths:
+            - "**.py"
+            - ".github/workflows/sanity.yml"
+            - "uv.lock"
+            - "pyproject.toml"
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+env:
+    UV_MANAGED_PYTHON: "true"
+    UV_LOCKED: "true"
+
+jobs:
+    sanity:
+        runs-on: ubuntu-latest
+        name: sanity
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version: ["3.10.18", "3.11.13", "3.12.11", "3.13.7"]
+        steps:
+            - name: Install uv 0.9.5
+              uses: astral-sh/setup-uv@v7.1.1
+              with:
+                  version: "0.9.5"
+                  python-version: "${{ matrix.python-version }}"
+                  cache-suffix: python-${{ matrix.python-version }}
+                  ignore-empty-workdir: true
+                  ignore-nothing-to-cache: true
+                  enable-cache: false
+
+            - name: Analyzing the code with sanity
+              run: |+
+                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --version
+                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --help
+                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} keepass --help
+
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --version
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --help
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter keepass --help
+
+              env:
+                  UV_PYTHON: ${{ matrix.python-version }}
