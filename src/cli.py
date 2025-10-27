@@ -73,6 +73,7 @@ def version_callback(value: bool) -> None:
             raise SystemExit(f"Package {APPLICATION_PACKAGE_NAME} not found") from e
 
 
+# pylint: disable=missing-function-docstring
 @app.callback()
 def version_registered(
     # pylint: disable=unused-argument
