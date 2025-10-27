@@ -13,14 +13,30 @@ import urllib.parse
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type, Union
 
+import typer
 from pykeepass import PyKeePass, create_database  # type: ignore
 from pykeepass.entry import Entry  # type: ignore
 from pykeepass.group import Group  # type: ignore
 
-from . import BitwardenException
-from .bw_models import BwField, BwFolder, BwItem, BwOrganization
+from .. import BitwardenException
+from ..bw_models import BwField, BwFolder, BwItem, BwOrganization
 
 LOGGER = logging.getLogger(__name__)
+
+keepass_config_cli = typer.Typer()
+
+
+@keepass_config_cli.command()
+def create_database_cli(
+    kdbx_file: str = typer.Option(..., "--kdbx-file", "-k",
+                                  help="Destination path for the KeePass database file (.kdbx)."),
+    kdbx_password: str = typer.Option(..., "--kdbx-password", "-p",
+                                      help="Password used to protect the KeePass database."),
+) -> None:
+    """
+    Create a new KeePass database.
+    """
+    print(f"Creating Keepass Database: {kdbx_file}")
 
 
 class KeePassStorage:

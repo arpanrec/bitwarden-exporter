@@ -5,8 +5,6 @@ Classes:
     BitwardenException: Base exception for Bitwarden Export.
 """
 
-from typing import Optional
-
 from pydantic import BaseModel
 
 

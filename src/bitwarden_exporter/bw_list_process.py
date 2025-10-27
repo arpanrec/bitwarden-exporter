@@ -14,7 +14,7 @@ import jmespath
 from . import BitwardenException, BitwardenExportSettings
 from .bw_cli import bw_exec, download_file
 from .bw_models import BwCollection, BwFolder, BwItem, BwItemAttachment, BwOrganization
-from .keepass import KeePassStorage
+from .exporter.keepass import KeePassStorage
 
 LOGGER = logging.getLogger(__name__)
 
