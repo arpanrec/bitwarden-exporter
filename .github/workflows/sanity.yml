@@ -42,6 +42,9 @@ jobs:
                   version: "0.9.5"
                   python-version: "${{ matrix.python-version }}"
                   cache-suffix: python-${{ matrix.python-version }}
+                  ignore-empty-workdir: true
+                  ignore-nothing-to-cache: true
+                  enable-cache: false
 
             - name: Analyzing the code with sanity
               run: |+
