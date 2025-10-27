@@ -38,7 +38,7 @@ From vault (JMESPath expression): --export-password "jmespath:[?id=='xx-xx-xx-xx
 
 CLI_DEBUG_HELP = """
 Enable verbose logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,
-This will not delete the temporary directory after the export, Default: --no-debug
+This will not delete the temporary directory after the export.
 """
 
 APPLICATION_PACKAGE_NAME = "bitwarden-exporter"
