@@ -32,10 +32,10 @@ $ bitwarden-exporter keepass [OPTIONS]
 **Options**:
 
 * `--export-location TEXT`: Bitwarden Export Location  [default: (bitwarden_dump_&lt;timestamp&gt;.kdbx)]
-* `--export-password TEXT`: Direct value: `--export-password &quot;my-secret-password&quot;`
-From a file: `--export-password file:secret.txt`
-From environment: `--export-password env:SECRET_PASSWORD`
-From vault (JMESPath expression): `--export-password &quot;jmespath:[?id==&#x27;xx-xx-xx-xxx-xxx&#x27;].fields[] | [?name==&#x27;export-password&#x27;].value&quot;`  [required]
+* `--export-password TEXT`: Direct value: --export-password &quot;my-secret-password&quot;
+From a file: --export-password file:secret.txt
+From environment: --export-password env:SECRET_PASSWORD
+From vault (JMESPath expression): --export-password &quot;jmespath:[?id==&#x27;xx-xx-xx-xxx-xxx&#x27;].fields[] | [?name==&#x27;export-password&#x27;].value&quot;  [required]
 * `--allow-duplicates / --no-allow-duplicates`: Allow duplicates entries in export, In bitwarden each item can be in multiple collections,  [default: no-allow-duplicates]
 * `--tmp-dir TEXT`: Temporary directory to store temporary sensitive files.  [default: (Temporary directory)]
 * `--bw-executable TEXT`: Path to the Bitwarden CLI executable.  [default: bw]
