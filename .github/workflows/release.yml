@@ -38,14 +38,14 @@ jobs:
                   version: 10.15.1
 
             - name: Setup Node
-              uses: actions/setup-node@v5.0.0
+              uses: actions/setup-node@v6.0.0
               with:
                   node-version: lts/*
                   cache-dependency-path: .github/files/pnpm-lock.yaml
                   cache: pnpm
 
             - name: Install uv 0.9.5
-              uses: astral-sh/setup-uv@v7.1.1
+              uses: astral-sh/setup-uv@v7.1.2
               with:
                   version: "0.9.5"
                   python-version: "3.13.7"
