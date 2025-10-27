@@ -144,7 +144,7 @@ def add_items_to_organization(
 
 
 # pylint: disable=too-many-locals,too-many-statements,too-many-branches
-def main(settings: BitwardenExportSettings) -> None:
+def process_list(settings: BitwardenExportSettings) -> None:
     """
     Run the Bitwarden-to-KeePass export process end-to-end.
 

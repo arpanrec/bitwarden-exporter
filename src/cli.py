@@ -10,7 +10,8 @@ from importlib.metadata import PackageNotFoundError, version
 
 import typer
 
-from . import BitwardenExportSettings, bw_list_process
+from bitwarden_exporter.bw_list_process import process_list
+from bitwarden_exporter import BitwardenExportSettings
 
 CLI_SESSION_TOKEN_HELP = """
 Direct value: `--session-token "my-secret-password"`
@@ -24,7 +25,7 @@ From a file: `--master-password file:secret.txt`
 From environment: `--master-password env:SECRET_PASSWORD`
 """  # nosec B105
 
-CLI_EXPORT_PASSWORD_HELP = """
+CLI_EXPORT_PASSWORD_HELP = r"""
 Direct value: `--export-password "my-secret-password"`
 From a file: `--export-password file:secret.txt`
 From environment: `--export-password env:SECRET_PASSWORD`
@@ -51,7 +52,10 @@ APPLICATION_NAME_ASCII = r"""
            |_|
 """
 
-app = typer.Typer()
+app = typer.Typer(
+    name=APPLICATION_PACKAGE_NAME,
+    help="Bitwarden Exporter CLI",
+)
 
 app.pretty_exceptions_enable = True
 
@@ -79,10 +83,7 @@ def version_registered(
         is_eager=True,
         help="Show the application's version and exit.",
     )
-) -> None:
-    """
-    Show the application's version and exit.
-    """
+) -> None: ...
 
 
 # pylint: disable=too-many-arguments,too-many-positional-arguments
@@ -115,7 +116,7 @@ def get_bitwarden_settings_based_on_args(
     ),
 ) -> None:
     """
-    Main entrypoint for the Bitwarden Exporter CLI.
+    Export Bitwarden data to KDBX file.
     """
 
     print(APPLICATION_NAME_ASCII)
@@ -135,4 +136,15 @@ def get_bitwarden_settings_based_on_args(
         bw_executable=bw_executable,
     )
 
-    bw_list_process.main(settings)
+    process_list(settings)
+
+
+def main() -> None:
+    """
+    Main entrypoint for the Bitwarden Exporter CLI.
+    """
+    app()
+
+
+if __name__ == "__main__":
+    main()
