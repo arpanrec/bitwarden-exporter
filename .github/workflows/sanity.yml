@@ -49,5 +49,9 @@ jobs:
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --help
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} keepass --help
 
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --version
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --help
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter keepass --help
+
               env:
                   UV_PYTHON: ${{ matrix.python-version }}
