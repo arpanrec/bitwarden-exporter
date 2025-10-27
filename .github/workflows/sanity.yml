@@ -1,0 +1,63 @@
+---
+name: "Bandit: A security linter from PyCQA"
+
+"on":
+    push:
+        paths:
+            - "**.py"
+            - ".github/workflows/bandit.yml"
+            - "uv.lock"
+            - "pyproject.toml"
+    pull_request:
+        paths:
+            - "**.py"
+            - ".github/workflows/bandit.yml"
+            - "uv.lock"
+            - "pyproject.toml"
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+env:
+    UV_MANAGED_PYTHON: "true"
+    UV_LOCKED: "true"
+
+jobs:
+    bandit:
+        runs-on: ubuntu-latest
+        name: bandit
+        strategy:
+            fail-fast: false
+            matrix:
+                python-version: ["3.10.18", "3.11.13", "3.12.11", "3.13.7"]
+        steps:
+            - name: Install uv 0.9.5
+              uses: astral-sh/setup-uv@v7.1.1
+              with:
+                  version: "0.9.5"
+                  python-version: "${{ matrix.python-version }}"
+                  enable-cache: true
+                  cache-suffix: python-${{ matrix.python-version }}
+                  cache-dependency-glob: |
+                      **/uv.lock
+
+            - name: Install dependencies
+              run: |+
+                  uv run python --version
+                  uv sync --extra dev
+              env:
+                  UV_PYTHON: ${{ matrix.python-version }}
+
+            - name: Analyzing the code with bandit
+              run: |+
+                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --version
+                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --help
+                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} keepass --help
+
+              env:
+                  UV_PYTHON: ${{ matrix.python-version }}
