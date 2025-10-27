@@ -10,6 +10,8 @@ from importlib.metadata import PackageNotFoundError, version
 
 import typer
 
+# uv run typer src/bitwarden_exporter/__main__.py utils docs --output docs/cli.md
+# Relative imports will not work when running as a script to generate docs.
 from bitwarden_exporter import BitwardenExportSettings
 from bitwarden_exporter.bw_list_process import process_list
 

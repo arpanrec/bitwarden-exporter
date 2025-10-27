@@ -31,6 +31,7 @@ module.exports = {
                     'uv export --format requirements.txt --no-hashes -o requirements.txt',
                     'uv export --format requirements.txt --no-hashes --extra dev -o requirements-dev.txt',
                     'uv build',
+                    'uv run typer src/bitwarden_exporter/__main__.py utils docs --output docs/cli.md',
                     `uv publish --index test-pypi --token ${process.env.PYPI_TEST_API_TOKEN}`,
                 ].join(' && '),
                 successCmd: `uv publish --index pypi --token ${process.env.PYPI_PROD_API_TOKEN}`,
@@ -45,7 +46,14 @@ module.exports = {
         [
             '@semantic-release/git',
             {
-                assets: ['CHANGELOG.md', 'pyproject.toml', 'uv.lock', 'requirements.txt', 'requirements-dev.txt'],
+                assets: [
+                    'CHANGELOG.md',
+                    'pyproject.toml',
+                    'uv.lock',
+                    'requirements.txt',
+                    'requirements-dev.txt',
+                    'docs/cli.md',
+                ],
                 message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
             },
         ],
