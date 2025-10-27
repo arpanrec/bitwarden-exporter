@@ -14,27 +14,29 @@ from bitwarden_exporter_lib import BitwardenExportSettings
 from bitwarden_exporter_lib.bw_list_process import process_list
 
 CLI_SESSION_TOKEN_HELP = """
-Direct value: --session-token "my-secret-password"
-From a file: --session-token file:secret.txt
-From environment: --session-token env:SECRET_PASSWORD
+Direct value: --session-token "my-secret-password".
+From a file: --session-token file:secret.txt.
+From environment: --session-token env:SECRET_PASSWORD.
+
 """  # nosec B105
 
 CLI_MASTER_PASSWORD_HELP = """
-Direct value: --master-password "my-secret-password"
-From a file: --master-password file:secret.txt
-From environment: --master-password env:SECRET_PASSWORD
+Direct value: --master-password "my-secret-password".
+From a file: --master-password file:secret.txt.
+From environment: --master-password env:SECRET_PASSWORD.
 """  # nosec B105
 
 CLI_EXPORT_PASSWORD_HELP = r"""
-Direct value: --export-password "my-secret-password"
-From a file: --export-password file:secret.txt
-From environment: --export-password env:SECRET_PASSWORD
-From vault (JMESPath expression): --export-password "jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value"
+Direct value: --export-password "my-secret-password".
+From a file: --export-password file:secret.txt.
+From environment: --export-password env:SECRET_PASSWORD.
+From vault (JMESPath expression): --export-password "jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value".
+
 """  # nosec B105
 
 CLI_DEBUG_HELP = """
-Enable verbose logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION, This will not delete the
-temporary directory after the export, Default: --no-debug
+Enable verbose logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,
+This will not delete the temporary directory after the export, Default: --no-debug
 """
 
 APPLICATION_PACKAGE_NAME = "bitwarden-exporter"
