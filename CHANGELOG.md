@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/arpanrec/bitwarden-exporter/compare/1.9.0...1.9.1) (2025-10-27)
+
+
+### Bug Fixes
+
+* add shorthand options for CLI arguments in `keepass` command ([bb0c7e0](https://github.com/arpanrec/bitwarden-exporter/commit/bb0c7e0f2f127b47d278547d46f8d31e8e412a61))
+
 # [1.9.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.8.1...1.9.0) (2025-10-27)
 
 
