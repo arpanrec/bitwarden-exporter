@@ -5,18 +5,30 @@ Classes:
     BitwardenException: Base exception for Bitwarden Export.
 """
 
-import logging
-import sys
+from typing import Optional
 
-from .settings import BitwardenExportSettings, get_bitwarden_settings_based_on_args
+from pydantic import BaseModel
 
-BITWARDEN_SETTINGS: BitwardenExportSettings = get_bitwarden_settings_based_on_args()
 
-logging.basicConfig(
-    level=logging.DEBUG if BITWARDEN_SETTINGS.debug else logging.WARNING,
-    format="%(asctime)s - %(levelname)s - %(name)s.%(funcName)s():%(lineno)d:- %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
-)
+class BitwardenExportSettings(BaseModel):
+    """
+    Configuration for the Bitwarden Exporter CLI.
+
+    Attributes:
+        export_location: Absolute or relative path to the output KeePass (.kdbx) file.
+        export_password: KeePass database password as plain text (read from a file if a path is supplied).
+        allow_duplicates: If True, items that belong to multiple collections will be duplicated across them.
+        tmp_dir: Directory used to store temporary, sensitive artifacts (attachments, SSH keys) during export.
+        debug: Enables verbose logging and keeps the temporary directory after export for troubleshooting.
+        bw_executable: Path or command name of the Bitwarden CLI executable (defaults to "bw").
+    """
+
+    export_location: str
+    export_password: str
+    allow_duplicates: bool
+    tmp_dir: str
+    debug: bool
+    bw_executable: str = "bw"
 
 
 class BitwardenException(Exception):
