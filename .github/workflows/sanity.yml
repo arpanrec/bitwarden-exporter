@@ -5,13 +5,13 @@ name: "Sanity help"
     push:
         paths:
             - "**.py"
-            - ".github/workflows/bandit.yml"
+            - ".github/workflows/sanity.yml"
             - "uv.lock"
             - "pyproject.toml"
     pull_request:
         paths:
             - "**.py"
-            - ".github/workflows/bandit.yml"
+            - ".github/workflows/sanity.yml"
             - "uv.lock"
             - "pyproject.toml"
     workflow_dispatch:
@@ -28,9 +28,9 @@ env:
     UV_LOCKED: "true"
 
 jobs:
-    bandit:
+    sanity:
         runs-on: ubuntu-latest
-        name: bandit
+        name: sanity
         strategy:
             fail-fast: false
             matrix:
@@ -53,7 +53,7 @@ jobs:
               env:
                   UV_PYTHON: ${{ matrix.python-version }}
 
-            - name: Analyzing the code with bandit
+            - name: Analyzing the code with sanity
               run: |+
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --version
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --help
