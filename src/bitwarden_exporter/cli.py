@@ -96,6 +96,7 @@ def version_option_register(
     Main command-line interface for Bitwarden to KeePass export.
     """
 
+
 @app.command(name="keepass")
 def keepass_export_cli(
     kdbx_password: str = typer.Option(..., "--kdbx-password", "-p", help=keepass_exporter.KDBX_EXPORT_PASSWORD_HELP),
