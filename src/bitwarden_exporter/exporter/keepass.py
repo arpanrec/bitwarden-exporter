@@ -18,15 +18,13 @@ from pykeepass import PyKeePass, create_database  # type: ignore
 from pykeepass.entry import Entry  # type: ignore
 from pykeepass.group import Group  # type: ignore
 
+from . import cli
 from .. import BitwardenException
 from ..bw_models import BwField, BwFolder, BwItem, BwOrganization
 
 LOGGER = logging.getLogger(__name__)
 
-keepass_config_cli = typer.Typer()
-
-
-@keepass_config_cli.command()
+@cli.command(name="keepass")
 def create_database_cli(
     kdbx_file: str = typer.Option(..., "--kdbx-file", "-k",
                                   help="Destination path for the KeePass database file (.kdbx)."),

@@ -28,6 +28,7 @@ class BitwardenExportSettings(BaseModel):
     debug: bool
     bw_executable: str = "bw"
 
+BITWARDEN_EXPORTER_GLOBAL_SETTINGS: BitwardenExportSettings
 
 class BitwardenException(Exception):
     """
