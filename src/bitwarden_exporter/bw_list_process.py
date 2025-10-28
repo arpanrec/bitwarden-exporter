@@ -18,6 +18,10 @@ LOGGER = logging.getLogger(__name__)
 
 
 class RawItems(BaseModel):
+    """
+    Raw items from Bitwarden.
+    """
+
     status: dict = {}
     folders: dict = {}
     organizations: dict = {}
@@ -26,6 +30,10 @@ class RawItems(BaseModel):
 
 
 class BwProcessResult(BaseModel):
+    """
+    All items processed by the process.
+    """
+
     organizations: Dict[str, BwOrganization] = {}
     folders: Dict[str, BwFolder] = {}
     no_folder_items: List[BwItem] = []

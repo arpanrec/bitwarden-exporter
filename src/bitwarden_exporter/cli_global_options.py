@@ -1,3 +1,7 @@
+"""
+Command line global options.
+"""
+
 import logging
 import sys
 from importlib.metadata import PackageNotFoundError, version
@@ -6,6 +10,7 @@ import typer
 
 from . import APPLICATION_NAME_ASCII, BITWARDEN_EXPORTER_GLOBAL_SETTINGS
 from . import exporter
+
 APPLICATION_PACKAGE_NAME = "bitwarden-exporter"
 
 CLI_DEBUG_HELP = """
@@ -49,6 +54,9 @@ def debug_callback(is_debug: bool) -> None:
 
 
 def tmp_dir_callback(tmp_dir: str) -> None:
+    """
+    Set the temporary directory for the application.
+    """
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir = tmp_dir
 
 
