@@ -62,7 +62,7 @@ dependencies = [
 ]
 
 [project.scripts]
-bitwarden-exporter = "bitwarden_exporter.cli:app"
+bitwarden-exporter = "bitwarden_exporter.cli:main"
 
 [project.optional-dependencies]
 dev = [

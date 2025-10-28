@@ -22,11 +22,11 @@ class RawItems(BaseModel):
     Raw items from Bitwarden.
     """
 
-    status: dict = {}
-    folders: dict = {}
-    organizations: list = []
-    collections: list = []
-    items: list = []
+    status: Dict[str, Any] = {}
+    folders: Dict[str, Any] = {}
+    organizations: List[Any] = []
+    collections: List[Any] = []
+    items: List[Any] = []
 
 
 class BwProcessResult(BaseModel):
