@@ -5,6 +5,8 @@ Classes:
     BitwardenException: Base exception for Bitwarden Export.
 """
 
+import tempfile
+
 from pydantic import BaseModel
 
 
@@ -13,22 +15,33 @@ class BitwardenExportSettings(BaseModel):
     Configuration for the Bitwarden Exporter CLI.
 
     Attributes:
-        export_location: Absolute or relative path to the output KeePass (.kdbx) file.
-        export_password: KeePass database password as plain text (read from a file if a path is supplied).
-        allow_duplicates: If True, items that belong to multiple collections will be duplicated across them.
         tmp_dir: Directory used to store temporary, sensitive artifacts (attachments, SSH keys) during export.
         debug: Enables verbose logging and keeps the temporary directory after export for troubleshooting.
         bw_executable: Path or command name of the Bitwarden CLI executable (defaults to "bw").
     """
 
-    export_location: str
-    export_password: str
-    allow_duplicates: bool
-    tmp_dir: str
-    debug: bool
+    tmp_dir: str = tempfile.mkdtemp()
+    debug: bool = False
     bw_executable: str = "bw"
 
-BITWARDEN_EXPORTER_GLOBAL_SETTINGS: BitwardenExportSettings
+
+BITWARDEN_EXPORTER_GLOBAL_SETTINGS: BitwardenExportSettings = BitwardenExportSettings()
+
+APPLICATION_NAME_ASCII = r"""
+ ____  _ _                         _
+| __ )(_) |___      ____ _ _ __ __| | ___ _ __
+|  _ \| | __\ \ /\ / / _` | '__/ _` |/ _ \ '_ \
+| |_) | | |_ \ V  V / (_| | | | (_| |  __/ | | |
+|____/|_|\__| \_/\_/ \__,_|_|_ \__,_|\___|_| |_|
+| ____|_  ___ __   ___  _ __| |_ ___ _ __
+|  _| \ \/ / '_ \ / _ \| '__| __/ _ \ '__|
+| |___ >  <| |_) | (_) | |  | ||  __/ |
+|_____/_/\_\ .__/ \___/|_|   \__\___|_|
+           |_|
+"""
+
+print(APPLICATION_NAME_ASCII)
+
 
 class BitwardenException(Exception):
     """

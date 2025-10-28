@@ -9,6 +9,8 @@ attachments) to KeePass groups, entries, custom properties, and binaries.
 import json
 import logging
 import os
+import shutil
+import time
 import urllib.parse
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type, Union
@@ -18,23 +20,51 @@ from pykeepass import PyKeePass, create_database  # type: ignore
 from pykeepass.entry import Entry  # type: ignore
 from pykeepass.group import Group  # type: ignore
 
-from . import cli
-from .. import BitwardenException
+from .. import BITWARDEN_EXPORTER_GLOBAL_SETTINGS, BitwardenException
+from ..bw_list_process import RawItems, process_list
 from ..bw_models import BwField, BwFolder, BwItem, BwOrganization
+from ..utils import resolve_secret
+from . import cli
 
 LOGGER = logging.getLogger(__name__)
 
+CLI_EXPORT_PASSWORD_HELP = r"""
+Direct value: --kdbx-password "my-secret-password".
+From a file: --kdbx-password file:secret.txt.
+From environment: --kdbx-password env:SECRET_PASSWORD.
+From vault (JMESPath expression): --kdbx-password "jmespath:[?id=='xx-xx-xx-xxx-xxx'].fields[] | [?name=='export-password'].value".
+
+"""  # nosec B105
+
+
 @cli.command(name="keepass")
 def create_database_cli(
-    kdbx_file: str = typer.Option(..., "--kdbx-file", "-k",
-                                  help="Destination path for the KeePass database file (.kdbx)."),
-    kdbx_password: str = typer.Option(..., "--kdbx-password", "-p",
-                                      help="Password used to protect the KeePass database."),
+    kdbx_password: str = typer.Option(..., "--kdbx-password", "-p", help=CLI_EXPORT_PASSWORD_HELP),
+    kdbx_file: str = typer.Option(
+        f"bitwarden_dump_{int(time.time())}.kdbx",
+        "--kdbx-file",
+        "-k",
+        help="Bitwarden Export Location",
+        show_default="bitwarden_dump_<timestamp>.kdbx",
+    ),
 ) -> None:
     """
     Create a new KeePass database.
     """
     print(f"Creating Keepass Database: {kdbx_file}")
+    bw_processed_items = process_list()
+    kdbx_password = resolve_secret(kdbx_password, bw_processed_items.raw_items.items)
+    with KeePassStorage(kdbx_file, kdbx_password) as storage:
+        storage.process_organizations(bw_processed_items.organizations)
+        storage.process_folders(bw_processed_items.folders)
+        storage.process_no_folder_items(bw_processed_items.no_folder_items)
+        storage.process_bw_exports(bw_processed_items.raw_items)
+
+    if not BITWARDEN_EXPORTER_GLOBAL_SETTINGS.debug:
+        shutil.rmtree(BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir)
+    else:
+        LOGGER.warning("Debug enabled: application will keep the temporary directory for troubleshooting")
+        LOGGER.info("Keeping temporary directory %s", BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir)
 
 
 class KeePassStorage:
@@ -42,10 +72,6 @@ class KeePassStorage:
     Adapter that creates and populates a KeePass database using Bitwarden data models.
 
     This context manager creates a new KDBX database on entering and saves it on exit.
-
-    Attributes:
-        _KeePassStorage__py_kee_pass: Internal PyKeePass instance for DB operations.
-        _KeePassStorage__my_vault_group: Root group under which personal items are added.
     """
 
     __py_kee_pass: PyKeePass
@@ -415,7 +441,7 @@ class KeePassStorage:
                 LOGGER.error("Error adding entry %s", e)
                 raise BitwardenException("Error adding entry") from e
 
-    def process_bw_exports(self, raw_items: Dict[str, Any]) -> None:
+    def process_bw_exports(self, raw_items: RawItems) -> None:
         """
         Function to write to Keepass
         """
@@ -425,7 +451,7 @@ class KeePassStorage:
             username="",
             password="",  # nosec CWE-259
         )
-        for key, value in raw_items.items():
+        for key, value in raw_items.model_dump().items():
             binary_id = self.__py_kee_pass.add_binary(
                 data=json.dumps(value, indent=4).encode(), protected=True, compressed=False
             )
