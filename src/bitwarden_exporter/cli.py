@@ -75,9 +75,11 @@ def version_option_register(
 
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir = tmp_dir
 
-select_exporter = typer.Typer(name="select-exporter", help="Select the exporter to use", chain=False)
 
-@select_exporter.command(name="keepass")
+select_exporter = typer.Typer()
+
+
+@select_exporter.command(name="keepass", help="Export Bitwarden data to KDBX file.")
 def keepass_export_cli(
     kdbx_password: str = typer.Option(..., "--kdbx-password", "-p", help=keepass_exporter.KDBX_EXPORT_PASSWORD_HELP),
     kdbx_file: str = typer.Option(
@@ -93,7 +95,8 @@ def keepass_export_cli(
     """
     keepass_exporter.create_database_cli(kdbx_password, kdbx_file)
 
-app.add_typer(select_exporter, name="export")
+
+app.add_typer(select_exporter, name="export", help="Select the exporter to use", chain=False)
 
 
 def main():
@@ -101,6 +104,7 @@ def main():
     Main entry point for the Bitwarden to KeePass exporter CLI.
     """
     app()
+
 
 if __name__ == "__main__":
     main()
