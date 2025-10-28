@@ -50,11 +50,11 @@ jobs:
               run: |+
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --version
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --help
-                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} keepass --help
+                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} exporter keepass --help
 
                   uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --version
                   uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --help
-                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter keepass --help
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter exporter keepass --help
 
               env:
                   UV_PYTHON: ${{ matrix.python-version }}
