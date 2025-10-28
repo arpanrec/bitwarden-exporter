@@ -69,6 +69,11 @@ def version_option_register(
     Main command-line interface for Bitwarden to KeePass export.
     """
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS.debug = debug
+
+    app.pretty_exceptions_enable = debug
+    app.pretty_exceptions_show_locals = debug
+    app.pretty_exceptions_show_trace = debug
+
     logging.basicConfig(
         level=logging.DEBUG if debug else logging.WARNING,
         format="%(asctime)s - %(levelname)s - %(name)s.%(funcName)s():%(lineno)d:- %(message)s",
