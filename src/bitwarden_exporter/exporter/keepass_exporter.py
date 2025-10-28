@@ -10,12 +10,10 @@ import json
 import logging
 import os
 import shutil
-import time
 import urllib.parse
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type, Union
 
-import typer
 from pykeepass import PyKeePass, create_database  # type: ignore
 from pykeepass.entry import Entry  # type: ignore
 from pykeepass.group import Group  # type: ignore
@@ -24,11 +22,10 @@ from .. import BITWARDEN_EXPORTER_GLOBAL_SETTINGS, BitwardenException
 from ..bw_list_process import RawItems, process_list
 from ..bw_models import BwField, BwFolder, BwItem, BwOrganization
 from ..utils import resolve_secret
-from . import cli
 
 LOGGER = logging.getLogger(__name__)
 
-CLI_EXPORT_PASSWORD_HELP = r"""
+KDBX_EXPORT_PASSWORD_HELP = r"""
 Direct value: --kdbx-password "my-secret-password".
 From a file: --kdbx-password file:secret.txt.
 From environment: --kdbx-password env:SECRET_PASSWORD.
@@ -37,22 +34,16 @@ From vault (JMESPath expression): --kdbx-password "jmespath:[?id=='xx-xx-xx-xxx-
 """  # nosec B105
 
 
-@cli.command(name="keepass")
 def create_database_cli(
-    kdbx_password: str = typer.Option(..., "--kdbx-password", "-p", help=CLI_EXPORT_PASSWORD_HELP),
-    kdbx_file: str = typer.Option(
-        f"bitwarden_dump_{int(time.time())}.kdbx",
-        "--kdbx-file",
-        "-k",
-        help="Bitwarden Export Location",
-        show_default="bitwarden_dump_<timestamp>.kdbx",
-    ),
+    kdbx_password: str,
+    kdbx_file: str,
+    allow_duplicates: bool = False,
 ) -> None:
     """
     Create a new KeePass database.
     """
     print(f"Creating Keepass Database: {kdbx_file}")
-    bw_processed_items = process_list()
+    bw_processed_items = process_list(allow_duplicates)
     kdbx_password = resolve_secret(kdbx_password, bw_processed_items.raw_items.items)
     with KeePassStorage(kdbx_file, kdbx_password) as storage:
         storage.process_organizations(bw_processed_items.organizations)

@@ -24,8 +24,8 @@ class RawItems(BaseModel):
 
     status: dict = {}
     folders: dict = {}
-    organizations: dict = {}
-    collections: dict = {}
+    organizations: list = []
+    collections: list = []
     items: list = []
 
 
@@ -57,6 +57,7 @@ def add_items_to_organization(
     organization_id: str,
     bw_organizations: Dict[str, BwOrganization],
     bw_item: BwItem,
+    allow_duplicates: bool = False,
 ) -> None:
     """
     Add a Bitwarden item into one or more organization collections.
@@ -69,6 +70,7 @@ def add_items_to_organization(
         organization_id: The ID of the organization to which the item should be added.
         bw_organizations: Mapping of organization ID to BwOrganization instances.
         bw_item: The Bitwarden item to assign to collections within an organization.
+        allow_duplicates: If True, allow multiple collections for an item.
     """
 
     organization = bw_organizations[organization_id]
@@ -86,7 +88,7 @@ def add_items_to_organization(
         )
         raise BitwardenException(error_msg)
 
-    if len(bw_item.collectionIds) > 1 and not BITWARDEN_EXPORTER_GLOBAL_SETTINGS.allow_duplicates:
+    if len(bw_item.collectionIds) > 1 and not allow_duplicates:
         LOGGER.warning("Item belongs to multiple collections. Enable debug logging for more information")
         LOGGER.info(
             'Item: "%s" belongs to multiple collections, Just using the first one collection: "%s"',
@@ -101,7 +103,7 @@ def add_items_to_organization(
 
 
 # pylint: disable=too-many-locals,too-many-statements,too-many-branches
-def process_list() -> BwProcessResult:
+def process_list(allow_duplicates: bool = False) -> BwProcessResult:
     """
     Run the Bitwarden-to-KeePass export process end-to-end.
 
@@ -132,13 +134,16 @@ def process_list() -> BwProcessResult:
 
     for bw_folder_dict in bw_folders_dict:
         bw_folder = BwFolder(**bw_folder_dict)
+        if not bw_folder.id:
+            continue
+
         bw_process_items.folders[bw_folder.id] = bw_folder
 
     LOGGER.warning("Fetching summary: application retrieved folders from Bitwarden CLI")
     LOGGER.info("Total Folders Fetched: %s", len(bw_process_items.folders))
 
     bw_organizations_dict = json.loads((bw_exec(["list", "organizations"], is_raw=False)))
-    bw_process_items.raw_items.organizations.update(bw_organizations_dict)
+    bw_process_items.raw_items.organizations.append(bw_organizations_dict)
 
     for bw_organization_dict in bw_organizations_dict:
         bw_organization = BwOrganization(**bw_organization_dict)
@@ -148,9 +153,9 @@ def process_list() -> BwProcessResult:
     LOGGER.info("Total Organizations Fetched: %s", len(bw_process_items.organizations))
 
     bw_collections_dict = json.loads((bw_exec(["list", "collections"], is_raw=False)))
-    bw_process_items.raw_items.collections.update(bw_collections_dict)
+    bw_process_items.raw_items.collections.append(bw_collections_dict)
     LOGGER.warning("Fetching summary: application retrieved collections from Bitwarden CLI")
-    LOGGER.info("Total Collections Fetched: %s", len(bw_process_items.collections))
+    LOGGER.info("Total Collections Fetched: %s", len(bw_collections_dict))
 
     for bw_collection_dict in bw_collections_dict:
         bw_collection = BwCollection(**bw_collection_dict)
@@ -212,7 +217,7 @@ def process_list() -> BwProcessResult:
             bw_item.attachments.append(attachment_pub_key)
 
         if bw_item.organizationId:
-            add_items_to_organization(bw_item.organizationId, bw_process_items.organizations, bw_item)
+            add_items_to_organization(bw_item.organizationId, bw_process_items.organizations, bw_item, allow_duplicates)
         elif bw_item.folderId:
             add_items_to_folder(bw_item.folderId, bw_process_items.folders, bw_item)
         else:
