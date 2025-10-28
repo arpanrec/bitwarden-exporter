@@ -9,7 +9,6 @@ attachments) to KeePass groups, entries, custom properties, and binaries.
 import json
 import logging
 import os
-import shutil
 import urllib.parse
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type, Union
@@ -18,9 +17,10 @@ from pykeepass import PyKeePass, create_database  # type: ignore
 from pykeepass.entry import Entry  # type: ignore
 from pykeepass.group import Group  # type: ignore
 
-from .. import BITWARDEN_EXPORTER_GLOBAL_SETTINGS, BitwardenException
 from ..bw_list_process import RawItems, process_list
 from ..bw_models import BwField, BwFolder, BwItem, BwOrganization
+from ..exceptions import BitwardenException
+from ..remove_downloads import remove_downloaded
 from ..utils import resolve_secret
 
 LOGGER = logging.getLogger(__name__)
@@ -42,20 +42,17 @@ def create_database_cli(
     """
     Create a new KeePass database.
     """
-    print(f"Creating Keepass Database: {kdbx_file}")
     bw_processed_items = process_list(allow_duplicates)
+
     kdbx_password = resolve_secret(kdbx_password, bw_processed_items.raw_items.items)
+
     with KeePassStorage(kdbx_file, kdbx_password) as storage:
         storage.process_organizations(bw_processed_items.organizations)
         storage.process_folders(bw_processed_items.folders)
         storage.process_no_folder_items(bw_processed_items.no_folder_items)
         storage.process_bw_exports(bw_processed_items.raw_items)
 
-    if not BITWARDEN_EXPORTER_GLOBAL_SETTINGS.debug:
-        shutil.rmtree(BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir)
-    else:
-        LOGGER.warning("Debug enabled: application will keep the temporary directory for troubleshooting")
-        LOGGER.info("Keeping temporary directory %s", BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir)
+    remove_downloaded()
 
 
 class KeePassStorage:
@@ -73,7 +70,7 @@ class KeePassStorage:
         Initialize a new KeePassStorage context.
 
         Args:
-            kdbx_file: Destination path for the KeePass database file (.kdbx). Must not already exist.
+            kdbx_file: Destination path for the KeePass database file (.kdbx).
             kdbx_password: Password used to protect the KeePass database.
 
         Raises:
@@ -131,11 +128,11 @@ class KeePassStorage:
             LOGGER.info("Keepass Database Saved")
         except Exception as e:  # pylint: disable=broad-except
             LOGGER.error("Error in saving Keepass Database %s", e)
-            raise BitwardenException("Error in saving Keepass Database") from e
+            raise BitwardenException("Error in saving Keepass Database, enable debug logging for more information")
 
         if exc_type is not None:
-            LOGGER.error("Error in processing %s", exc_value)
-            raise BitwardenException("Error in processing") from exc_value
+            LOGGER.info("Error in processing %s", exc_value)
+            raise BitwardenException("Error in processing, enable debug logging for more information")
 
         return True
 
@@ -390,8 +387,8 @@ class KeePassStorage:
                     try:
                         self.__add_entry(collection_group, item)
                     except Exception as e:  # pylint: disable=broad-except
-                        LOGGER.error("Error adding entry %s", e)
-                        raise BitwardenException("Error adding entry") from e
+                        LOGGER.info("Error adding entry %s", e)
+                        raise BitwardenException("Error adding entry, enable debug logging for more information")
 
     def process_folders(self, bw_folders: Dict[str, BwFolder]) -> None:
         """
@@ -413,8 +410,8 @@ class KeePassStorage:
                 try:
                     self.__add_entry(folder_group, item)
                 except Exception as e:  # pylint: disable=broad-except
-                    LOGGER.error("Error adding entry %s", e)
-                    raise BitwardenException("Error adding entry") from e
+                    LOGGER.info("Error adding entry %s", e)
+                    raise BitwardenException("Error adding entry, enable debug logging for more information")
 
     def process_no_folder_items(self, no_folder_items: List[BwItem]) -> None:
         """
@@ -429,8 +426,8 @@ class KeePassStorage:
             try:
                 self.__add_entry(self.__my_vault_group, item)
             except Exception as e:
-                LOGGER.error("Error adding entry %s", e)
-                raise BitwardenException("Error adding entry") from e
+                LOGGER.info("Error adding entry %s", e)
+                raise BitwardenException("Error adding entry, enable debug logging for more information")
 
     def process_bw_exports(self, raw_items: RawItems) -> None:
         """

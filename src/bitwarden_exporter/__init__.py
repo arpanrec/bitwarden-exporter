@@ -46,9 +46,3 @@ This will not delete the temporary directory after the export.
 """
 
 APPLICATION_PACKAGE_NAME = "bitwarden-exporter"
-
-
-class BitwardenException(Exception):
-    """
-    Base Exception for Bitwarden Export
-    """

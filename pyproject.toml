@@ -9,6 +9,9 @@ no_implicit_optional = true
 module = ["bitwarden_exporter.*"]
 follow_untyped_imports = true
 
+[tool.pylint."MESSAGES CONTROL"]
+disable = "invalid-name,missing-module-docstring,raise-missing-from"
+
 [tool.pylint."FORMAT"]
 max-line-length = 120
 indent-string = "    "

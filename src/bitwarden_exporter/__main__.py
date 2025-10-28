@@ -9,7 +9,11 @@ from importlib.metadata import PackageNotFoundError, version
 
 import typer
 
-from bitwarden_exporter import APPLICATION_PACKAGE_NAME, BITWARDEN_EXPORTER_GLOBAL_SETTINGS, CLI_DEBUG_HELP
+from bitwarden_exporter import (
+    APPLICATION_PACKAGE_NAME,
+    BITWARDEN_EXPORTER_GLOBAL_SETTINGS,
+    CLI_DEBUG_HELP,
+)
 from bitwarden_exporter.exporter import keepass_exporter
 
 app = typer.Typer(
@@ -76,11 +80,15 @@ def version_option_register(
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir = tmp_dir
 
 
-select_exporter = typer.Typer()
+target = typer.Typer()
+
+app.add_typer(target, name="target", help="Select the target to export or import", chain=True)
+
+target_exporter = typer.Typer()
 
 
-@select_exporter.command(name="keepass", help="Export Bitwarden data to KDBX file.")
-def keepass_export_cli(
+@target_exporter.command(name="keepass", help="Export Bitwarden data to KDBX file.")
+def target_exporter_keepass(
     kdbx_password: str = typer.Option(..., "--kdbx-password", "-p", help=keepass_exporter.KDBX_EXPORT_PASSWORD_HELP),
     kdbx_file: str = typer.Option(
         f"bitwarden_dump_{int(time.time())}.kdbx",
@@ -96,7 +104,7 @@ def keepass_export_cli(
     keepass_exporter.create_database_cli(kdbx_password, kdbx_file)
 
 
-app.add_typer(select_exporter, name="exporter", help="Select the exporter to use", chain=True)
+app.add_typer(target_exporter, name="exporter", help="Select the exporter to use", chain=True)
 
 
 def main():
