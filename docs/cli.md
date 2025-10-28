@@ -21,16 +21,16 @@ This will not delete the temporary directory after the export.  [default: no-deb
 
 **Commands**:
 
-* `export`: Select the exporter to use
+* `exporter`: Select the exporter to use
 
-## `bitwarden-exporter export`
+## `bitwarden-exporter exporter`
 
 Select the exporter to use
 
 **Usage**:
 
 ```console
-$ bitwarden-exporter export [OPTIONS] COMMAND [ARGS]...
+$ bitwarden-exporter exporter [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
 ```
 
 **Options**:
@@ -41,14 +41,14 @@ $ bitwarden-exporter export [OPTIONS] COMMAND [ARGS]...
 
 * `keepass`: Export Bitwarden data to KDBX file.
 
-### `bitwarden-exporter export keepass`
+### `bitwarden-exporter exporter keepass`
 
 Export Bitwarden data to KDBX file.
 
 **Usage**:
 
 ```console
-$ bitwarden-exporter export keepass [OPTIONS]
+$ bitwarden-exporter exporter keepass [OPTIONS]
 ```
 
 **Options**:

@@ -96,7 +96,7 @@ def keepass_export_cli(
     keepass_exporter.create_database_cli(kdbx_password, kdbx_file)
 
 
-app.add_typer(select_exporter, name="export", help="Select the exporter to use", chain=False)
+app.add_typer(select_exporter, name="exporter", help="Select the exporter to use", chain=True)
 
 
 def main():
