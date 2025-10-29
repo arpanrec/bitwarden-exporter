@@ -17,7 +17,7 @@ name: "Sanity help"
     workflow_dispatch:
 
 concurrency:
-    group: ${{ github.workflow }}-${{ github.ref }}
+    group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
     cancel-in-progress: true
 
 permissions:
@@ -48,13 +48,14 @@ jobs:
 
             - name: Analyzing the code with sanity
               run: |+
+                  set -x
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --version
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --help
-                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} keepass --help
+                  uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} target exporter keepass --help
 
                   uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --version
                   uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter --help
-                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter keepass --help
+                  uvx --from git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} bitwarden-exporter target exporter keepass --help
 
               env:
                   UV_PYTHON: ${{ matrix.python-version }}

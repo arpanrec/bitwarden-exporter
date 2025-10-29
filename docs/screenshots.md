@@ -1,5 +1,11 @@
 # Screen Shots
 
+Bitwarden Web
+![Bitwarden Web](./Screenshot_webvault.png 'Bitwarden Web')
+
+Structure TOTP
+![Structure TOTP](./Screenshot_structure_totp.png 'Structure TOTP')
+
 SSH Keys
 ![SSH KEY](./Screenshot_ssh_key.png 'SSH KEY')
 
