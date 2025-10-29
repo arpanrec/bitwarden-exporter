@@ -21,16 +21,35 @@ This will not delete the temporary directory after the export.  [default: no-deb
 
 **Commands**:
 
-* `exporter`: Select the exporter to use
+* `target`: Select the target to export or import
 
-## `bitwarden-exporter exporter`
+## `bitwarden-exporter target`
+
+Select the target to export or import
+
+**Usage**:
+
+```console
+$ bitwarden-exporter target [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
+```
+
+**Options**:
+
+* `--help`: Show this message and exit.
+
+**Commands**:
+
+* `exporter`: Select the exporter to use
+* `importer`: TO BE IMPLEMENTED (DEPRECATED)
+
+### `bitwarden-exporter target exporter`
 
 Select the exporter to use
 
 **Usage**:
 
 ```console
-$ bitwarden-exporter exporter [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
+$ bitwarden-exporter target exporter [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
 ```
 
 **Options**:
@@ -41,14 +60,14 @@ $ bitwarden-exporter exporter [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...].
 
 * `keepass`: Export Bitwarden data to KDBX file.
 
-### `bitwarden-exporter exporter keepass`
+#### `bitwarden-exporter target exporter keepass`
 
 Export Bitwarden data to KDBX file.
 
 **Usage**:
 
 ```console
-$ bitwarden-exporter exporter keepass [OPTIONS]
+$ bitwarden-exporter target exporter keepass [OPTIONS]
 ```
 
 **Options**:
@@ -58,4 +77,18 @@ From a file: --kdbx-password file:secret.txt.
 From environment: --kdbx-password env:SECRET_PASSWORD.
 From vault (JMESPath expression): --kdbx-password &quot;jmespath:[?id==&#x27;xx-xx-xx-xxx-xxx&#x27;].fields[] | [?name==&#x27;export-password&#x27;].value&quot;.  [required]
 * `-k, --kdbx-file TEXT`: Bitwarden Export Location  [default: (bitwarden_dump_&lt;timestamp&gt;.kdbx)]
+* `--help`: Show this message and exit.
+
+### `bitwarden-exporter target importer`
+
+TO BE IMPLEMENTED
+
+**Usage**:
+
+```console
+$ bitwarden-exporter target importer [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
+```
+
+**Options**:
+
 * `--help`: Show this message and exit.

@@ -21,6 +21,9 @@ app = typer.Typer(
     name=APPLICATION_PACKAGE_NAME,
     help="Bitwarden Exporter CLI",
     chain=True,
+    pretty_exceptions_enable=False,
+    pretty_exceptions_short=False,
+    pretty_exceptions_show_locals=False,
 )
 
 
@@ -105,8 +108,10 @@ def target_exporter_keepass(
     """
     keepass_exporter.create_database_cli(kdbx_password, kdbx_file)
 
+target_importer = typer.Typer()
 
-app.add_typer(target_exporter, name="exporter", help="Select the exporter to use", chain=True)
+target.add_typer(target_exporter, name="exporter", help="Select the exporter to use", chain=True)
+target.add_typer(target_importer, name="importer", help="TO BE IMPLEMENTED", chain=True, deprecated=True)
 
 
 def main() -> None:
