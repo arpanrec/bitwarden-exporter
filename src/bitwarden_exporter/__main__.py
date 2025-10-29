@@ -13,7 +13,7 @@ import typer
 from bitwarden_exporter import (
     APPLICATION_PACKAGE_NAME,
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS,
-    CLI_DEBUG_HELP,
+    CLI_DEBUG_HELP, APPLICATION_NAME_ASCII,
 )
 from bitwarden_exporter.exporter import keepass_exporter
 
@@ -119,6 +119,7 @@ def main() -> None:
     """
     Main entry point for the Bitwarden to KeePass exporter CLI.
     """
+    print(APPLICATION_NAME_ASCII)
     app()
 
 
