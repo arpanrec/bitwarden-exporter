@@ -108,6 +108,7 @@ def target_exporter_keepass(
     """
     keepass_exporter.create_database_cli(kdbx_password, kdbx_file)
 
+
 target_importer = typer.Typer()
 
 target.add_typer(target_exporter, name="exporter", help="Select the exporter to use", chain=True)
