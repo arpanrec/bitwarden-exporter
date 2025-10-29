@@ -48,6 +48,7 @@ jobs:
 
             - name: Analyzing the code with sanity
               run: |+
+                  set -x
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --version
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} --help
                   uvx git+https://github.com/arpanrec/bitwarden-exporter.git@${{ github.sha }} target exporter keepass --help
