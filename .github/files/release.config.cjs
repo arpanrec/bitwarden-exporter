@@ -33,6 +33,7 @@ module.exports = {
                     'uv build',
                     'uv run typer src/bitwarden_exporter/__main__.py utils docs --output docs/cli.md',
                     `uv publish --index test-pypi --token ${process.env.PYPI_TEST_API_TOKEN}`,
+                    'README_VERSION_NEXT=${process.env.PYPI_TEST_API_TOKEN} uv run .github/files/readme_gen.py'
                 ].join(' && '),
                 successCmd: `uv publish --index pypi --token ${process.env.PYPI_PROD_API_TOKEN}`,
             },
@@ -53,6 +54,7 @@ module.exports = {
                     'requirements.txt',
                     'requirements-dev.txt',
                     'docs/cli.md',
+                    'README.md',
                 ],
                 message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
             },

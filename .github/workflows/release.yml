@@ -57,7 +57,7 @@ jobs:
             - name: Install dependencies
               run: |+
                   uv run python --version
-                  uv sync --locked
+                  uv sync --extra dev --locked
 
             - name: Install node dependencies
               run: |+
