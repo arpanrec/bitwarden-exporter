@@ -38,13 +38,13 @@ Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for e
 from [PyPI](https://pypi.org/project/bitwarden-exporter/)
 
 ```bash
-BW_SESSION=<session token> uvx bitwarden-exporter==pypi-AgENdGVzdC5weXBpLm9yZwIkMGM3MGVjYTQtODYzZC00YzM2LWE0NzItZjdmMGRlNTllNTU4AAIqWzMsImY1OThhNTY4LWM4ZDEtNDk2Zi1hOTEyLTc4ZDNkODI2MmQ1ZSJdAAAGIMkfumVlIGkET2ZbA1LZublgKmqCuj6xei_Qqjdl8DUo keepass --help
+BW_SESSION=<session token> uvx bitwarden-exporter==1.10.2 keepass --help
 ```
 
 or
 
 ```bash
-BW_SESSION=<session token> uvx bitwarden-exporter==pypi-AgENdGVzdC5weXBpLm9yZwIkMGM3MGVjYTQtODYzZC00YzM2LWE0NzItZjdmMGRlNTllNTU4AAIqWzMsImY1OThhNTY4LWM4ZDEtNDk2Zi1hOTEyLTc4ZDNkODI2MmQ1ZSJdAAAGIMkfumVlIGkET2ZbA1LZublgKmqCuj6xei_Qqjdl8DUo keepass --help
+BW_SESSION=<session token> uvx bitwarden-exporter==1.10.2 keepass --help
 ```
 
 Run it from [source](https://github.com/arpanrec/bitwarden-exporter)
@@ -56,7 +56,7 @@ BW_SESSION=<session token> uvx git+https://github.com/arpanrec/bitwarden-exporte
 Install with [pipx](https://github.com/pypa/pipx) from [PyPI](https://pypi.org/project/bitwarden-exporter/)
 
 ```bash
-BW_SESSION=<session token> pipx install bitwarden-exporter==pypi-AgENdGVzdC5weXBpLm9yZwIkMGM3MGVjYTQtODYzZC00YzM2LWE0NzItZjdmMGRlNTllNTU4AAIqWzMsImY1OThhNTY4LWM4ZDEtNDk2Zi1hOTEyLTc4ZDNkODI2MmQ1ZSJdAAAGIMkfumVlIGkET2ZbA1LZublgKmqCuj6xei_Qqjdl8DUo
+BW_SESSION=<session token> pipx install bitwarden-exporter==1.10.2
 ```
 
 ## [CLI Usage](./docs/cli.md)

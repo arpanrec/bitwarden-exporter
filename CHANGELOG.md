@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/arpanrec/bitwarden-exporter/compare/1.10.1...1.10.2) (2025-10-29)
+
+
+### Bug Fixes
+
+* Leaked my pypi test token. ([6333cf7](https://github.com/arpanrec/bitwarden-exporter/commit/6333cf7e96d8f830a9dd9bc7757a47d0b3de708d))
+
 ## [1.10.1](https://github.com/arpanrec/bitwarden-exporter/compare/1.10.0...1.10.1) (2025-10-29)
 
 
