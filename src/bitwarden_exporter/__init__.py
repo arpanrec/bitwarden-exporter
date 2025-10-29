@@ -7,7 +7,7 @@ Classes:
 
 import tempfile
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class BitwardenExportSettings(BaseModel):
@@ -20,7 +20,7 @@ class BitwardenExportSettings(BaseModel):
         bw_executable: Path or command name of the Bitwarden CLI executable (defaults to "bw").
     """
 
-    tmp_dir: str = tempfile.mkdtemp()
+    tmp_dir: str = Field(default_factory=tempfile.mkdtemp)
     debug: bool = False
     bw_executable: str = "bw"
 
