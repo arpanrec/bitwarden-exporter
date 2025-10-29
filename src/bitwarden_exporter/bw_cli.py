@@ -15,12 +15,13 @@ import os.path
 import subprocess  # nosec B404
 from typing import Dict, List, Optional
 
-from . import BitwardenExportSettings
+from . import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
+from .exceptions import BitwardenException
 
 LOGGER = logging.getLogger(__name__)
 
 
-def download_file(item_id: str, attachment_id: str, download_location: str, settings: BitwardenExportSettings) -> None:
+def download_file(item_id: str, attachment_id: str, download_location: str) -> None:
     """
     Download an attachment from Bitwarden to a local path.
 
@@ -29,7 +30,6 @@ def download_file(item_id: str, attachment_id: str, download_location: str, sett
         attachment_id: The attachment identifier within the item.
         download_location: Absolute or relative path where the file will be saved. Parent
             directories are created if missing. If the file already exists, the download is skipped.
-        settings: BitwardenExportSettings instance.
 
     Returns:
         None
@@ -46,13 +46,11 @@ def download_file(item_id: str, attachment_id: str, download_location: str, sett
     bw_exec(
         ["get", "attachment", attachment_id, "--itemid", item_id, "--output", download_location],
         is_raw=False,
-        settings=settings,
     )
 
 
 def bw_exec(
     cmd: List[str],
-    settings: BitwardenExportSettings,
     ret_encoding: str = "UTF-8",
     env_vars: Optional[Dict[str, str]] = None,
     is_raw: bool = True,
@@ -62,7 +60,6 @@ def bw_exec(
 
     Args:
         cmd: Arguments to pass to the bw executable (e.g., ["list", "items"]).
-        settings: BitwardenExportSettings instance.
         ret_encoding: The character encoding for stdout/stderr decoding.
         env_vars: Optional environment variables to add/override for this invocation.
         is_raw: When True, appends --raw to the command to simplify parsing.
@@ -73,7 +70,7 @@ def bw_exec(
     Raises:
         ValueError: If the command returns a non-zero exit status.
     """
-    cmd = [settings.bw_executable] + cmd
+    cmd = [BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_executable] + cmd
 
     if is_raw:
         cmd.append("--raw")
@@ -86,7 +83,7 @@ def bw_exec(
     LOGGER.debug("Executing CLI :: %s", " ".join(cmd))
     try:
         command_out = subprocess.run(
-            cmd, capture_output=True, check=False, encoding=ret_encoding, env=cli_env_vars, timeout=30
+            cmd, capture_output=True, check=False, encoding=ret_encoding, env=cli_env_vars, timeout=10
         )  # nosec B603
         if len(command_out.stderr) > 0:
             LOGGER.warning("Error while executing a command. Enable debug logging for more information")
@@ -94,5 +91,8 @@ def bw_exec(
         command_out.check_returncode()
         return command_out.stdout
     except subprocess.CalledProcessError as e:
-        LOGGER.error("Error executing command %s", e)
-        raise ValueError("Error executing command") from e
+        LOGGER.info("Error executing command %s", e)
+        raise BitwardenException("Error executing command, enable debug logging for more information")
+    except subprocess.TimeoutExpired as e:
+        LOGGER.info("Timeout executing command %s", e)
+        raise BitwardenException("Timeout executing command, enable debug logging for more information")

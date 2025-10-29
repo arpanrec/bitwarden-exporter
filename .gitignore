@@ -168,6 +168,6 @@ bitwarden_dump*
 temp.py
 __pycache__
 
-foo.*
+foo*
 .github/files/node_modules/*
 .github/files/package.json

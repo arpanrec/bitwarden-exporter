@@ -5,6 +5,13 @@ disallow_untyped_calls = true
 disallow_untyped_defs = true
 no_implicit_optional = true
 
+[[tool.mypy.overrides]]
+module = ["bitwarden_exporter.*"]
+follow_untyped_imports = true
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = "invalid-name,missing-module-docstring,raise-missing-from"
+
 [tool.pylint."FORMAT"]
 max-line-length = 120
 indent-string = "    "
@@ -18,7 +25,7 @@ line-length = 120
 
 [project]
 name = "bitwarden-exporter"
-version = "1.9.0"
+version = "1.10.0"
 description = "Export Bitwarden vault"
 authors = [ { name = "arpan", email = "me@arpanrec.com" } ]
 license = "MIT"
