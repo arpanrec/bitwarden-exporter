@@ -108,7 +108,7 @@ def target_exporter_keepass(
 app.add_typer(target_exporter, name="exporter", help="Select the exporter to use", chain=True)
 
 
-def main():
+def main() -> None:
     """
     Main entry point for the Bitwarden to KeePass exporter CLI.
     """
