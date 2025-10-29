@@ -38,13 +38,13 @@ Python Wrapper for [Password Manager CLI](https://bitwarden.com/help/cli/) for e
 from [PyPI](https://pypi.org/project/bitwarden-exporter/)
 
 ```bash
-BW_SESSION=<session token> uvx bitwarden-exporter==1.10.2 keepass --help
+BW_SESSION=<session token> uvx bitwarden-exporter=={{README_VERSION_NEXT}} keepass --help
 ```
 
 or
 
 ```bash
-BW_SESSION=<session token> uvx bitwarden-exporter==1.10.2 keepass --help
+BW_SESSION=<session token> uvx bitwarden-exporter=={{README_VERSION_NEXT}} keepass --help
 ```
 
 Run it from [source](https://github.com/arpanrec/bitwarden-exporter)
@@ -56,7 +56,7 @@ BW_SESSION=<session token> uvx git+https://github.com/arpanrec/bitwarden-exporte
 Install with [pipx](https://github.com/pypa/pipx) from [PyPI](https://pypi.org/project/bitwarden-exporter/)
 
 ```bash
-BW_SESSION=<session token> pipx install bitwarden-exporter==1.10.2
+BW_SESSION=<session token> pipx install bitwarden-exporter=={{README_VERSION_NEXT}}
 ```
 
 ## [CLI Usage](./docs/cli.md)
@@ -71,3 +71,4 @@ for [bitwarden-attachment-exporter](https://github.com/ckabalan/bitwarden-attach
 ## License
 
 MIT
+

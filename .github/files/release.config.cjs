@@ -27,6 +27,7 @@ module.exports = {
             '@semantic-release/exec',
             {
                 prepareCmd: [
+                    'README_VERSION_NEXT=${nextRelease.version} uv run .github/files/readme_gen.py',
                     'uv version ${nextRelease.version}',
                     'uv export --format requirements.txt --no-hashes -o requirements.txt',
                     'uv export --format requirements.txt --no-hashes --extra dev -o requirements-dev.txt',
@@ -53,6 +54,7 @@ module.exports = {
                     'requirements.txt',
                     'requirements-dev.txt',
                     'docs/cli.md',
+                    'README.md',
                 ],
                 message: 'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
             },

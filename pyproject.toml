@@ -25,7 +25,7 @@ line-length = 120
 
 [project]
 name = "bitwarden-exporter"
-version = "1.10.0"
+version = "1.10.2"
 description = "Export Bitwarden vault"
 authors = [ { name = "arpan", email = "me@arpanrec.com" } ]
 license = "MIT"
@@ -77,6 +77,7 @@ dev = [
     "pylint==4.0.2",
     "pyright==1.1.407",
     "types-jmespath==1.0.2.20250809",
+    "Jinja2==3.1.6",
 ]
 
 [tool.uv]
