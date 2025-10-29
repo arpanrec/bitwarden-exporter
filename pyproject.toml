@@ -25,7 +25,7 @@ line-length = 120
 
 [project]
 name = "bitwarden-exporter"
-version = "1.9.1"
+version = "1.10.0"
 description = "Export Bitwarden vault"
 authors = [ { name = "arpan", email = "me@arpanrec.com" } ]
 license = "MIT"
