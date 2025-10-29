@@ -34,12 +34,16 @@ isort==7.0.0
     # via
     #   bitwarden-exporter
     #   pylint
+jinja2==3.1.6
+    # via bitwarden-exporter
 jmespath==1.0.1
     # via bitwarden-exporter
 lxml==6.0.2
     # via pykeepass
 markdown-it-py==4.0.0
     # via rich
+markupsafe==3.0.3
+    # via jinja2
 mccabe==0.7.0
     # via pylint
 mdurl==0.1.2

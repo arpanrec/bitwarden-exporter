@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/arpanrec/bitwarden-exporter/compare/1.10.0...1.10.1) (2025-10-29)
+
+
+### Bug Fixes
+
+* Pin the latest version in the readme. ([457ea4d](https://github.com/arpanrec/bitwarden-exporter/commit/457ea4da587c803c5622e233ebfca89043dcacbd))
+
 # [1.10.0](https://github.com/arpanrec/bitwarden-exporter/compare/1.9.1...1.10.0) (2025-10-29)
 
 
