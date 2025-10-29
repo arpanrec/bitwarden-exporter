@@ -11,9 +11,10 @@ from importlib.metadata import PackageNotFoundError, version
 import typer
 
 from bitwarden_exporter import (
+    APPLICATION_NAME_ASCII,
     APPLICATION_PACKAGE_NAME,
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS,
-    CLI_DEBUG_HELP, APPLICATION_NAME_ASCII,
+    CLI_DEBUG_HELP,
 )
 from bitwarden_exporter.exporter import keepass_exporter
 
