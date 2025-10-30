@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 from . import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
 from .bw_cli import bw_exec, download_file
-from .bw_models import BwCollection, BwFolder, BwItem, BwItemAttachment, BwOrganization, BWStatus, BWCurrentStatus
+from .bw_models import BwCollection, BWCurrentStatus, BwFolder, BwItem, BwItemAttachment, BwOrganization, BWStatus
 from .exceptions import BitwardenException
 
 LOGGER = logging.getLogger(__name__)

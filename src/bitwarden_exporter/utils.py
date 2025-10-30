@@ -54,7 +54,7 @@ def resolve_secret(secret_path: str, all_items_list: Optional[list[dict[str, Any
         if not all_items_list:
             LOGGER.info("Cannot use JMESPath expressions: vault items not available")
             raise BitwardenException(error_msg)
-        jmespath_expression = secret_path[len("jmespath:"):]
+        jmespath_expression = secret_path[len("jmespath:") :]
         jmespath_password = jmespath.search(jmespath_expression, all_items_list)
 
         if not jmespath_password:

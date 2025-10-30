@@ -15,9 +15,10 @@ from bitwarden_exporter import (
     APPLICATION_NAME_ASCII,
     APPLICATION_PACKAGE_NAME,
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS,
-    CLI_DEBUG_HELP,
     BW_SESSION_TOKEN_HELP,
+    CLI_DEBUG_HELP,
 )
+from bitwarden_exporter.bw_login import bw_login
 from bitwarden_exporter.exporter import keepass_exporter
 from bitwarden_exporter.utils import resolve_secret
 
@@ -104,6 +105,11 @@ def version_option_register(
 
     if bw_session:
         BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_session = resolve_secret(bw_session)
+
+
+@app.command(name="login", help="Login to Bitwarden CLI.")
+def bw_cli_login():
+    bw_login()
 
 
 target = typer.Typer()
