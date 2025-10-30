@@ -21,7 +21,7 @@ Classes:
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
-
+from enum import Enum
 
 class BwItemLoginFido2Credentials(BaseModel):
     """
@@ -254,3 +254,24 @@ class BwFolder(BaseModel):
     id: Optional[str] = None
     name: str
     items: Dict[str, BwItem] = Field(default_factory=dict)
+
+# {"serverUrl":null,"lastSync":"2025-10-26T17:25:55.258Z","userEmail":"arpan.rec@gmail.com","userId":"833808c7-9b99-45bf-a239-ab5e00838c16","status":"locked"}
+# unauthenticated, locked, unlocked
+
+class BWCurrentStatus(str, Enum):
+    """
+    Bitwarden Current Status Enum
+    """
+    UNAUTHENTICATED = "unauthenticated"
+    LOCKED = "locked"
+    UNLOCKED = "unlocked"
+
+class BWStatus(BaseModel):
+    """
+    Bitwarden Status Model
+    """
+    status: BWCurrentStatus
+    serverUrl: Optional[str] = None
+    lastSync: Optional[str] = None
+    userEmail: Optional[str] = None
+    userId: Optional[str] = None

@@ -6,6 +6,7 @@ Classes:
 """
 
 import tempfile
+from typing import Optional
 
 from pydantic import BaseModel, Field
 
@@ -23,6 +24,8 @@ class BitwardenExportSettings(BaseModel):
     tmp_dir: str = Field(default_factory=tempfile.mkdtemp)
     debug: bool = False
     bw_executable: str = "bw"
+    bw_app_data_dir: Optional[str] = None
+    bw_session: Optional[str] = None
 
 
 BITWARDEN_EXPORTER_GLOBAL_SETTINGS: BitwardenExportSettings = BitwardenExportSettings()
@@ -46,3 +49,10 @@ This will not delete the temporary directory after the export.
 """
 
 APPLICATION_PACKAGE_NAME = "bitwarden-exporter"
+
+BW_SESSION_TOKEN_HELP = r"""
+Direct value: --bw-session "my-secret-password".
+From a file: --bw-session file:secret.txt.
+From environment: --bw-session env:SECRET_PASSWORD.
+
+"""  # nosec B105

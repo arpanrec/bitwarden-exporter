@@ -7,6 +7,7 @@ import logging
 import sys
 import time
 from importlib.metadata import PackageNotFoundError, version
+from typing import Optional
 
 import typer
 
@@ -15,8 +16,10 @@ from bitwarden_exporter import (
     APPLICATION_PACKAGE_NAME,
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS,
     CLI_DEBUG_HELP,
+    BW_SESSION_TOKEN_HELP,
 )
 from bitwarden_exporter.exporter import keepass_exporter
+from bitwarden_exporter.utils import resolve_secret
 
 app = typer.Typer(
     name=APPLICATION_PACKAGE_NAME,
@@ -69,6 +72,18 @@ def version_option_register(
         help="Path or command name of the Bitwarden CLI executable.",
         is_eager=True,
     ),
+    bw_app_data_dir: Optional[str] = typer.Option(
+        BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_app_data_dir,
+        "--bw-app-data-dir",
+        help="Path to the Bitwarden CLI application data directory.",
+        is_eager=True,
+    ),
+    bw_session: Optional[str] = typer.Option(
+        BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_session,
+        "--bw-session",
+        help=BW_SESSION_TOKEN_HELP,
+        is_eager=True,
+    ),
 ) -> None:
     """
     Main command-line interface for Bitwarden to KeePass export.
@@ -84,6 +99,11 @@ def version_option_register(
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_executable = bw_executable
 
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir = tmp_dir
+
+    BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_app_data_dir = bw_app_data_dir
+
+    if bw_session:
+        BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_session = resolve_secret(bw_session)
 
 
 target = typer.Typer()

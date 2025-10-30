@@ -12,7 +12,7 @@ from pydantic import BaseModel
 
 from . import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
 from .bw_cli import bw_exec, download_file
-from .bw_models import BwCollection, BwFolder, BwItem, BwItemAttachment, BwOrganization
+from .bw_models import BwCollection, BwFolder, BwItem, BwItemAttachment, BwOrganization, BWStatus, BWCurrentStatus
 from .exceptions import BitwardenException
 
 LOGGER = logging.getLogger(__name__)
@@ -127,10 +127,12 @@ def process_list(allow_duplicates: bool = False) -> BwProcessResult:
     """
     bw_process_items: BwProcessResult = BwProcessResult()
 
-    bw_current_status = json.loads(bw_exec(["status"], is_raw=False))
+    bw_current_status = BWStatus(**json.loads(bw_exec(["status"], is_raw=False)))
     bw_process_items.raw_items.status.update(bw_current_status)
 
-    if bw_current_status["status"] != "unlocked":
+    LOGGER.warning(f"Current Bitwarden status: {bw_current_status.status}")
+
+    if bw_current_status.status != BWCurrentStatus.UNLOCKED:
         raise BitwardenException("Vault is not unlocked")
     LOGGER.debug("Vault status: %s", json.dumps(bw_current_status))
 
