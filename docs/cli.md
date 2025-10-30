@@ -15,6 +15,10 @@ $ bitwarden-exporter [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
 This will not delete the temporary directory after the export.  [default: no-debug]
 * `--tmp-dir TEXT`: Temporary directory to store temporary sensitive files.  [default: (Temporary directory)]
 * `--bw TEXT`: Path or command name of the Bitwarden CLI executable.  [default: bw]
+* `--bw-app-data-dir TEXT`: Path to the Bitwarden CLI application data directory.
+* `--bw-session TEXT`: Direct value: --bw-session &quot;my-secret-password&quot;.
+From a file: --bw-session file:secret.txt.
+From environment: --bw-session env:SECRET_PASSWORD.
 * `--install-completion`: Install completion for the current shell.
 * `--show-completion`: Show completion for the current shell, to copy it or customize the installation.
 * `--help`: Show this message and exit.
