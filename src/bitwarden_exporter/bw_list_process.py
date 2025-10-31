@@ -11,7 +11,8 @@ from typing import Any, Dict, List
 from pydantic import BaseModel
 
 from .bw_cli import bw_exec, download_file
-from .bw_models import BwCollection, BWCurrentStatus, BwFolder, BwItem, BwItemAttachment, BwOrganization, BWStatus
+from .bw_models import BwCollection, BWCurrentStatus, BwFolder, BwItem, BwItemAttachment, BwOrganization
+from .bw_status import reset_bw_status
 from .exceptions import BitwardenException
 from .global_settings import GLOBAL_SETTINGS
 
@@ -128,7 +129,8 @@ def process_list(allow_duplicates: bool = False) -> BwProcessResult:
     bw_process_items: BwProcessResult = BwProcessResult()
 
     if GLOBAL_SETTINGS.bw_status is None:
-        GLOBAL_SETTINGS.bw_status = BWStatus(**json.loads(bw_exec(["status"], is_raw=False)))
+        reset_bw_status()
+
     bw_process_items.raw_items.status.update(GLOBAL_SETTINGS.bw_status)
 
     LOGGER.warning("Current Bitwarden status: %s", GLOBAL_SETTINGS.bw_status.status)

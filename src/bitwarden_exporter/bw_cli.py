@@ -96,7 +96,7 @@ def bw_exec(
             check=False,
             encoding=ret_encoding,
             env=cli_env_vars,
-            timeout=10,
+            timeout=30,
         )  # nosec B603
         if command_out.stderr and len(command_out.stderr) > 0:
             LOGGER.warning("Error while executing a command. Enable debug logging for more information")
