@@ -257,10 +257,6 @@ class BwFolder(BaseModel):
     items: Dict[str, BwItem] = Field(default_factory=dict)
 
 
-# {"serverUrl":null,"lastSync":"2025-10-26T17:25:55.258Z","userEmail":"arpan.rec@gmail.com","userId":"833808c7-9b99-45bf-a239-ab5e00838c16","status":"locked"}
-# unauthenticated, locked, unlocked
-
-
 class BWCurrentStatus(str, Enum):
     """
     Bitwarden Current Status Enum

@@ -130,7 +130,7 @@ def process_list(allow_duplicates: bool = False) -> BwProcessResult:
     bw_current_status = BWStatus(**json.loads(bw_exec(["status"], is_raw=False)))
     bw_process_items.raw_items.status.update(bw_current_status)
 
-    LOGGER.warning(f"Current Bitwarden status: {bw_current_status.status}")
+    LOGGER.warning("Current Bitwarden status: %s", bw_current_status.status)
 
     if bw_current_status.status != BWCurrentStatus.UNLOCKED:
         raise BitwardenException("Vault is not unlocked")

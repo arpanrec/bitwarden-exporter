@@ -14,7 +14,7 @@ import typer
 from bitwarden_exporter import (
     BITWARDEN_EXPORTER_GLOBAL_SETTINGS,
 )
-from bitwarden_exporter.bw_login import bw_login, BWLoginType, BWInteractiveCodeType
+from bitwarden_exporter.bw_login import BWInteractiveCodeType, BWLoginType, bw_login
 from bitwarden_exporter.exporter import keepass_exporter
 from bitwarden_exporter.utils import resolve_secret
 
@@ -89,6 +89,7 @@ def version_callback(app_version: bool) -> None:
             raise SystemExit(f"Package {APPLICATION_PACKAGE_NAME} not found") from e
 
 
+# pylint: disable=too-many-arguments,too-many-positional-arguments
 @app.callback()
 def version_option_register(
     # pylint: disable=unused-argument
@@ -177,8 +178,12 @@ def bw_cli_login(
         None,
         "--interactive-code",
         help=__bw_cli_login_interactive_code_help,
-    )
+    ),
 ) -> None:
+    """
+    Login to Bitwarden using interactive login.
+    """
+
     bw_login(
         login_type=login_type,
         interactive_email=interactive_email,
