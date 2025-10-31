@@ -63,7 +63,7 @@ def __bw_interactive_login(
     password: Optional[str] = None,
     code_type: Optional[BWInteractiveCodeType] = None,
     code: Optional[str] = None,
-):
+) -> None:
     if email and not password:
         raise BitwardenException("Email provided but no password provided")
 
