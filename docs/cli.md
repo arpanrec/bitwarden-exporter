@@ -25,7 +25,33 @@ From environment: --bw-session env:SECRET_PASSWORD.
 
 **Commands**:
 
+* `login`: Login to Bitwarden CLI.
 * `target`: Select the target to export or import
+
+## `bitwarden-exporter login`
+
+Login to Bitwarden CLI.
+
+**Usage**:
+
+```console
+$ bitwarden-exporter login [OPTIONS]
+```
+
+**Options**:
+
+* `--login-type [interactive|apikey|sso]`: Login type to use.  [default: interactive]
+* `--interactive-email TEXT`: Direct value: --interactive-email &quot;my-secret-email&quot;.
+From a file: --interactive-email file:secret.txt.
+From environment: --interactive-email env:SECRET_EMAIL.
+* `--interactive-password TEXT`: Direct value: --interactive-password &quot;my-secret-password&quot;.
+From a file: --interactive-password file:secret.txt.
+From environment: --interactive-password env:SECRET_PASSWORD.
+* `--interactive-method [authenticator|email|yubikey]`: Method to use for interactive login.
+* `--interactive-code TEXT`: Direct value: --interactive-code &quot;my-secret-code&quot;.
+From a file: --interactive-code file:secret.txt.
+From environment: --interactive-code env:SECRET_CODE.
+* `--help`: Show this message and exit.
 
 ## `bitwarden-exporter target`
 
