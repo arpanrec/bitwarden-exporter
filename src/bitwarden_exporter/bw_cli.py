@@ -15,8 +15,8 @@ import os.path
 import subprocess  # nosec B404
 from typing import Dict, List, Optional
 
-from . import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
 from .exceptions import BitwardenException
+from .global_settings import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
 
 LOGGER = logging.getLogger(__name__)
 

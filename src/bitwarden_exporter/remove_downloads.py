@@ -5,7 +5,7 @@ Delete downloaded Files.
 import logging
 import shutil
 
-from . import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
+from .global_settings import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
 
 LOGGER = logging.getLogger(__name__)
 

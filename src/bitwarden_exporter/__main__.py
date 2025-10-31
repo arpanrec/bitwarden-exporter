@@ -11,11 +11,11 @@ from typing import Optional
 
 import typer
 
-from bitwarden_exporter import (
-    BITWARDEN_EXPORTER_GLOBAL_SETTINGS,
-)
 from bitwarden_exporter.bw_login import BWInteractiveCodeType, BWLoginType, bw_login
 from bitwarden_exporter.exporter import keepass_exporter
+from bitwarden_exporter.global_settings import (
+    BITWARDEN_EXPORTER_GLOBAL_SETTINGS,
+)
 from bitwarden_exporter.utils import resolve_secret
 
 APPLICATION_NAME_ASCII = r"""
