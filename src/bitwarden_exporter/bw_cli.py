@@ -15,8 +15,8 @@ import os.path
 import subprocess  # nosec B404
 from typing import Dict, List, Optional
 
-from . import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
 from .exceptions import BitwardenException
+from .global_settings import GLOBAL_SETTINGS
 
 LOGGER = logging.getLogger(__name__)
 
@@ -54,6 +54,7 @@ def bw_exec(
     ret_encoding: str = "UTF-8",
     env_vars: Optional[Dict[str, str]] = None,
     is_raw: bool = True,
+    capture_output: bool = True,
 ) -> str:
     """
     Execute the Bitwarden CLI and return stdout.
@@ -63,6 +64,7 @@ def bw_exec(
         ret_encoding: The character encoding for stdout/stderr decoding.
         env_vars: Optional environment variables to add/override for this invocation.
         is_raw: When True, appends --raw to the command to simplify parsing.
+        capture_output: When True, captures the output of the command.
 
     Returns:
         str: The command's stdout content.
@@ -70,7 +72,7 @@ def bw_exec(
     Raises:
         ValueError: If the command returns a non-zero exit status.
     """
-    cmd = [BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_executable] + cmd
+    cmd = [GLOBAL_SETTINGS.bw_executable] + cmd
 
     if is_raw:
         cmd.append("--raw")
@@ -80,12 +82,23 @@ def bw_exec(
     if env_vars is not None:
         cli_env_vars.update(env_vars)
 
+    if GLOBAL_SETTINGS.bw_app_data_dir:
+        cli_env_vars["BITWARDENCLI_APPDATA_DIR"] = GLOBAL_SETTINGS.bw_app_data_dir
+
+    if GLOBAL_SETTINGS.bw_session:
+        cli_env_vars["BW_SESSION"] = GLOBAL_SETTINGS.bw_session
+
     LOGGER.debug("Executing CLI :: %s", " ".join(cmd))
     try:
         command_out = subprocess.run(
-            cmd, capture_output=True, check=False, encoding=ret_encoding, env=cli_env_vars, timeout=10
+            cmd,
+            capture_output=capture_output,
+            check=False,
+            encoding=ret_encoding,
+            env=cli_env_vars,
+            timeout=30,
         )  # nosec B603
-        if len(command_out.stderr) > 0:
+        if command_out.stderr and len(command_out.stderr) > 0:
             LOGGER.warning("Error while executing a command. Enable debug logging for more information")
             LOGGER.info("Error executing command %s", command_out.stderr)
         command_out.check_returncode()

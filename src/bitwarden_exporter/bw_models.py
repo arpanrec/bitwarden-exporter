@@ -18,6 +18,7 @@ Classes:
 
 """
 
+from enum import Enum
 from typing import Dict, List, Optional
 
 from pydantic import BaseModel, Field
@@ -254,3 +255,25 @@ class BwFolder(BaseModel):
     id: Optional[str] = None
     name: str
     items: Dict[str, BwItem] = Field(default_factory=dict)
+
+
+class BWCurrentStatus(str, Enum):
+    """
+    Bitwarden Current Status Enum
+    """
+
+    UNAUTHENTICATED = "unauthenticated"
+    LOCKED = "locked"
+    UNLOCKED = "unlocked"
+
+
+class BWStatus(BaseModel):
+    """
+    Bitwarden Status Model
+    """
+
+    status: BWCurrentStatus
+    serverUrl: Optional[str] = None
+    lastSync: Optional[str] = None
+    userEmail: Optional[str] = None
+    userId: Optional[str] = None

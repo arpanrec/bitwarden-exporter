@@ -15,13 +15,43 @@ $ bitwarden-exporter [OPTIONS] COMMAND1 [ARGS]... [COMMAND2 [ARGS]...]...
 This will not delete the temporary directory after the export.  [default: no-debug]
 * `--tmp-dir TEXT`: Temporary directory to store temporary sensitive files.  [default: (Temporary directory)]
 * `--bw TEXT`: Path or command name of the Bitwarden CLI executable.  [default: bw]
+* `--bw-app-data-dir TEXT`: Path to the Bitwarden CLI application data directory.
+* `--bw-session TEXT`: Direct value: --bw-session &quot;my-secret-password&quot;.
+From a file: --bw-session file:secret.txt.
+From environment: --bw-session env:SECRET_PASSWORD.
 * `--install-completion`: Install completion for the current shell.
 * `--show-completion`: Show completion for the current shell, to copy it or customize the installation.
 * `--help`: Show this message and exit.
 
 **Commands**:
 
+* `login`: Login to Bitwarden CLI.
 * `target`: Select the target to export or import
+
+## `bitwarden-exporter login`
+
+Login to Bitwarden CLI.
+
+**Usage**:
+
+```console
+$ bitwarden-exporter login [OPTIONS]
+```
+
+**Options**:
+
+* `--login-type [interactive|apikey|sso]`: Login type to use.  [default: interactive]
+* `--interactive-email TEXT`: Direct value: --interactive-email &quot;my-secret-email&quot;.
+From a file: --interactive-email file:secret.txt.
+From environment: --interactive-email env:SECRET_EMAIL.
+* `--interactive-password TEXT`: Direct value: --interactive-password &quot;my-secret-password&quot;.
+From a file: --interactive-password file:secret.txt.
+From environment: --interactive-password env:SECRET_PASSWORD.
+* `--interactive-method [authenticator|email|yubikey]`: Method to use for interactive login.
+* `--interactive-code TEXT`: Direct value: --interactive-code &quot;my-secret-code&quot;.
+From a file: --interactive-code file:secret.txt.
+From environment: --interactive-code env:SECRET_CODE.
+* `--help`: Show this message and exit.
 
 ## `bitwarden-exporter target`
 
