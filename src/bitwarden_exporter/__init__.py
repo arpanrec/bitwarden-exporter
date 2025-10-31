@@ -29,30 +29,3 @@ class BitwardenExportSettings(BaseModel):
 
 
 BITWARDEN_EXPORTER_GLOBAL_SETTINGS: BitwardenExportSettings = BitwardenExportSettings()
-
-APPLICATION_NAME_ASCII = r"""
- ____  _ _                         _
-| __ )(_) |___      ____ _ _ __ __| | ___ _ __
-|  _ \| | __\ \ /\ / / _` | '__/ _` |/ _ \ '_ \
-| |_) | | |_ \ V  V / (_| | | | (_| |  __/ | | |
-|____/|_|\__| \_/\_/ \__,_|_|_ \__,_|\___|_| |_|
-| ____|_  ___ __   ___  _ __| |_ ___ _ __
-|  _| \ \/ / '_ \ / _ \| '__| __/ _ \ '__|
-| |___ >  <| |_) | (_) | |  | ||  __/ |
-|_____/_/\_\ .__/ \___/|_|   \__\___|_|
-           |_|
-"""
-
-CLI_DEBUG_HELP = """
-Enable verbose logging, This will print debug logs, THAT MAY CONTAIN SENSITIVE INFORMATION,
-This will not delete the temporary directory after the export.
-"""
-
-APPLICATION_PACKAGE_NAME = "bitwarden-exporter"
-
-BW_SESSION_TOKEN_HELP = r"""
-Direct value: --bw-session "my-secret-password".
-From a file: --bw-session file:secret.txt.
-From environment: --bw-session env:SECRET_PASSWORD.
-
-"""  # nosec B105
