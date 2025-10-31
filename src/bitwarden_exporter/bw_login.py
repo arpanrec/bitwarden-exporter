@@ -1,10 +1,10 @@
+import json
 import logging
 from enum import Enum
 from typing import Optional
 
 from .bw_cli import bw_exec
-from .bw_models import BWCurrentStatus
-from .bw_status import reset_bw_status
+from .bw_models import BWCurrentStatus, BWStatus
 from .exceptions import BitwardenException
 from .global_settings import GLOBAL_SETTINGS
 from .utils import resolve_secret
@@ -45,7 +45,7 @@ def bw_login(
     """
 
     if not GLOBAL_SETTINGS.bw_status:
-        reset_bw_status()
+        GLOBAL_SETTINGS.bw_status = BWStatus(**json.loads(bw_exec(["status"])))
 
     if GLOBAL_SETTINGS.bw_status.status != BWCurrentStatus.UNAUTHENTICATED:
         LOGGER.warning("Already authenticated")
@@ -119,4 +119,4 @@ def __bw_interactive_login(
         LOGGER.warning("Setting BW_SESSION")
         GLOBAL_SETTINGS.bw_session = bw_session
 
-    reset_bw_status()
+    GLOBAL_SETTINGS.bw_status = BWStatus(**json.loads(bw_exec(["status"])))
