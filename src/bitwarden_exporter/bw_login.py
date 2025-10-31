@@ -1,7 +1,9 @@
 import json
+import logging
 from enum import Enum
 from typing import Optional
 
+from . import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
 from .bw_cli import bw_exec
 from .bw_models import BWCurrentStatus, BWStatus
 from .exceptions import BitwardenException
@@ -28,6 +30,9 @@ class BWInteractiveCodeType(str, Enum):
     YubiKey = "yubikey"
 
 
+LOGGER = logging.getLogger(__name__)
+
+
 def bw_login(
     login_type: BWLoginType = BWLoginType.INTERACTIVE,
     interactive_email: Optional[str] = None,
@@ -40,10 +45,13 @@ def bw_login(
     """
     bw_current_status = BWStatus(**json.loads(bw_exec(["status"], is_raw=False)))
     if bw_current_status.status != BWCurrentStatus.UNAUTHENTICATED:
+        LOGGER.warning("Already authenticated")
         return
 
     match login_type:
         case BWLoginType.INTERACTIVE:
+            if not interactive_email or not interactive_password or not interactive_code_type or not interactive_code:
+                raise BitwardenException("Interactive login requires email, password, code type, and code")
             __bw_interactive_login(
                 email=interactive_email,
                 password=interactive_password,
@@ -59,43 +67,34 @@ def bw_login(
 
 
 def __bw_interactive_login(
-    email: Optional[str] = None,
-    password: Optional[str] = None,
-    code_type: Optional[BWInteractiveCodeType] = None,
-    code: Optional[str] = None,
+    email: str,
+    password: str,
+    code_type: BWInteractiveCodeType,
+    code: str,
 ) -> None:
-    if email and not password:
-        raise BitwardenException("Email provided but no password provided")
-
-    if password and not email:
-        raise BitwardenException("Password provided but no email provided")
-
-    if code_type and not code:
-        raise BitwardenException("Code type provided but no code provided")
-
-    if code and not code_type:
-        raise BitwardenException("Code provided but no code type provided")
-
     login_cmd = ["login"]
 
-    if email and password:
-        email = resolve_secret(email)
-        password = resolve_secret(password)
-        login_cmd.extend([email, password])
+    email = resolve_secret(email)
+    password = resolve_secret(password)
+    code = resolve_secret(code)
+    login_cmd.extend([email, password])
 
-    if code_type and code:
-        cli_method_int: Optional[int] = None
-        match code_type:
-            case BWInteractiveCodeType.Authenticator:
-                cli_method_int = 0
-            case BWInteractiveCodeType.Email:
-                cli_method_int = 1
-            case BWInteractiveCodeType.YubiKey:
-                cli_method_int = 2
-            case _:
-                raise BitwardenException(f"Unknown code type: {code_type}")
+    cli_method_int: Optional[int] = None
 
-        if cli_method_int:
-            login_cmd.extend(["--method", str(cli_method_int), "--code", code])
+    match code_type:
+        case BWInteractiveCodeType.Authenticator:
+            cli_method_int = 0
+        case BWInteractiveCodeType.Email:
+            cli_method_int = 1
+        case BWInteractiveCodeType.YubiKey:
+            cli_method_int = 2
+        case _:
+            raise BitwardenException(f"Unknown code type: {code_type}")
 
-    bw_exec(login_cmd)
+    if cli_method_int is None:
+        raise BitwardenException("Code type is not set")
+
+    login_cmd.extend(["--method", str(cli_method_int), "--code", code])
+
+    BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_session = bw_exec(login_cmd, capture_output=True)
+    LOGGER.warning("Setting BW_SESSION")

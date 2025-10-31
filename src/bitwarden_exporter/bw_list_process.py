@@ -134,7 +134,6 @@ def process_list(allow_duplicates: bool = False) -> BwProcessResult:
 
     if bw_current_status.status != BWCurrentStatus.UNLOCKED:
         raise BitwardenException("Vault is not unlocked")
-    LOGGER.debug("Vault status: %s", json.dumps(bw_current_status))
 
     bw_folders_dict = json.loads((bw_exec(["list", "folders"], is_raw=False)))
 

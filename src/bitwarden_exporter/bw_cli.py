@@ -91,9 +91,14 @@ def bw_exec(
     LOGGER.debug("Executing CLI :: %s", " ".join(cmd))
     try:
         command_out = subprocess.run(
-            cmd, capture_output=capture_output, check=False, encoding=ret_encoding, env=cli_env_vars, timeout=10
+            cmd,
+            capture_output=capture_output,
+            check=False,
+            encoding=ret_encoding,
+            env=cli_env_vars,
+            timeout=10,
         )  # nosec B603
-        if len(command_out.stderr) > 0:
+        if command_out.stderr and len(command_out.stderr) > 0:
             LOGGER.warning("Error while executing a command. Enable debug logging for more information")
             LOGGER.info("Error executing command %s", command_out.stderr)
         command_out.check_returncode()
