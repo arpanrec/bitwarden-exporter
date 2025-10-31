@@ -14,7 +14,7 @@ import typer
 from bitwarden_exporter.bw_login import BWInteractiveCodeType, BWLoginType, bw_login
 from bitwarden_exporter.exporter import keepass_exporter
 from bitwarden_exporter.global_settings import (
-    BITWARDEN_EXPORTER_GLOBAL_SETTINGS,
+    GLOBAL_SETTINGS,
 )
 from bitwarden_exporter.utils import resolve_secret
 
@@ -102,30 +102,30 @@ def version_option_register(
         help="Show the application's version and exit.",
     ),
     debug: bool = typer.Option(
-        BITWARDEN_EXPORTER_GLOBAL_SETTINGS.debug,
+        GLOBAL_SETTINGS.debug,
         help=CLI_DEBUG_HELP,
         is_eager=True,
     ),
     tmp_dir: str = typer.Option(
-        default=BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir,
+        default=GLOBAL_SETTINGS.tmp_dir,
         help="Temporary directory to store temporary sensitive files.",
         show_default="Temporary directory",
         is_eager=True,
     ),
     bw_executable: str = typer.Option(
-        BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_executable,
+        GLOBAL_SETTINGS.bw_executable,
         "--bw",
         help="Path or command name of the Bitwarden CLI executable.",
         is_eager=True,
     ),
     bw_app_data_dir: Optional[str] = typer.Option(
-        BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_app_data_dir,
+        GLOBAL_SETTINGS.bw_app_data_dir,
         "--bw-app-data-dir",
         help="Path to the Bitwarden CLI application data directory.",
         is_eager=True,
     ),
     bw_session: Optional[str] = typer.Option(
-        BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_session,
+        GLOBAL_SETTINGS.bw_session,
         "--bw-session",
         help=BW_SESSION_TOKEN_HELP,
         is_eager=True,
@@ -134,7 +134,7 @@ def version_option_register(
     """
     Main command-line interface for Bitwarden to KeePass export.
     """
-    BITWARDEN_EXPORTER_GLOBAL_SETTINGS.debug = debug
+    GLOBAL_SETTINGS.debug = debug
 
     logging.basicConfig(
         level=logging.DEBUG if debug else logging.WARNING,
@@ -142,14 +142,14 @@ def version_option_register(
         handlers=[logging.StreamHandler(sys.stdout)],
     )
 
-    BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_executable = bw_executable
+    GLOBAL_SETTINGS.bw_executable = bw_executable
 
-    BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir = tmp_dir
+    GLOBAL_SETTINGS.tmp_dir = tmp_dir
 
-    BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_app_data_dir = bw_app_data_dir
+    GLOBAL_SETTINGS.bw_app_data_dir = bw_app_data_dir
 
     if bw_session:
-        BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_session = resolve_secret(bw_session)
+        GLOBAL_SETTINGS.bw_session = resolve_secret(bw_session)
 
 
 @app.command(name="login", help="Login to Bitwarden CLI.")

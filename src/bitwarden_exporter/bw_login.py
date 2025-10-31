@@ -6,7 +6,7 @@ from typing import Optional
 from .bw_cli import bw_exec
 from .bw_models import BWCurrentStatus, BWStatus
 from .exceptions import BitwardenException
-from .global_settings import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
+from .global_settings import GLOBAL_SETTINGS
 from .utils import resolve_secret
 
 
@@ -43,8 +43,11 @@ def bw_login(
     """
     bitwarden login
     """
-    bw_current_status = BWStatus(**json.loads(bw_exec(["status"], is_raw=False)))
-    if bw_current_status.status != BWCurrentStatus.UNAUTHENTICATED:
+
+    if not GLOBAL_SETTINGS.bw_status:
+        GLOBAL_SETTINGS.bw_status = BWStatus(**json.loads(bw_exec(["status"], is_raw=False)))
+
+    if GLOBAL_SETTINGS.bw_status.status != BWCurrentStatus.UNAUTHENTICATED:
         LOGGER.warning("Already authenticated")
         return
 
@@ -104,5 +107,5 @@ def __bw_interactive_login(
         if cli_method_int is not None:
             login_cmd.extend(["--method", str(cli_method_int), "--code", code])
 
-    BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_session = bw_exec(login_cmd, capture_output=False)
+    GLOBAL_SETTINGS.bw_session = bw_exec(login_cmd, capture_output=False)
     LOGGER.warning("Setting BW_SESSION")

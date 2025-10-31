@@ -16,7 +16,7 @@ import subprocess  # nosec B404
 from typing import Dict, List, Optional
 
 from .exceptions import BitwardenException
-from .global_settings import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
+from .global_settings import GLOBAL_SETTINGS
 
 LOGGER = logging.getLogger(__name__)
 
@@ -72,7 +72,7 @@ def bw_exec(
     Raises:
         ValueError: If the command returns a non-zero exit status.
     """
-    cmd = [BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_executable] + cmd
+    cmd = [GLOBAL_SETTINGS.bw_executable] + cmd
 
     if is_raw:
         cmd.append("--raw")
@@ -82,11 +82,11 @@ def bw_exec(
     if env_vars is not None:
         cli_env_vars.update(env_vars)
 
-    if BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_app_data_dir:
-        cli_env_vars["BITWARDENCLI_APPDATA_DIR"] = BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_app_data_dir
+    if GLOBAL_SETTINGS.bw_app_data_dir:
+        cli_env_vars["BITWARDENCLI_APPDATA_DIR"] = GLOBAL_SETTINGS.bw_app_data_dir
 
-    if BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_session:
-        cli_env_vars["BW_SESSION"] = BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_session
+    if GLOBAL_SETTINGS.bw_session:
+        cli_env_vars["BW_SESSION"] = GLOBAL_SETTINGS.bw_session
 
     LOGGER.debug("Executing CLI :: %s", " ".join(cmd))
     try:

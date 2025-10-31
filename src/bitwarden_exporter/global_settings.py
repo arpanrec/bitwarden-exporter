@@ -6,7 +6,7 @@ from pydantic import BaseModel, Field
 from .bw_models import BWStatus
 
 
-class BitwardenExportSettings(BaseModel):
+class GlobalSettings(BaseModel):
     """
     Configuration for the Bitwarden Exporter CLI.
 
@@ -21,7 +21,7 @@ class BitwardenExportSettings(BaseModel):
     bw_executable: str = "bw"
     bw_app_data_dir: Optional[str] = None
     bw_session: Optional[str] = None
-    bw_current_status: Optional[BWStatus] = None
+    bw_status: Optional[BWStatus] = None
 
 
-BITWARDEN_EXPORTER_GLOBAL_SETTINGS: BitwardenExportSettings = BitwardenExportSettings()
+GLOBAL_SETTINGS: GlobalSettings = GlobalSettings()
