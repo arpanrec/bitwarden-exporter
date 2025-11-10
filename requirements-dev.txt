@@ -11,7 +11,7 @@ astroid==4.0.1
     # via pylint
 bandit==1.8.6
     # via bitwarden-exporter
-black==25.9.0
+black==25.11.0
     # via bitwarden-exporter
 cffi==2.0.0
     # via argon2-cffi-bindings
