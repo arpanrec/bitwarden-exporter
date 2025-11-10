@@ -90,7 +90,7 @@ pyotp==2.9.0
     # via pykeepass
 pyright==1.1.407
     # via bitwarden-exporter
-pytokens==0.2.0
+pytokens==0.3.0
     # via black
 pyyaml==6.0.3
     # via bandit
