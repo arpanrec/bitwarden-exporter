@@ -7,7 +7,7 @@ argon2-cffi==25.1.0
     # via pykeepass
 argon2-cffi-bindings==25.1.0
     # via argon2-cffi
-astroid==4.0.1
+astroid==4.0.2
     # via pylint
 bandit==1.8.6
     # via bitwarden-exporter
