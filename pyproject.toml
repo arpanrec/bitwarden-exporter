@@ -70,7 +70,7 @@ bitwarden-exporter = "bitwarden_exporter.__main__:main"
 [project.optional-dependencies]
 dev = [
     "bandit==1.8.6",
-    "black==25.9.0",
+    "black==25.11.0",
     "isort==7.0.0",
     "mypy==1.18.2",
     "neovim==0.3.1",
