@@ -10,10 +10,10 @@ from typing import Any, Dict, List
 
 from pydantic import BaseModel
 
-from . import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
 from .bw_cli import bw_exec, download_file
-from .bw_models import BwCollection, BwFolder, BwItem, BwItemAttachment, BwOrganization
+from .bw_models import BwCollection, BWCurrentStatus, BwFolder, BwItem, BwItemAttachment, BwOrganization, BWStatus
 from .exceptions import BitwardenException
+from .global_settings import GLOBAL_SETTINGS
 
 LOGGER = logging.getLogger(__name__)
 
@@ -127,12 +127,15 @@ def process_list(allow_duplicates: bool = False) -> BwProcessResult:
     """
     bw_process_items: BwProcessResult = BwProcessResult()
 
-    bw_current_status = json.loads(bw_exec(["status"], is_raw=False))
-    bw_process_items.raw_items.status.update(bw_current_status)
+    if GLOBAL_SETTINGS.bw_status is None:
+        GLOBAL_SETTINGS.bw_status = BWStatus(**json.loads(bw_exec(["status"])))
 
-    if bw_current_status["status"] != "unlocked":
+    bw_process_items.raw_items.status.update(GLOBAL_SETTINGS.bw_status)
+
+    LOGGER.warning("Current Bitwarden status: %s", GLOBAL_SETTINGS.bw_status.status)
+
+    if GLOBAL_SETTINGS.bw_status.status != BWCurrentStatus.UNLOCKED:
         raise BitwardenException("Vault is not unlocked")
-    LOGGER.debug("Vault status: %s", json.dumps(bw_current_status))
 
     bw_folders_dict = json.loads((bw_exec(["list", "folders"], is_raw=False)))
 
@@ -176,9 +179,7 @@ def process_list(allow_duplicates: bool = False) -> BwProcessResult:
         LOGGER.debug("Processing Item %s", bw_item.name)
         if bw_item.attachments and len(bw_item.attachments) > 0:
             for attachment in bw_item.attachments:
-                attachment.local_file_path = os.path.join(
-                    BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir, bw_item.id, attachment.id
-                )
+                attachment.local_file_path = os.path.join(GLOBAL_SETTINGS.tmp_dir, bw_item.id, attachment.id)
                 LOGGER.warning("Downloading attachment: application is saving Bitwarden attachment to a temporary path")
                 LOGGER.info(
                     "%s:: Downloading Attachment %s to %s",
@@ -191,7 +192,7 @@ def process_list(allow_duplicates: bool = False) -> BwProcessResult:
         if bw_item.sshKey:
             LOGGER.debug("Processing SSH Key Item %s", bw_item.name)
 
-            download_location = os.path.join(BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir, bw_item.id)
+            download_location = os.path.join(GLOBAL_SETTINGS.tmp_dir, bw_item.id)
             if not os.path.exists(download_location):
                 os.makedirs(download_location)
 
@@ -202,7 +203,7 @@ def process_list(allow_duplicates: bool = False) -> BwProcessResult:
                 size="",
                 sizeName="",
                 url="",
-                local_file_path=os.path.join(BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir, bw_item.id, epoch_id),
+                local_file_path=os.path.join(GLOBAL_SETTINGS.tmp_dir, bw_item.id, epoch_id),
             )
             with open(attachment_priv_key.local_file_path, "w", encoding="utf-8") as ssh_priv_file:
                 ssh_priv_file.write(bw_item.sshKey.privateKey)
@@ -214,7 +215,7 @@ def process_list(allow_duplicates: bool = False) -> BwProcessResult:
                 size="",
                 sizeName="",
                 url="",
-                local_file_path=os.path.join(BITWARDEN_EXPORTER_GLOBAL_SETTINGS.tmp_dir, bw_item.id, epoch_id + "-pub"),
+                local_file_path=os.path.join(GLOBAL_SETTINGS.tmp_dir, bw_item.id, epoch_id + "-pub"),
             )
             with open(attachment_pub_key.local_file_path, "w", encoding="utf-8") as ssh_pub_file:
                 ssh_pub_file.write(bw_item.sshKey.publicKey)
