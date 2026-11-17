@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Prepare a release: write the version into every file that carries it, commit, and tag.
-# Pushing the tag starts .github/workflows/release.yml, which creates the GitHub release and publishes to PyPI.
+# Pushing the tag starts .github/workflows/release.yml, which builds the distributions, attaches them to a draft
+# GitHub release, publishes them to PyPI, and then publishes the release.
 #
 # Usage: scripts/release.sh <version>      e.g. scripts/release.sh 1.11.0
 

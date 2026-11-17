@@ -1,54 +1,46 @@
 ---
 name: Release
 
+# Every job is safe to re-run on its own: the draft release is reused, assets are uploaded with --clobber, and uv
+# publish skips files the index already has. The release is published (and becomes immutable) only in the last job,
+# after the assets are attached and PyPI has the distributions, so "Re-run failed jobs" can finish a failed release.
+# workflow_dispatch re-runs the whole pipeline for an existing tag.
 "on":
     push:
         tags:
             - "*"
+    workflow_dispatch:
+        inputs:
+            tag:
+                description: Existing tag to release
+                required: true
+                type: string
 
 permissions: {}
+
+concurrency:
+    group: release-${{ inputs.tag || github.ref_name }}
+    cancel-in-progress: false
 
 env:
     UV_MANAGED_PYTHON: "true"
     UV_LOCKED: "true"
     UV_PYTHON: "3.13.7"
+    TAG: ${{ inputs.tag || github.ref_name }}
 
 jobs:
-    release:
-        name: Create GitHub Release
+    build:
+        name: Build distributions
         if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/bitwarden-exporter'
         timeout-minutes: 15
         runs-on: ubuntu-26.04
         permissions:
-            contents: write
-        steps:
-            - name: Create release
-              env:
-                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  TAG: ${{ github.ref_name }}
-              run: |
-                  if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
-                      echo "Release $TAG already exists"
-                      exit 0
-                  fi
-                  prerelease=()
-                  if [[ "$TAG" == *-* ]]; then
-                      prerelease=(--prerelease)
-                  fi
-                  gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes "${prerelease[@]}"
-
-    pypi:
-        name: PyPI Build & Publish
-        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/bitwarden-exporter'
-        needs: release
-        timeout-minutes: 30
-        runs-on: ubuntu-26.04
-        permissions:
-            contents: write
+            contents: read
         steps:
             - name: Checkout
               uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
+                  ref: refs/tags/${{ env.TAG }}
                   fetch-depth: 0
                   persist-credentials: false
 
@@ -58,8 +50,8 @@ jobs:
             - name: Verify the tag is on main
               run: |
                   git fetch origin main
-                  [[ -n "$(git branch -r --contains "${{ github.sha }}" --list 'origin/main')" ]] || {
-                      echo "::error::${{ github.ref_name }} is not on main"
+                  [[ -n "$(git branch -r --contains HEAD --list 'origin/main')" ]] || {
+                      echo "::error::$TAG is not on main"
                       exit 1
                   }
 
@@ -74,30 +66,137 @@ jobs:
 
             # scripts/release.sh writes the version into pyproject.toml before tagging; refuse to publish on a mismatch.
             - name: Check the tag matches the project version
-              env:
-                  REF_NAME: ${{ github.ref_name }}
               run: |
                   version="$(uv version --short)"
-                  [[ "$version" == "$REF_NAME" ]] || {
-                      echo "::error::Tag $REF_NAME does not match pyproject.toml version $version; use scripts/release.sh"
+                  [[ "$version" == "$TAG" ]] || {
+                      echo "::error::Tag $TAG does not match pyproject.toml version $version; use scripts/release.sh"
                       exit 1
                   }
 
             - name: Build
               run: uv build
 
+            - name: Upload the distributions
+              uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+              with:
+                  name: dist
+                  path: dist/
+                  if-no-files-found: error
+
+    draft-release:
+        name: Draft GitHub Release
+        needs: build
+        timeout-minutes: 15
+        runs-on: ubuntu-26.04
+        permissions:
+            contents: write
+        steps:
+            - name: Download the distributions
+              uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+              with:
+                  name: dist
+                  path: dist/
+
+            - name: Create the draft release and attach the distributions
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  if is_draft="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft 2> /dev/null)"; then
+                      if [[ "$is_draft" != "true" ]]; then
+                          echo "::warning::Release $TAG is already published and immutable; its assets can't change"
+                          exit 0
+                      fi
+                      echo "Reusing draft release $TAG"
+                  else
+                      prerelease=()
+                      if [[ "$TAG" == *-* ]]; then
+                          prerelease=(--prerelease)
+                      fi
+                      gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --draft --verify-tag --generate-notes \
+                          "${prerelease[@]}"
+                  fi
+                  gh release upload "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --clobber
+
+    testpypi:
+        name: Publish to TestPyPI
+        needs: build
+        timeout-minutes: 15
+        runs-on: ubuntu-26.04
+        permissions:
+            contents: read
+        steps:
+            # uv publish --index reads the index definitions from pyproject.toml.
+            - name: Checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  ref: refs/tags/${{ env.TAG }}
+                  persist-credentials: false
+
+            - name: Download the distributions
+              uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+              with:
+                  name: dist
+                  path: dist/
+
+            - name: Install uv 0.13.7
+              uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+              with:
+                  version: "0.13.7"
+
+            # With --index, uv checks the index's url first and skips files that are already uploaded.
             - name: Publish to TestPyPI
               env:
                   PYPI_TEST_API_TOKEN: ${{ secrets.PYPI_TEST_API_TOKEN }}
               run: uv publish --index test-pypi --token "$PYPI_TEST_API_TOKEN"
+
+    pypi:
+        name: Publish to PyPI
+        needs: [testpypi, draft-release]
+        timeout-minutes: 15
+        runs-on: ubuntu-26.04
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  ref: refs/tags/${{ env.TAG }}
+                  persist-credentials: false
+
+            - name: Download the distributions
+              uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+              with:
+                  name: dist
+                  path: dist/
+
+            - name: Install uv 0.13.7
+              uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+              with:
+                  version: "0.13.7"
 
             - name: Publish to PyPI
               env:
                   PYPI_PROD_API_TOKEN: ${{ secrets.PYPI_PROD_API_TOKEN }}
               run: uv publish --index pypi --token "$PYPI_PROD_API_TOKEN"
 
-            - name: Attach the distributions to the GitHub release
+    publish-release:
+        name: Publish GitHub Release
+        needs: [draft-release, pypi]
+        timeout-minutes: 5
+        runs-on: ubuntu-26.04
+        permissions:
+            contents: write
+        steps:
+            - name: Publish the draft release
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  TAG: ${{ github.ref_name }}
-              run: gh release upload "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --clobber
+              run: |
+                  if [[ "$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json isDraft --jq .isDraft)" != "true" ]]; then
+                      echo "Release $TAG is already published"
+                      exit 0
+                  fi
+                  latest=()
+                  if [[ "$TAG" == *-* ]]; then
+                      latest=(--latest=false)
+                  fi
+                  gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --draft=false "${latest[@]}"
