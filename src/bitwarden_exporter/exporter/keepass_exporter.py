@@ -2,14 +2,16 @@
 Utilities to transform Bitwarden vault data structures into a KeePass (.kdbx) database.
 
 This module contains a thin abstraction (KeePassStorage) over pykeepass that maps Bitwarden
-organizations, collections, folders, and items (including fields, URIs, OTP, SSH keys, and
-attachments) to KeePass groups, entries, custom properties, and binaries.
+organizations, collections, folders, and items (including fields, URIs, OTP, SSH keys, passkeys,
+and attachments) to KeePass groups, entries, custom properties, and binaries.
 """
 
+import base64
 import json
 import logging
 import os
 import urllib.parse
+import uuid
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type
 
@@ -18,7 +20,7 @@ from pykeepass.entry import Entry  # type: ignore
 from pykeepass.group import Group  # type: ignore
 
 from ..bw_list_process import RawItems, process_list
-from ..bw_models import BwField, BwFolder, BwItem, BwOrganization
+from ..bw_models import BwField, BwFolder, BwItem, BwItemLoginFido2Credentials, BwOrganization
 from ..exceptions import BitwardenException
 from ..remove_downloads import remove_downloaded
 from ..utils import resolve_secret
@@ -53,6 +55,47 @@ def create_database_cli(
         storage.process_bw_exports(bw_processed_items.raw_items)
 
     remove_downloaded()
+
+
+def _b64url_encode(data: bytes) -> str:
+    """
+    Encode bytes as unpadded base64url, the form KeePassXC uses for passkey IDs.
+    """
+    return base64.urlsafe_b64encode(data).rstrip(b"=").decode("ascii")
+
+
+def _b64url_decode(value: str) -> bytes:
+    """
+    Decode base64url text that may be missing its padding.
+    """
+    return base64.urlsafe_b64decode(value + "=" * (-len(value) % 4))
+
+
+def _b64url_normalize(value: str) -> str:
+    """
+    Re-encode base64url text without padding.
+    """
+    return _b64url_encode(_b64url_decode(value))
+
+
+def _passkey_credential_id(credential_id: str) -> str:
+    """
+    Convert a Bitwarden credentialId to the base64url form KeePassXC expects.
+
+    Bitwarden stores the ID either as a UUID string or as base64url prefixed with "b64.".
+    """
+    if credential_id.startswith("b64."):
+        return _b64url_normalize(credential_id[4:])
+    return _b64url_encode(uuid.UUID(credential_id).bytes)
+
+
+def _passkey_private_key_pem(key_value: str) -> str:
+    """
+    Convert a Bitwarden keyValue (base64url PKCS#8 DER) to a PEM private key.
+    """
+    body = base64.b64encode(_b64url_decode(key_value)).decode("ascii")
+    lines = [body[i : i + 64] for i in range(0, len(body), 64)]
+    return "\n".join(["-----BEGIN PRIVATE KEY-----", *lines, "-----END PRIVATE KEY-----"])
 
 
 class KeePassStorage:
@@ -180,8 +223,7 @@ class KeePassStorage:
         LOGGER.info("Adding Entry %s", bw_item.name)
 
         if bw_item.login and bw_item.login.fido2Credentials and len(bw_item.login.fido2Credentials) > 0:
-            LOGGER.warning("There is an item with Fido2Credentials. Enable debug logging for more information")
-            LOGGER.info("Fido2Credentials are not supported in Keepass for %s", bw_item.name)
+            self.__add_passkey(entry, bw_item, bw_item.login.fido2Credentials)
             fido2credentials_dict: List[Dict[str, Any]] = [
                 fido2Credentials.model_dump() for fido2Credentials in bw_item.login.fido2Credentials
             ]
@@ -207,6 +249,54 @@ class KeePassStorage:
             entry.notes = bw_item.notes
 
         return entry
+
+    @staticmethod
+    def __add_passkey(entry: Entry, bw_item: BwItem, credentials: List[BwItemLoginFido2Credentials]) -> None:
+        """
+        Store the first Bitwarden FIDO2 credential as a KeePassXC passkey.
+
+        KeePassXC keeps one passkey per entry in KPEX_PASSKEY_* attributes. Every credential is also
+        kept as JSON in the Fido2Credentials field, so extra credentials on the same item are not lost.
+        """
+        LOGGER.warning("KeePass write: application is adding a FIDO2 credential as a KeePassXC passkey")
+        LOGGER.info("Adding Passkey for %s", bw_item.name)
+        if len(credentials) > 1:
+            LOGGER.warning(
+                "Multiple passkeys are not supported in KeePassXC. Enable debug logging for more information"
+            )
+            LOGGER.info(
+                "%s has %d FIDO2 credentials. Only the first is added as a passkey; "
+                "all of them are kept in the Fido2Credentials field.",
+                bw_item.name,
+                len(credentials),
+            )
+        credential = credentials[0]
+        try:
+            credential_id = _passkey_credential_id(credential.credentialId)
+            private_key_pem = _passkey_private_key_pem(credential.keyValue)
+            user_handle = _b64url_normalize(credential.userHandle)
+        except ValueError as e:  # binascii.Error is a ValueError subclass
+            LOGGER.warning("A FIDO2 credential could not be converted to a passkey. Enable debug logging for more")
+            LOGGER.info(
+                "%s: FIDO2 credential not added as a KeePassXC passkey (%s: %s); "
+                "it is kept in the Fido2Credentials field.",
+                bw_item.name,
+                type(e).__name__,
+                e,
+            )
+            return
+        username = credential.userName or (bw_item.login.username if bw_item.login else None) or ""
+        entry.set_custom_property("KPEX_PASSKEY_USERNAME", username, protect=False)
+        entry.set_custom_property("KPEX_PASSKEY_CREDENTIAL_ID", credential_id, protect=True)
+        entry.set_custom_property("KPEX_PASSKEY_PRIVATE_KEY_PEM", private_key_pem, protect=True)
+        entry.set_custom_property("KPEX_PASSKEY_RELYING_PARTY", credential.rpId, protect=False)
+        entry.set_custom_property("KPEX_PASSKEY_USER_HANDLE", user_handle, protect=True)
+        entry.set_custom_property("KPEX_PASSKEY_FLAG_BE", "1", protect=False)
+        entry.set_custom_property("KPEX_PASSKEY_FLAG_BS", "1", protect=False)
+        tags: List[str] = list(entry.tags or [])
+        if "Passkey" not in tags:
+            tags.append("Passkey")
+        entry.tags = tags
 
     @staticmethod
     def __add_card_details_to_item_fields(bw_item: BwItem) -> List[BwField]:
