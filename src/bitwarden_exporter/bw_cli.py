@@ -13,6 +13,7 @@ import logging
 import os
 import os.path
 import subprocess  # nosec B404
+import time
 from typing import Dict, List, Optional
 
 from . import BITWARDEN_EXPORTER_GLOBAL_SETTINGS
@@ -49,6 +50,10 @@ def download_file(item_id: str, attachment_id: str, download_location: str) -> N
     )
 
 
+BW_CLI_RETRIES = 3
+BW_CLI_RETRY_DELAY_SECOND = 1
+
+
 def bw_exec(
     cmd: List[str],
     ret_encoding: str = "UTF-8",
@@ -68,7 +73,8 @@ def bw_exec(
         str: The command's stdout content.
 
     Raises:
-        ValueError: If the command returns a non-zero exit status.
+        BitwardenException: If the command returns a non-zero exit status, or times out on all
+            BW_CLI_RETRIES attempts. Attempts are spaced BW_CLI_RETRY_DELAY_SECOND seconds apart.
     """
     cmd = [BITWARDEN_EXPORTER_GLOBAL_SETTINGS.bw_executable] + cmd
 
@@ -81,18 +87,25 @@ def bw_exec(
         cli_env_vars.update(env_vars)
 
     LOGGER.debug("Executing CLI :: %s", " ".join(cmd))
-    try:
-        command_out = subprocess.run(
-            cmd, capture_output=True, check=False, encoding=ret_encoding, env=cli_env_vars, timeout=10
-        )  # nosec B603
-        if len(command_out.stderr) > 0:
-            LOGGER.warning("Error while executing a command. Enable debug logging for more information")
-            LOGGER.info("Error executing command %s", command_out.stderr)
-        command_out.check_returncode()
-        return command_out.stdout
-    except subprocess.CalledProcessError as e:
-        LOGGER.info("Error executing command %s", e)
-        raise BitwardenException("Error executing command, enable debug logging for more information")
-    except subprocess.TimeoutExpired as e:
-        LOGGER.info("Timeout executing command %s", e)
-        raise BitwardenException("Timeout executing command, enable debug logging for more information")
+    for attempt in range(1, BW_CLI_RETRIES + 1):
+        try:
+            command_out = subprocess.run(
+                cmd, capture_output=True, check=False, encoding=ret_encoding, env=cli_env_vars, timeout=30
+            )  # nosec B603
+            if len(command_out.stderr) > 0:
+                LOGGER.warning("Error while executing a command. Enable debug logging for more information")
+                LOGGER.info("Error executing command %s", command_out.stderr)
+            command_out.check_returncode()
+            return command_out.stdout
+        except subprocess.CalledProcessError as e:
+            LOGGER.info("Error executing command %s", e)
+            raise BitwardenException("Error executing command, enable debug logging for more information") from e
+        except subprocess.TimeoutExpired as e:
+            LOGGER.warning("Timeout executing command, attempt %s of %s", attempt, BW_CLI_RETRIES)
+            LOGGER.info("Timeout executing command %s", e)
+            if attempt == BW_CLI_RETRIES:
+                raise BitwardenException("Timeout executing command, enable debug logging for more information") from e
+            LOGGER.info("Retrying in %s second(s)", BW_CLI_RETRY_DELAY_SECOND)
+            time.sleep(BW_CLI_RETRY_DELAY_SECOND)
+
+    raise BitwardenException("Timeout executing command, enable debug logging for more information")
