@@ -15,7 +15,7 @@ Documentation: <https://bitwarden-exporter.arpanrec.com/>
     - Identity/Cards (Backup only, not supported by Keepass yet)
     - Attachments (Compatible with keepass attachment)
     - SSH keys (Compatible with keepass ssh and attachments)
-    - Fido U2F Keys (Backup only, not supported by Keepass yet)
+    - Passkeys / FIDO2 credentials (Compatible with KeePassXC passkeys, full JSON kept as a field)
 - **Preserves vault structure**
     - Collection and Folder hierarchy is preserved as Keepass groups.
 - Built-in JSON snapshot of vault data for auditing.
