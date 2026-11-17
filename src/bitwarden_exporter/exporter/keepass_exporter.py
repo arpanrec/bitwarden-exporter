@@ -271,14 +271,26 @@ class KeePassStorage:
                 len(credentials),
             )
         credential = credentials[0]
+        try:
+            credential_id = _passkey_credential_id(credential.credentialId)
+            private_key_pem = _passkey_private_key_pem(credential.keyValue)
+            user_handle = _b64url_normalize(credential.userHandle)
+        except ValueError as e:  # binascii.Error is a ValueError subclass
+            LOGGER.warning("A FIDO2 credential could not be converted to a passkey. Enable debug logging for more")
+            LOGGER.info(
+                "%s: FIDO2 credential not added as a KeePassXC passkey (%s: %s); "
+                "it is kept in the Fido2Credentials field.",
+                bw_item.name,
+                type(e).__name__,
+                e,
+            )
+            return
         username = credential.userName or (bw_item.login.username if bw_item.login else None) or ""
         entry.set_custom_property("KPEX_PASSKEY_USERNAME", username, protect=False)
-        entry.set_custom_property(
-            "KPEX_PASSKEY_CREDENTIAL_ID", _passkey_credential_id(credential.credentialId), protect=True
-        )
-        entry.set_custom_property("KPEX_PASSKEY_PRIVATE_KEY_PEM", _passkey_private_key_pem(credential.keyValue), True)
+        entry.set_custom_property("KPEX_PASSKEY_CREDENTIAL_ID", credential_id, protect=True)
+        entry.set_custom_property("KPEX_PASSKEY_PRIVATE_KEY_PEM", private_key_pem, protect=True)
         entry.set_custom_property("KPEX_PASSKEY_RELYING_PARTY", credential.rpId, protect=False)
-        entry.set_custom_property("KPEX_PASSKEY_USER_HANDLE", _b64url_normalize(credential.userHandle), protect=True)
+        entry.set_custom_property("KPEX_PASSKEY_USER_HANDLE", user_handle, protect=True)
         entry.set_custom_property("KPEX_PASSKEY_FLAG_BE", "1", protect=False)
         entry.set_custom_property("KPEX_PASSKEY_FLAG_BS", "1", protect=False)
         tags: List[str] = list(entry.tags or [])

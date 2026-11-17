@@ -14,7 +14,7 @@ vaults to KeePass.
     - Identity/Cards (Backup only, not supported by Keepass yet)
     - Attachments (Compatible with keepass attachment)
     - SSH keys (Compatible with keepass ssh and attachments)
-    - Passkeys / FIDO2 credentials (Compatible with KeePassXC passkeys, full JSON kept as a field)
+    - Passkeys (Compatible with KeePassXC passkeys, see [Passkeys](#passkeys))
 - **Preserves vault structure**
     - Collection and Folder hierarchy is preserved as Keepass groups.
 - Built-in JSON snapshot of vault data for auditing.
@@ -23,6 +23,24 @@ vaults to KeePass.
 ![Bitwarden Web](Screenshot_compare_base.png 'Bitwarden Web')
 
 More in [Screenshots](screenshots.md).
+
+## Passkeys
+
+Bitwarden stores passkeys as FIDO2 credentials on a login item. The exporter writes the first one into the KeePass
+entry in the format [KeePassXC](https://keepassxc.org/) 2.7.7 and later reads, so KeePassXC can sign in with it
+through its browser integration. The entry gets these attributes and the `Passkey` tag:
+
+- `KPEX_PASSKEY_USERNAME`, `KPEX_PASSKEY_RELYING_PARTY`, `KPEX_PASSKEY_FLAG_BE` and `KPEX_PASSKEY_FLAG_BS`
+- `KPEX_PASSKEY_CREDENTIAL_ID`, `KPEX_PASSKEY_PRIVATE_KEY_PEM` and `KPEX_PASSKEY_USER_HANDLE`, stored as protected
+  values
+
+Every credential on the item is also saved as JSON in the protected `Fido2Credentials` attribute.
+
+KeePassXC holds one passkey per entry. When an item has more than one, only the first becomes a passkey, and the rest
+are kept in the `Fido2Credentials` JSON.
+
+If a credential has a malformed credential ID, private key or user handle, the entry gets no passkey attributes and a
+warning is logged. The item and its `Fido2Credentials` JSON are still exported, and the export carries on.
 
 ## Prerequisites
 
