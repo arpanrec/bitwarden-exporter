@@ -1,0 +1,80 @@
+---
+name: Docs
+
+"on":
+    push:
+        branches:
+            - main
+        paths:
+            - "docs/**"
+            - "zensical.toml"
+            - ".github/workflows/docs.yml"
+            - "uv.lock"
+            - "pyproject.toml"
+    pull_request:
+        paths:
+            - "docs/**"
+            - "zensical.toml"
+            - ".github/workflows/docs.yml"
+            - "uv.lock"
+            - "pyproject.toml"
+    workflow_dispatch:
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+    cancel-in-progress: true
+
+permissions:
+    contents: read
+
+env:
+    UV_MANAGED_PYTHON: "true"
+    UV_LOCKED: "true"
+    UV_PYTHON: "3.13.7"
+
+jobs:
+    build:
+        name: Build site
+        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/bitwarden-exporter'
+        timeout-minutes: 15
+        runs-on: ubuntu-26.04
+        steps:
+            - name: Checkout
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+              with:
+                  persist-credentials: false
+
+            - name: Install uv 0.13.7
+              uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
+              with:
+                  version: "0.13.7"
+                  python-version: "${{ env.UV_PYTHON }}"
+                  enable-cache: true
+                  cache-dependency-glob: |
+                      **/uv.lock
+
+            - name: Build with Zensical
+              run: uv run --only-group docs zensical build --clean
+
+            - name: Upload Pages artifact
+              if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+              uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+              with:
+                  path: site
+
+    deploy:
+        name: Deploy to GitHub Pages
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        needs: build
+        timeout-minutes: 10
+        runs-on: ubuntu-26.04
+        permissions:
+            pages: write
+            id-token: write
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        steps:
+            - name: Deploy
+              id: deployment
+              uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

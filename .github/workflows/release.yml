@@ -1,85 +1,103 @@
 ---
 name: Release
+
 "on":
     push:
+        tags:
+            - "*"
 
-permissions:
-    contents: write
-    actions: write
+permissions: {}
 
 env:
     UV_MANAGED_PYTHON: "true"
+    UV_LOCKED: "true"
     UV_PYTHON: "3.13.7"
 
 jobs:
     release:
-        name: release
-        runs-on: ubuntu-latest
+        name: Create GitHub Release
+        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/bitwarden-exporter'
+        timeout-minutes: 15
+        runs-on: ubuntu-26.04
+        permissions:
+            contents: write
+        steps:
+            - name: Create release
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  TAG: ${{ github.ref_name }}
+              run: |
+                  if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then
+                      echo "Release $TAG already exists"
+                      exit 0
+                  fi
+                  prerelease=()
+                  if [[ "$TAG" == *-* ]]; then
+                      prerelease=(--prerelease)
+                  fi
+                  gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes "${prerelease[@]}"
+
+    pypi:
+        name: PyPI Build & Publish
+        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/bitwarden-exporter'
+        needs: release
+        timeout-minutes: 30
+        runs-on: ubuntu-26.04
+        permissions:
+            contents: write
         steps:
             - name: Checkout
-              uses: actions/checkout@v5.0.0
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
               with:
                   fetch-depth: 0
                   persist-credentials: false
 
-            - name: Import GPG key
-              id: import-gpg
-              uses: crazy-max/ghaction-import-gpg@v6.3.0
-              with:
-                  gpg_private_key: "${{ secrets.GH_BOT_GPG_PRIVATE_KEY }}"
-                  passphrase: "${{ secrets.GH_BOT_GPG_PASSPHRASE }}"
-                  git_user_signingkey: true
-                  git_commit_gpgsign: true
-                  trust_level: 5
+            # Tags aren't restricted to a branch, so a tag pushed on anything but main would otherwise still
+            # publish. git branch -r --contains lists every remote branch the tagged commit is an ancestor of;
+            # main must be among them.
+            - name: Verify the tag is on main
+              run: |
+                  git fetch origin main
+                  [[ -n "$(git branch -r --contains "${{ github.sha }}" --list 'origin/main')" ]] || {
+                      echo "::error::${{ github.ref_name }} is not on main"
+                      exit 1
+                  }
 
-            - name: Setup pnpm
-              uses: pnpm/action-setup@v4.2.0
+            - name: Install uv 0.13.7
+              uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
               with:
-                  version: 10.15.1
-
-            - name: Setup Node
-              uses: actions/setup-node@v6.0.0
-              with:
-                  node-version: lts/*
-                  cache-dependency-path: .github/files/pnpm-lock.yaml
-                  cache: pnpm
-
-            - name: Install uv 0.9.5
-              uses: astral-sh/setup-uv@v7.1.2
-              with:
-                  version: "0.9.5"
-                  python-version: "3.13.7"
+                  version: "0.13.7"
+                  python-version: "${{ env.UV_PYTHON }}"
                   enable-cache: true
-                  cache-suffix: python-3.13.7
                   cache-dependency-glob: |
                       **/uv.lock
 
-            - name: Install dependencies
-              run: |+
-                  uv run python --version
-                  uv sync --extra dev --locked
+            # scripts/release.sh writes the version into pyproject.toml before tagging; refuse to publish on a mismatch.
+            - name: Check the tag matches the project version
+              env:
+                  REF_NAME: ${{ github.ref_name }}
+              run: |
+                  version="$(uv version --short)"
+                  [[ "$version" == "$REF_NAME" ]] || {
+                      echo "::error::Tag $REF_NAME does not match pyproject.toml version $version; use scripts/release.sh"
+                      exit 1
+                  }
 
-            - name: Install node dependencies
-              run: |+
-                  pnpm install semantic-release@24.2.9 \
-                      @semantic-release/commit-analyzer@13.0.1 \
-                      @semantic-release/release-notes-generator@14.1.0 \
-                      @semantic-release/changelog@6.0.3 \
-                      @semantic-release/exec@7.1.0 \
-                      @semantic-release/git@10.0.1 \
-                      @semantic-release/github@11.0.6 --save-dev
+            - name: Build
+              run: uv build
 
-            - name: Release
-              run: |+
-                  git config --global user.email "${{ steps.import-gpg.outputs.email }}"
-                  git config --global user.name "${{ steps.import-gpg.outputs.name }}"
-                  git config --global user.name "${{ steps.import-gpg.outputs.name }}"
-                  pnpm dlx semantic-release@24.2.9 --extends ./.github/files/release.config.cjs
+            - name: Publish to TestPyPI
+              env:
+                  PYPI_TEST_API_TOKEN: ${{ secrets.PYPI_TEST_API_TOKEN }}
+              run: uv publish --index test-pypi --token "$PYPI_TEST_API_TOKEN"
+
+            - name: Publish to PyPI
               env:
                   PYPI_PROD_API_TOKEN: ${{ secrets.PYPI_PROD_API_TOKEN }}
-                  PYPI_TEST_API_TOKEN: ${{ secrets.PYPI_TEST_API_TOKEN }}
-                  GITHUB_TOKEN: "${{ secrets.GH_BOT_API_TOKEN }}"
-                  GIT_AUTHOR_NAME: "${{ steps.import-gpg.outputs.name }}"
-                  GIT_AUTHOR_EMAIL: "${{ steps.import-gpg.outputs.email }}"
-                  GIT_COMMITTER_NAME: "${{ steps.import-gpg.outputs.name }}"
-                  GIT_COMMITTER_EMAIL: "${{ steps.import-gpg.outputs.email }}"
+              run: uv publish --index pypi --token "$PYPI_PROD_API_TOKEN"
+
+            - name: Attach the distributions to the GitHub release
+              env:
+                  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  TAG: ${{ github.ref_name }}
+              run: gh release upload "$TAG" dist/* --repo "$GITHUB_REPOSITORY" --clobber

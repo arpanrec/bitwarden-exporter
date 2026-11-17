@@ -11,7 +11,7 @@ import logging
 import os
 import urllib.parse
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Optional, Type
 
 from pykeepass import PyKeePass, create_database  # type: ignore
 from pykeepass.entry import Entry  # type: ignore
@@ -140,8 +140,7 @@ class KeePassStorage:
         """
         Recursively add a group to Keepass
         """
-        if not parent_group:
-            parent_group = self.__py_kee_pass.root_group
+        group: Group = parent_group or self.__py_kee_pass.root_group  # pyright: ignore[reportAssignmentType]
 
         if group_path.startswith("/"):
             group_path = group_path[1:]
@@ -152,7 +151,7 @@ class KeePassStorage:
         if group_path == "":
             raise BitwardenException("Group Path is empty")
 
-        existing_subgroups: List[Group] = parent_group.subgroups
+        existing_subgroups: List[Group] = group.subgroups
         if "/" in group_path:
             group_name = group_path.split("/")[0]
             for subgroup in existing_subgroups:
@@ -160,18 +159,18 @@ class KeePassStorage:
                     return self.__add_group_recursive(
                         group_path="/".join(group_path.split("/")[1:]), parent_group=subgroup
                     )
-            new_group = self.__py_kee_pass.add_group(parent_group, group_name=group_name)
+            new_group = self.__py_kee_pass.add_group(group, group_name=group_name)
             return self.__add_group_recursive(group_path="/".join(group_path.split("/")[1:]), parent_group=new_group)
         for subgroup in existing_subgroups:
             if subgroup.name == group_path:
                 return subgroup
-        return self.__py_kee_pass.add_group(parent_group, group_name=group_path)
+        return self.__py_kee_pass.add_group(group, group_name=group_path)
 
     def __add_entry(self, group: Group, bw_item: BwItem) -> Entry:
         """
         Add an entry to Keepass
         """
-        entry: Union[Entry | Group] = self.__py_kee_pass.add_entry(
+        entry: Entry | Group = self.__py_kee_pass.add_entry(
             destination_group=group,
             title=bw_item.name,
             username="" if (not bw_item.login) or (not bw_item.login.username) else bw_item.login.username,
@@ -433,7 +432,7 @@ class KeePassStorage:
         """
         Function to write to Keepass
         """
-        entry: Union[Entry | Group] = self.__py_kee_pass.add_entry(
+        entry: Entry | Group = self.__py_kee_pass.add_entry(
             destination_group=self.__py_kee_pass.root_group,
             title="Bitwarden Export",
             username="",

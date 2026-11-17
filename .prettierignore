@@ -1,2 +1,4 @@
-.github/files/pnpm-lock.yaml
+pnpm-lock.yaml
 CHANGELOG.md
+roles/geerlingguy.docker
+docs/cli.md

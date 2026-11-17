@@ -27,28 +27,25 @@ line-length = 120
 name = "bitwarden-exporter"
 version = "1.10.2"
 description = "Export Bitwarden vault"
-authors = [ { name = "arpan", email = "me@arpanrec.com" } ]
-license = "MIT"
+authors = [{ name = "arpan", email = "me@arpanrec.com" }]
+license-files = ["LICENSE"]
 readme = "README.md"
 repository = "https://github.com/arpanrec/bitwarden-exporter.git"
-documentation = "https://github.com/arpanrec/bitwarden-exporter/blob/main/README.md"
+documentation = "https://bitwarden-exporter.arpanrec.com/"
 homepage = "https://github.com/arpanrec/bitwarden-exporter"
 package-mode = true
 keywords = ["bitwarden", "export", "keepass", "backup"]
-include = ["CHANGELOG.md"]
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: End Users/Desktop",
     "Operating System :: Unix",
     "Operating System :: POSIX",
     "Operating System :: Microsoft :: Windows",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Programming Language :: Python :: Implementation :: PyPy",
     "Topic :: Utilities",
     "Topic :: System :: Archiving",
@@ -58,10 +55,10 @@ classifiers = [
     "Topic :: System :: Recovery Tools",
 ]
 dependencies = [
-    "pydantic==2.12.4",
-    "pykeepass==4.1.1.post1",
-    "jmespath==1.0.1",
-    "typer==0.20.0",
+    "pydantic==2.14.3",
+    "pykeepass==4.2.0",
+    "jmespath==1.1.0",
+    "typer==0.29.1",
 ]
 
 [project.scripts]
@@ -69,15 +66,13 @@ bitwarden-exporter = "bitwarden_exporter.__main__:main"
 
 [project.optional-dependencies]
 dev = [
-    "bandit==1.8.6",
-    "black==25.11.0",
-    "isort==7.0.0",
-    "mypy==1.18.2",
+    "black==26.10.1",
+    "isort==9.0.2",
+    "mypy==2.4.1",
     "neovim==0.3.1",
-    "pylint==4.0.2",
-    "pyright==1.1.407",
-    "types-jmespath==1.0.2.20250809",
-    "Jinja2==3.1.6",
+    "pylint==4.1.4",
+    "pyright==1.1.414",
+    "types-jmespath==1.1.0.20260724",
 ]
 
 [tool.uv]
@@ -96,5 +91,11 @@ publish-url = "https://upload.pypi.org/legacy/"
 explicit = true
 
 [build-system]
-requires = ["uv_build>=0.8.14,<0.10.0"]
+requires = ["uv_build>=0.13.0,<0.14.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+dev = []
+docs = [
+    "zensical==0.1.1",
+]

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Scan staged changes for secrets with betterleaks before each commit.
+
+set -euo pipefail
+
+command -v betterleaks > /dev/null || {
+    echo "betterleaks is not installed; install it from https://github.com/betterleaks/betterleaks" >&2
+    exit 1
+}
+
+betterleaks git --staged .

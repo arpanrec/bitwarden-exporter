@@ -5,13 +5,13 @@ name: "Mypy: Static Typing for Python"
     push:
         paths:
             - "**.py"
-            - ".github/workflows/bandit.yml"
+            - ".github/workflows/mypy.yml"
             - "uv.lock"
             - "pyproject.toml"
     pull_request:
         paths:
             - "**.py"
-            - ".github/workflows/bandit.yml"
+            - ".github/workflows/mypy.yml"
             - "uv.lock"
             - "pyproject.toml"
     workflow_dispatch:
@@ -29,20 +29,21 @@ env:
 
 jobs:
     mypy:
-        runs-on: ubuntu-latest
+        if: github.server_url == 'https://github.com' && github.repository == 'arpanrec/bitwarden-exporter'
+        runs-on: ubuntu-26.04
         strategy:
             fail-fast: false
             matrix:
-                python-version: ["3.10.18", "3.11.13", "3.12.11", "3.13.7"]
+                python-version: ["3.13.7", "3.14.10", "3.15.2"]
         name: mypy
         steps:
             - name: Checkout
-              uses: actions/checkout@v5.0.0
+              uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-            - name: Install uv 0.9.5
-              uses: astral-sh/setup-uv@v7.1.2
+            - name: Install uv 0.13.7
+              uses: astral-sh/setup-uv@68559e99cc807c1eb7e9238fd43a15bba460eec2 # v10.3.3
               with:
-                  version: "0.9.5"
+                  version: "0.13.7"
                   python-version: "${{ matrix.python-version }}"
                   enable-cache: true
                   cache-suffix: python-${{ matrix.python-version }}

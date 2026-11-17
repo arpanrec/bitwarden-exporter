@@ -1,0 +1,61 @@
+[project]
+site_name = "Bitwarden Exporter"
+site_description = "Export Bitwarden vaults to KeePass"
+site_author = "arpan"
+site_url = "https://bitwarden-exporter.arpanrec.com/"
+copyright = "Copyright &copy; arpan. Released under the MIT License."
+repo_url = "https://github.com/arpanrec/bitwarden-exporter"
+repo_name = "arpanrec/bitwarden-exporter"
+edit_uri = "edit/main/docs/"
+docs_dir = "docs"
+site_dir = "site"
+dev_addr = "127.0.0.1:8000"
+nav = [
+  { "Home" = "index.md" },
+  { "CLI reference" = "cli.md" },
+  { "Screenshots" = "screenshots.md" },
+]
+
+[project.theme]
+language = "en"
+features = [
+  "content.action.edit",
+  "content.code.copy",
+  "content.code.select",
+  "navigation.footer",
+  "navigation.instant",
+  "navigation.instant.prefetch",
+  "navigation.path",
+  "navigation.top",
+  "navigation.tracking",
+  "search.highlight",
+]
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme)"
+toggle.icon = "lucide/sun-moon"
+toggle.name = "Switch to light mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: light)"
+scheme = "default"
+toggle.icon = "lucide/sun"
+toggle.name = "Switch to dark mode"
+
+[[project.theme.palette]]
+media = "(prefers-color-scheme: dark)"
+scheme = "slate"
+toggle.icon = "lucide/moon"
+toggle.name = "Switch to system preference"
+
+[project.markdown_extensions]
+admonition = {}
+attr_list = {}
+md_in_html = {}
+toc.permalink = true
+pymdownx.details = {}
+pymdownx.highlight.anchor_linenums = true
+pymdownx.highlight.pygments_lang_class = true
+pymdownx.inlinehilite = {}
+pymdownx.magiclink = {}
+pymdownx.superfences = {}
