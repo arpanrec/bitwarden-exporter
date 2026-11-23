@@ -55,7 +55,7 @@ classifiers = [
     "Topic :: System :: Recovery Tools",
 ]
 dependencies = [
-    "pydantic==2.14.3",
+    "pydantic==2.14.4",
     "pykeepass==4.2.0",
     "jmespath==1.1.0",
     "typer==0.29.1",
